@@ -2574,8 +2574,7 @@ public class CFGTranslationPhaseOne extends TreeScanner<Node, Void> {
                 }
             } else {
                 // This is either the default case or a switch labeled rule (which appears in a
-                // switch
-                // expression).
+                // switch expression).
                 // A "switch labeled rule" is a "case L ->" label along with its code.
                 Tree bodyTree = TreeUtils.caseTreeGetBody(tree);
                 if (!TreeUtils.isSwitchStatement(switchTree)

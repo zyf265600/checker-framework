@@ -2,10 +2,9 @@ import org.checkerframework.checker.testchecker.ainfer.qual.AinferBottom;
 import org.checkerframework.checker.testchecker.ainfer.qual.AinferDefaultType;
 
 // The @AinferDefaultType annotation, which is the default for every location, is forbidden to be
-// written
-// anywhere. This class attempts to infer @AinferDefaultType in several locations, and the annotated
-// version of this class (in the annotated folder) should have no explicit @AinferDefaultType
-// annotations.
+// written anywhere. This class attempts to infer @AinferDefaultType in several locations, and the
+// annotated version of this class (in the annotated folder) should have no explicit
+// @AinferDefaultType annotations.
 public class DefaultsTest {
     String defaultField = "";
     String defaultField2;
