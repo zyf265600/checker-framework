@@ -11,9 +11,11 @@ public class ReflectionConstructorTest {
     // :: error: (super.invocation.invalid) :: warning: (inconsistent.constructor.type)
     public @TestReflectSibling1 ReflectionConstructorTest(@TestReflectSibling1 int a) {}
 
-    // :: error: (super.invocation.invalid) :: warning: (inconsistent.constructor.type)
+    // :: warning: (inconsistent.constructor.type)
     public @TestReflectSibling2 ReflectionConstructorTest(
-            @TestReflectSibling2 int a, @TestReflectSibling2 int b) {}
+            @TestReflectSibling2 int a, @TestReflectSibling2 int b)
+                // :: error: (super.invocation.invalid)
+            {}
 
     public void pass1() {
         try {
