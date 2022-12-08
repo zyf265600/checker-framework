@@ -3,9 +3,11 @@ Version 3.28.0-eisop1 (December 7, 2022)
 
 **User-visible changes:**
 
+Support JSpecify annotations in the `org.jspecify.annotations` package.
+
 **Implementation details:**
 
-**Closed issues:**
+Remove duplicate code in `AnnotatedTypeFactory` and `javacutil`.
 
 
 Version 3.28.0 (December 1, 2022)
