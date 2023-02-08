@@ -2668,7 +2668,7 @@ public class CFGTranslationPhaseOne extends TreeScanner<Node, Void> {
          *
          * @return true if the cases are exhaustive
          */
-        /* package-private */ boolean casesAreExhaustive() {
+        private boolean casesAreExhaustive() {
             TypeMirror selectorTypeMirror = TreeUtils.typeOf(selectorExprTree);
 
             switch (selectorTypeMirror.getKind()) {
