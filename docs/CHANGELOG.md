@@ -1,4 +1,4 @@
-Version 3.28.0-eisop2 (December ?, 2022)
+Version 3.30.0-eisop1 (February ?, 2023)
 ----------------------------------------
 
 **User-visible changes:**
@@ -11,6 +11,25 @@ in a `BindingPatternTree`.
 **Closed issues:**
 
 
+Version 3.29.0 (January 4, 2023)
+---------------------------------
+
+**User-visible changes:**
+
+Dropped support for `-ApermitUnsupportedJdkVersion` command-line argument.
+You can now run the Checker Framework under any JDK version, without a warning.
+
+Pass `-Astubs=permit-nullness-assertion-exception.astub` to not be warned about null
+pointer exceptions within nullness assertion methods like `Objects.requireNonNull`.
+
+Pass `-Astubs=sometimes-nullable.astub` to unsoundly permit passing null to
+calls if null is sometimes but not always permitted.
+
+**Closed issues:**
+
+#5412, #5431, #5435, #5438, #5447, #5450, #5453, #5471, #5472, #5487.
+
+
 Version 3.28.0-eisop1 (December 7, 2022)
 ----------------------------------------
 
@@ -21,6 +40,8 @@ Support JSpecify annotations in the `org.jspecify.annotations` package.
 **Implementation details:**
 
 Remove duplicate code in `AnnotatedTypeFactory` and `javacutil`.
+
+**Closed issues:**
 
 
 Version 3.28.0 (December 1, 2022)
