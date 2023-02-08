@@ -1895,8 +1895,7 @@ public class AnnotationFileParser {
                 annotate(paramType.getLowerBound(), param.getAnnotations(), param);
                 if (param.getTypeBound().size() == 1) {
                     // The additional declAnnos (third argument) is always null in this call to
-                    // `annotate`,
-                    // but the type bound (second argument) might have annotations.
+                    // `annotate`, but the type bound (second argument) might have annotations.
                     annotate(paramType.getUpperBound(), param.getTypeBound().get(0), null, param);
                 } else {
                     // param.getTypeBound().size() > 1
@@ -1919,10 +1918,8 @@ public class AnnotationFileParser {
                     } else {
                         // TODO: add support for intersection types
                         // One problem is that `annotate()` removes any existing annotations from
-                        // the same
-                        // qualifier hierarchies, so paramType.getLowerBound() would end up with the
-                        // annotations
-                        // of only the last type bound.
+                        // the same qualifier hierarchies, so paramType.getLowerBound() would end up
+                        // with the annotations of only the last type bound.
 
                         // String msg =
                         //     String.format(

@@ -2443,10 +2443,8 @@ public class CFGTranslationPhaseOne extends TreeScanner<Node, Void> {
                 CaseTree caseTree = caseTrees.get(i);
                 if (TreeUtils.isDefaultCaseTree(caseTree)) {
                     // Per the Java Language Specification, the checks of all cases must happen
-                    // before the
-                    // default case, no matter where `default:` is written.  Therefore, build the
-                    // default
-                    // case last.
+                    // before the default case, no matter where `default:` is written.  Therefore,
+                    // build the default case last.
                     defaultIndex = i;
                 } else {
                     boolean isLastExceptDefault =
@@ -2463,8 +2461,7 @@ public class CFGTranslationPhaseOne extends TreeScanner<Node, Void> {
 
             if (defaultIndex != -1) {
                 // The checks of all cases must happen before the default case, therefore we build
-                // the
-                // default case last.
+                // the default case last.
                 // Fallthrough is still handled correctly with the caseBodyLabels.
                 buildCase(caseTrees.get(defaultIndex), defaultIndex, false);
             }
@@ -2571,10 +2568,8 @@ public class CFGTranslationPhaseOne extends TreeScanner<Node, Void> {
             boolean isDefaultCase = TreeUtils.isDefaultCaseTree(tree);
             // If true, no test of labels is necessary.
             // Unfortunately, if isLastOfExhaustive==TRUE, no flow-sensitive refinement occurs
-            // within the
-            // body of the CaseNode.  In the future, that can be performed, but it requires addition
-            // of
-            // InfeasibleExitBlock, a new SpecialBlock in the CFG.
+            // within the body of the CaseNode.  In the future, that can be performed, but it
+            // requires addition of InfeasibleExitBlock, a new SpecialBlock in the CFG.
             boolean isTerminalCase = isDefaultCase || isLastOfExhaustive;
 
             final Label thisBodyLabel = caseBodyLabels[index];
@@ -2673,7 +2668,7 @@ public class CFGTranslationPhaseOne extends TreeScanner<Node, Void> {
          *
          * @return true if the cases are exhaustive
          */
-        boolean casesAreExhaustive() {
+        /* package-private */ boolean casesAreExhaustive() {
             TypeMirror selectorTypeMirror = TreeUtils.typeOf(selectorExprTree);
 
             switch (selectorTypeMirror.getKind()) {
