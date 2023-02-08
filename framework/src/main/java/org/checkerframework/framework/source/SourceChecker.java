@@ -242,10 +242,6 @@ import io.github.classgraph.ClassGraph;
     // java.lang.String)
     "requirePrefixInWarningSuppressions",
 
-    // Permit running under JDKs other than those the Checker Framework officially supports.
-    // Also see "noJreVersionCheck" option.
-    "permitUnsupportedJdkVersion",
-
     // Ignore annotations in bytecode that have invalid annotation locations.
     // See https://github.com/typetools/checker-framework/issues/2173
     // org.checkerframework.framework.type.ElementAnnotationApplier.apply
@@ -321,7 +317,6 @@ import io.github.classgraph.ClassGraph;
     "nomsgtext",
 
     // Do not perform a JRE version check.
-    // Also see "permitUnsupportedJdkVersion" option.
     "noJreVersionCheck",
 
     /// Format of messages

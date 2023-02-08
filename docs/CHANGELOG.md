@@ -18,6 +18,8 @@ Version 3.29.0 (January 4, 2023)
 
 Dropped support for `-ApermitUnsupportedJdkVersion` command-line argument.
 You can now run the Checker Framework under any JDK version, without a warning.
+(EISOP note: a note is however still issued. Use the EISOP option
+`-AnoJreVersionCheck` to also suppress the note.)
 
 Pass `-Astubs=permit-nullness-assertion-exception.astub` to not be warned about null
 pointer exceptions within nullness assertion methods like `Objects.requireNonNull`.
@@ -40,8 +42,6 @@ Support JSpecify annotations in the `org.jspecify.annotations` package.
 **Implementation details:**
 
 Remove duplicate code in `AnnotatedTypeFactory` and `javacutil`.
-
-**Closed issues:**
 
 
 Version 3.28.0 (December 1, 2022)
