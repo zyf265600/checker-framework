@@ -28,9 +28,8 @@ class SwitchTestExhaustive {
                     case VAL2 -> "2";
                     case VAL3 -> "3";
                         // The default case is dead code, so it would be possible for type-checking
-                        // to skip it
-                        // and not issue this warning.  But giving the warning is also good.
-                        // :: error: (switch.expression)
+                        // to skip it and not issue this warning.  But giving the warning is also good.
+                        // :: error: (switch.expression.type.incompatible)
                     default -> null;
                 };
         return s;
@@ -87,7 +86,7 @@ class SwitchTestExhaustive {
             default:
                 break;
         }
-        // :: error: (return)
+        // :: error: (return.type.incompatible)
         return aString;
     }
 
@@ -109,7 +108,7 @@ class SwitchTestExhaustive {
                 aString = null;
                 break;
         }
-        // :: error: (return)
+        // :: error: (return.type.incompatible)
         return aString;
     }
 
