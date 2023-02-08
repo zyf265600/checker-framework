@@ -130,6 +130,11 @@ public final class TreeUtils {
     /** The SwitchExpressionTree.getExpression method for Java 12 and higher; null otherwise. */
     private static final @Nullable Method SWITCHEXPRTREE_GETCASES;
 
+    /** The {@code CaseTree.getKind()} method for Java 12 and higher; null otherwise. */
+    private static final @Nullable Method CASETREE_GETKIND;
+    /** The {@code CaseTree.CaseKind.RULE} enum value for Java 12 and higher; null otherwise. */
+    private static final @Nullable Enum<?> CASETREE_CASEKIND_RULE;
+
     /** The YieldTree.getValue method for Java 13 and higher; null otherwise. */
     private static final @Nullable Method YIELDTREE_GETVALUE;
 
@@ -144,11 +149,6 @@ public final class TreeUtils {
 
     /** The set of tree kinds that can be categorized as binary comparison. */
     private static final Set<Tree.Kind> BINARY_COMPARISON_TREE_KINDS;
-
-    /** The {@code CaseTree.getKind()} method. Null on JDK 11 and lower. */
-    private static @Nullable Method caseGetCaseKind = null;
-    /** The {@code CaseTree.CaseKind.RULE} enum value. Null on JDK 11 and lower. */
-    private static @Nullable Enum<?> caseKindRule = null;
 
     static {
         final SourceVersion latestSource = SourceVersion.latest();
@@ -189,7 +189,9 @@ public final class TreeUtils {
                 SWITCHEXPRTREE_GETEXPRESSION = switchExpressionClass.getMethod("getExpression");
                 SWITCHEXPRTREE_GETCASES = switchExpressionClass.getMethod("getCases");
 
-                caseGetCaseKind = CaseTree.class.getDeclaredMethod("getCaseKind");
+                CASETREE_GETKIND = CaseTree.class.getDeclaredMethod("getCaseKind");
+                Enum<?> ruleTemp = null;
+                nested:
                 for (Class<?> nested : CaseTree.class.getDeclaredClasses()) {
                     if (nested.isEnum() && nested.getSimpleName().equals("CaseKind")) {
                         @SuppressWarnings({
@@ -199,13 +201,14 @@ public final class TreeUtils {
                         Object @NonNull [] enumConstants = nested.getEnumConstants();
                         for (Object enumConstant : enumConstants) {
                             if (enumConstant.toString().equals("RULE")) {
-                                caseKindRule = (Enum<?>) enumConstant;
-                                break;
+                                ruleTemp = (Enum<?>) enumConstant;
+                                break nested;
                             }
                         }
                     }
                 }
-                assert caseKindRule != null;
+                CASETREE_CASEKIND_RULE = ruleTemp;
+                assert CASETREE_CASEKIND_RULE != null;
             } else {
                 CASETREE_GETEXPRESSION = CaseTree.class.getDeclaredMethod("getExpression");
                 CASETREE_GETEXPRESSIONS = null;
@@ -213,6 +216,9 @@ public final class TreeUtils {
 
                 SWITCHEXPRTREE_GETEXPRESSION = null;
                 SWITCHEXPRTREE_GETCASES = null;
+
+                CASETREE_GETKIND = null;
+                CASETREE_CASEKIND_RULE = null;
             }
             if (atLeastJava13) {
                 Class<?> yieldTreeClass = Class.forName("com.sun.source.tree.YieldTree");
@@ -2214,12 +2220,13 @@ public final class TreeUtils {
         // Code for JDK 12 and later.
         try {
             @SuppressWarnings({"unchecked", "nullness"}) // reflective call
-            @NonNull Enum<?> caseKind = (Enum<?>) caseGetCaseKind.invoke(caseTree);
+            @NonNull Enum<?> caseKind = (Enum<?>) CASETREE_GETKIND.invoke(caseTree);
             @SuppressWarnings("interning:not.interned") // bug in interning defaulting
-            boolean result = caseKind == caseKindRule;
+            boolean result = caseKind == CASETREE_CASEKIND_RULE;
             return result;
         } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-            throw new BugInCF("cannot find and/or call method CaseTree.getKind()", e);
+            throw new BugInCF(
+                    "TreeUtils.isCaseRule: cannot find and/or call method CaseTree.getKind()", e);
         }
     }
 
