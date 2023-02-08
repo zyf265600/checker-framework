@@ -85,7 +85,7 @@ public class MethodTypeParamApplier extends TypeParamElementAnnotationApplier {
     }
 
     /** The valid targets. */
-    private static TargetType[] validTargets =
+    private static final TargetType[] validTargets =
             new TargetType[] {
                 TargetType.METHOD_RETURN,
                 TargetType.METHOD_FORMAL_PARAMETER,

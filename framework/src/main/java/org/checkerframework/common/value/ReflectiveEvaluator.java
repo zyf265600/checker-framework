@@ -154,7 +154,7 @@ public class ReflectiveEvaluator {
     }
 
     /** An empty Object array. */
-    private static Object[] emptyObjectArray = new Object[] {};
+    private static final Object[] emptyObjectArray = new Object[] {};
 
     /**
      * This method normalizes an array of arguments to a varargs method by changing the arguments

@@ -58,7 +58,8 @@ public class TypeDeclarationApplier extends TargetedElementAnnotationApplier {
     }
 
     /** The annotated targets. */
-    private static TargetType[] annotatedTargets = new TargetType[] {TargetType.CLASS_EXTENDS};
+    private static final TargetType[] annotatedTargets =
+            new TargetType[] {TargetType.CLASS_EXTENDS};
 
     @Override
     protected TargetType[] annotatedTargets() {
@@ -66,7 +67,7 @@ public class TypeDeclarationApplier extends TargetedElementAnnotationApplier {
     }
 
     /** The valid targets. */
-    private static TargetType[] validTargets =
+    private static final TargetType[] validTargets =
             new TargetType[] {
                 TargetType.RESOURCE_VARIABLE,
                 TargetType.EXCEPTION_PARAMETER,

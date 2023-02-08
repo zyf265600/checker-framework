@@ -202,7 +202,8 @@ public abstract class BaseTypeChecker extends SourceChecker {
     }
 
     /** An array containing just {@code BaseTypeChecker.class}. */
-    private static Class<?>[] baseTypeCheckerClassArray = new Class<?>[] {BaseTypeChecker.class};
+    private static final Class<?>[] baseTypeCheckerClassArray =
+            new Class<?>[] {BaseTypeChecker.class};
 
     /**
      * Returns the appropriate visitor that type-checks the compilation unit according to the type

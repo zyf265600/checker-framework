@@ -65,7 +65,8 @@ public enum I18nConversionCategory {
     }
 
     /** Used by {@link #stringToI18nConversionCategory}. */
-    static I18nConversionCategory[] namedCategories = new I18nConversionCategory[] {DATE, NUMBER};
+    private static final I18nConversionCategory[] namedCategories =
+            new I18nConversionCategory[] {DATE, NUMBER};
 
     /**
      * Creates a conversion cagetogry from a string name.
@@ -104,7 +105,7 @@ public enum I18nConversionCategory {
     }
 
     /** Conversion categories that need to be considered by {@link #intersect}. */
-    private static I18nConversionCategory[] conversionCategoriesForIntersect =
+    private static final I18nConversionCategory[] conversionCategoriesForIntersect =
             new I18nConversionCategory[] {DATE, NUMBER};
 
     /**
