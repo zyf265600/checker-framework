@@ -11,8 +11,21 @@ in a `BindingPatternTree`.
 **Closed issues:**
 
 
-Version 3.29.0 (January 4, 2023)
+Version 3.30.0 (February 2, 2023)
 ---------------------------------
+
+**Implementation details:**
+
+`getQualifierKind()` throws an exception rather than returning null.
+
+Renamed gradle task `copyJarsToDist` to `assembleForJavac`.
+
+**Closed issues:**
+#5402, #5486, #5489, #5519, #5524, #5526.
+
+
+Version 3.29.0 (January 5, 2023)
+--------------------------------
 
 **User-visible changes:**
 
@@ -295,7 +308,7 @@ Version 3.22.2 (June 14, 2022)
 
 **Implementation details:**
 
-Expose CFG APIs to allow inserting jumps and throws
+Expose CFG APIs to allow inserting jumps and throws.
 
 
 Version 3.22.1-eisop1 (June 3, 2022)
