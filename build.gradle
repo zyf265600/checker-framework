@@ -264,7 +264,7 @@ allprojects {
                     [
                         // must call toString() to convert GString to String
                         "${it}/**/*.java".toString(),
-                        // Not .ajava files because formatting would remove import statements.
+                        "${it}/**/*.ajava".toString()
                     ]}
                 target targets
 
@@ -276,9 +276,14 @@ allprojects {
                     '**/build/**',
                     '*/dist/**',
                 ]
-                if (isJava17plus) {
+                if (isJava16plus) {
                     targetExclude doNotFormat
+                } else if (isJava14plus) {
+                    targetExclude doNotFormat, '**/*record*/'
                 } else {
+                    // TODO: directories should be renamed `-switchexpr` or some such,
+                    // as they  only contain examples for switch expressions, which were
+                    // added in Java 14, not Java 17.
                     targetExclude doNotFormat, '**/java17/', '**/*record*/'
                 }
 
