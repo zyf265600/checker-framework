@@ -287,7 +287,7 @@ task demosTests(dependsOn: assembleForJavac, group: 'Verification') {
                         'clone',
                         '--depth',
                         '1',
-                        'https://github.com/typetools/checker-framework.demos.git'
+                        'https://github.com/eisop/checker-framework.demos.git'
                     ]
                 }
             } else {
@@ -296,7 +296,7 @@ task demosTests(dependsOn: assembleForJavac, group: 'Verification') {
                     executable 'git'
                     args = [
                         'pull',
-                        'https://github.com/typetools/checker-framework.demos.git'
+                        'https://github.com/eisop/checker-framework.demos.git'
                     ]
                     ignoreExitValue = true
                 }
