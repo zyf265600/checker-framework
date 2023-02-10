@@ -153,7 +153,6 @@ allprojects {
     apply plugin: 'com.github.johnrengelman.shadow'
     apply plugin: 'de.undercouch.download'
     apply plugin: 'net.ltgt.errorprone'
-    apply plugin: 'com.diffplug.spotless'
 
     group 'io.github.eisop'
 
