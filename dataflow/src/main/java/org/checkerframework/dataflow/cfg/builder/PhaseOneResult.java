@@ -75,6 +75,22 @@ public class PhaseOneResult {
      */
     /*package-private*/ final List<LambdaExpressionTree> declaredLambdas;
 
+    /**
+     * Create a PhaseOneResult with the given data.
+     *
+     * @param underlyingAST the underlying AST
+     * @param treeToCfgNodes the tree to nodes mapping
+     * @param treeToConvertedCfgNodes the tree to converted nodes mapping
+     * @param postfixTreeToCfgNodes the postfix tree to nodes mapping
+     * @param nodeList the list of nodes
+     * @param bindings the label bindings
+     * @param leaders the leaders
+     * @param returnNodes the return nodes
+     * @param regularExitLabel the regular exit labels
+     * @param exceptionalExitLabel the exceptional exit labels
+     * @param declaredClasses the declared classes
+     * @param declaredLambdas the declared lambdas
+     */
     public PhaseOneResult(
             UnderlyingAST underlyingAST,
             IdentityHashMap<Tree, Set<Node>> treeToCfgNodes,
