@@ -7,7 +7,6 @@ import org.plumelib.util.ArrayMap;
 import org.plumelib.util.ArraySet;
 import org.plumelib.util.CollectionsPlume;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -80,8 +79,8 @@ public class ExceptionBlockImpl extends SingleSuccessorBlockImpl implements Exce
     }
 
     @Override
-    public List<Block> getSuccessors() {
-        List<Block> result = new ArrayList<>(super.getSuccessors());
+    public Set<Block> getSuccessors() {
+        Set<Block> result = new ArraySet<>(super.getSuccessors());
         for (Set<? extends Block> blocks : getExceptionalSuccessors().values()) {
             CollectionsPlume.adjoinAll(result, blocks);
         }

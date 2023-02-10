@@ -4,7 +4,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.dataflow.analysis.Store.FlowRule;
 
 import java.util.Collections;
-import java.util.List;
+import java.util.Set;
 
 /**
  * A basic block that has at most one successor. SpecialBlockImpl extends this, but exit blocks have
@@ -40,11 +40,11 @@ public abstract class SingleSuccessorBlockImpl extends BlockImpl implements Sing
     }
 
     @Override
-    public List<Block> getSuccessors() {
+    public Set<Block> getSuccessors() {
         if (successor == null) {
-            return Collections.emptyList();
+            return Collections.emptySet();
         } else {
-            return Collections.singletonList(successor);
+            return Collections.singleton(successor);
         }
     }
 

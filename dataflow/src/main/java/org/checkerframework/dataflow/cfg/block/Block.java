@@ -6,6 +6,7 @@ import org.checkerframework.dataflow.qual.Pure;
 import org.plumelib.util.UniqueId;
 
 import java.util.List;
+import java.util.Set;
 
 /** Represents a basic block in a control flow graph. */
 public interface Block extends UniqueId {
@@ -38,14 +39,14 @@ public interface Block extends UniqueId {
      *
      * @return the predecessors of this basic block
      */
-    List<Block> getPredecessors();
+    Set<Block> getPredecessors();
 
     /**
      * Returns the successors of this basic block.
      *
      * @return the successors of this basic block
      */
-    List<Block> getSuccessors();
+    Set<Block> getSuccessors();
 
     /**
      * Returns the nodes contained within this basic block. The list may be empty.
