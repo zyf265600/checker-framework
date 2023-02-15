@@ -1529,8 +1529,8 @@ public class AnnotatedTypeFactory implements AnnotationProvider {
         // Because of a bug in Java 8, annotations on type parameters are not stored in elements, so
         // get explicit annotations from the tree. (This bug has been fixed in Java 9.)  Also, since
         // annotations computed by the AnnotatedTypeFactory are stored in the element, the
-        // annotations
-        // have to be retrieved from the tree so that only explicit annotations are returned.
+        // annotations have to be retrieved from the tree so that only explicit annotations are
+        // returned.
         Tree decl = declarationFromElement(elt);
 
         if (decl == null) {
@@ -1962,7 +1962,7 @@ public class AnnotatedTypeFactory implements AnnotationProvider {
     }
 
     /** The classes of field invariant annotations. */
-    private Set<Class<? extends Annotation>> fieldInvariantDeclarationAnnotations =
+    private final Set<Class<? extends Annotation>> fieldInvariantDeclarationAnnotations =
             Collections.singleton(FieldInvariant.class);
 
     /**
@@ -2582,8 +2582,7 @@ public class AnnotatedTypeFactory implements AnnotationProvider {
         // stub files defaults and propagation tree annotator.  Since getClass is final they cannot
         // come from source code.  Also, since the newBound is an erased type we have no type
         // arguments.  So, we just copy the annotations from the bound of the declared type to the
-        // new
-        // bound.
+        // new bound.
         Set<AnnotationMirror> newAnnos = AnnotationUtils.createAnnotationSet();
         Set<AnnotationMirror> typeBoundAnnos =
                 getTypeDeclarationBounds(receiverType.getErased().getUnderlyingType());
@@ -2734,8 +2733,7 @@ public class AnnotatedTypeFactory implements AnnotationProvider {
         if (tree.getClassBody() != null) {
             // Because the anonymous constructor can't have explicit annotations on its parameters,
             // they are copied from the super constructor invoked in the anonymous constructor. To
-            // do
-            // this:
+            // do this:
             // 1. get unsubstituted type of the super constructor.
             // 2. adapt it to this call site.
             // 3. copy the parameters to the anonymous constructor, `con`.

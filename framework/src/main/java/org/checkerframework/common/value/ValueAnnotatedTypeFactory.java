@@ -403,7 +403,7 @@ public class ValueAnnotatedTypeFactory extends BaseAnnotatedTypeFactory {
     }
 
     /** The classes of field invariant annotations. */
-    private Set<Class<? extends Annotation>> fieldInvariantDeclarationAnnotations =
+    private final Set<Class<? extends Annotation>> fieldInvariantDeclarationAnnotations =
             computeFieldInvariantDeclarationAnnotations();
 
     @Override

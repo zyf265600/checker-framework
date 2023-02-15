@@ -2154,7 +2154,7 @@ public class BaseTypeVisitor<Factory extends GenericAnnotatedTypeFactory<?, ?, ?
     }
 
     /** A set containing {@code Tree.Kind.METHOD} and {@code Tree.Kind.LAMBDA_EXPRESSION}. */
-    private ArraySet<Tree.Kind> methodAndLambdaExpression =
+    private final ArraySet<Tree.Kind> methodAndLambdaExpression =
             new ArraySet<>(Arrays.asList(Tree.Kind.METHOD, Tree.Kind.LAMBDA_EXPRESSION));
 
     /**
