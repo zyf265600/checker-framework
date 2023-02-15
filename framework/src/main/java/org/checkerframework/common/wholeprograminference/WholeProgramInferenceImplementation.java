@@ -192,8 +192,7 @@ public class WholeProgramInferenceImplementation<T> implements WholeProgramInfer
         //
         // When performing WPI on a library, if there are no external calls (only recursive calls),
         // then each iteration of WPI would make the formal parameter types more restrictive,
-        // leading
-        // to an infinite (or very long) loop.
+        // leading to an infinite (or very long) loop.
         //
         // Consider
         //   void myMethod(int x) { ... myMethod(x-1) ... }`
@@ -291,14 +290,11 @@ public class WholeProgramInferenceImplementation<T> implements WholeProgramInfer
                     i >= methodElt.getParameters().size() - 1 && methodElt.isVarArgs();
             if (varargsParam && this.atypeFactory.wpiOutputFormat == OutputFormat.JAIF) {
                 // The AFU's org.checkerframework.afu.annotator.Main produces a non-compilable
-                // source
-                // file when JAIF-based WPI tries to output an annotated varargs parameter, such as
-                // when running the test
+                // source file when JAIF-based WPI tries to output an annotated varargs parameter,
+                // such as when running the test
                 // checker/tests/ainfer-testchecker/non-annotated/AnonymousAndInnerClass.java.
-                // Until
-                // that bug is fixed, do not attempt to infer information about varargs parameters
-                // in
-                // JAIF mode.
+                // Until that bug is fixed, do not attempt to infer information about varargs
+                // parameters in JAIF mode.
                 if (showWpiFailedInferences) {
                     printFailedInferenceDebugMessage(
                             "Annotations cannot be placed on varargs parameters in -Ainfer=jaifs mode, because"
@@ -1000,8 +996,8 @@ public class WholeProgramInferenceImplementation<T> implements WholeProgramInfer
                 // case DECLARED:
                 // Inferring annotations on type arguments is not supported, so no need to recur on
                 // generic types. If this was ever implemented, this method would need a
-                // VisitHistory
-                // object to prevent infinite recursion on types such as T extends List<T>.
+                // VisitHistory object to prevent infinite recursion on types such as T extends
+                // List<T>.
             default:
                 // ATM only has primary annotations
                 break;

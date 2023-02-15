@@ -916,9 +916,9 @@ public abstract class AnnotatedTypeMirror {
 
             // If "this" is a type declaration with a type variable that references itself, e.g.
             // MyClass<T extends List<T>>, then the type variable is a declaration, i.e. the first
-            // T,
-            // but the reference to the type variable is a use, i.e. the second T.  When "this" is
-            // converted to a use, then both type variables are uses and should be the same object.
+            // T, but the reference to the type variable is a use, i.e. the second T.  When "this"
+            // is converted to a use, then both type variables are uses and should be the same
+            // object.
             // The code below does this.
             Map<TypeVariable, AnnotatedTypeMirror> mapping = new HashMap<>(typeArgs.size());
             for (AnnotatedTypeMirror typeArg : result.getTypeArguments()) {
