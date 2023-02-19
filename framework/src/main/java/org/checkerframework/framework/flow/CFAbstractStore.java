@@ -148,6 +148,7 @@ public abstract class CFAbstractStore<V extends CFAbstractValue<V>, S extends CF
                 analysis.checker.hasOption("assumeSideEffectFree")
                         || analysis.checker.hasOption("assumePure");
     }
+
     /**
      * Copy constructor.
      *
