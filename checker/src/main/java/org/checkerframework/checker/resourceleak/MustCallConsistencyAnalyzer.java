@@ -1846,9 +1846,8 @@ class MustCallConsistencyAnalyzer {
                     // without its obligation being resolved some other way.
                     if (obligation.derivedFromMustCallAlias()) {
                         // MustCallAlias annotations only have meaning if the method returns
-                        // normally,
-                        // so issue an error if and only if this exit is happening on a normal exit
-                        // path.
+                        // normally, so issue an error if and only if this exit is happening on a
+                        // normal exit path.
                         if (exceptionType == null) {
                             checker.reportError(
                                     obligation.resourceAliases.asList().get(0).tree,
@@ -1856,9 +1855,8 @@ class MustCallConsistencyAnalyzer {
                                     exitReasonForErrorMessage);
                         }
                         // Whether or not an error is issued, the check is now complete - there is
-                        // no further
-                        // checking to do on a must-call-alias-derived obligation along an
-                        // exceptional path.
+                        // no further checking to do on a must-call-alias-derived obligation along
+                        // an exceptional path.
                         continue;
                     }
 
