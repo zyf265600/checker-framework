@@ -38,23 +38,12 @@ public class AnnotationMirrorSet implements NavigableSet<@KeyFor("this") Annotat
             new TreeSet<>(AnnotationUtils::compareAnnotationMirrors);
 
     /** The canonical unmodifiable empty set. */
-    private static AnnotationMirrorSet emptySet = unmodifiableSet(Collections.emptySet());
+    private static final AnnotationMirrorSet emptySet = unmodifiableSet(Collections.emptySet());
 
     /// Constructors
 
     /** Default constructor. */
     public AnnotationMirrorSet() {}
-
-    // TODO: Should this be an unmodifiable set?
-    /**
-     * Creates a new {@link AnnotationMirrorSet} that contains {@code value}.
-     *
-     * @param value the AnnotationMirror to put in the set
-     */
-    @Deprecated // Is this called?
-    public AnnotationMirrorSet(AnnotationMirror value) {
-        this.add(value);
-    }
 
     /**
      * Returns a new {@link AnnotationMirrorSet} that contains the given annotation mirrors.
