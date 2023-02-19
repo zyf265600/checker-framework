@@ -243,9 +243,9 @@ public class BaseTypeVisitor<Factory extends GenericAnnotatedTypeFactory<?, ?, ?
     private final boolean checkPurity;
     /** True if "-AajavaChecks" was passed on the command line. */
     private final boolean ajavaChecks;
-    /** True if "-AassumeSideEffectFree" or "-aassumePure" was passed on the command line. */
+    /** True if "-AassumeSideEffectFree" or "-AassumePure" was passed on the command line. */
     private final boolean assumeSideEffectFree;
-    /** True if "-AassumeDeterministic" or "-aassumePure" was passed on the command line. */
+    /** True if "-AassumeDeterministic" or "-AassumePure" was passed on the command line. */
     private final boolean assumeDeterministic;
     /** True if "-AcheckCastElementType" was passed on the command line. */
     private final boolean checkCastElementType;
@@ -4573,7 +4573,7 @@ public class BaseTypeVisitor<Factory extends GenericAnnotatedTypeFactory<?, ?, ?
     }
 
     /**
-     * Issues an error if access not allowed, based on an @Unused annotation.
+     * Issues an error if access is not allowed, based on an {@code @Unused} annotation.
      *
      * @param identifierTree the identifier being accessed; the method does nothing if it is not a
      *     field
