@@ -13,48 +13,48 @@ public class LiteralCast {
         testCompile(2);
         // manifest literals are treated as @SignednessGlb
         testCompile(-2);
-        // :: error: (argument)
+        // :: error: (argument.type.incompatible)
         testCompile((@Signed int) 2);
         testCompile((@Unsigned int) 2);
         testCompile((int) 2);
         testCompile((@m int) 2);
 
         requireSigned((@Signed int) 2);
-        // :: error: (argument)
+        // :: error: (argument.type.incompatible)
         requireSigned((@Unsigned int) 2);
         requireSigned((int) 2);
         requireSigned((@m int) 2);
         // :: warning: (cast.unsafe)
         requireSigned((@Signed int) u);
-        // :: error: (argument)
+        // :: error: (argument.type.incompatible)
         requireSigned((@Unsigned int) u);
-        // :: error: (argument)
+        // :: error: (argument.type.incompatible)
         requireSigned((int) u);
-        // :: error: (argument)
+        // :: error: (argument.type.incompatible)
         requireSigned((@m int) u);
         requireSigned((@Signed int) s);
-        // :: error: (argument) :: warning: (cast.unsafe)
+        // :: error: (argument.type.incompatible) :: warning: (cast.unsafe)
         requireSigned((@Unsigned int) s);
         requireSigned((int) s);
         requireSigned((@m int) s);
 
-        // :: error: (argument)
+        // :: error: (argument.type.incompatible)
         requireUnsigned((@Signed int) 2);
         requireUnsigned((@Unsigned int) 2);
         requireUnsigned((int) 2);
         requireUnsigned((@m int) 2);
-        // :: error: (argument) :: warning: (cast.unsafe)
+        // :: error: (argument.type.incompatible) :: warning: (cast.unsafe)
         requireUnsigned((@Signed int) u);
         requireUnsigned((@Unsigned int) u);
         requireUnsigned((int) u);
         requireUnsigned((@m int) u);
-        // :: error: (argument)
+        // :: error: (argument.type.incompatible)
         requireUnsigned((@Signed int) s);
         // :: warning: (cast.unsafe)
         requireUnsigned((@Unsigned int) s);
-        // :: error: (argument)
+        // :: error: (argument.type.incompatible)
         requireUnsigned((int) s);
-        // :: error: (argument)
+        // :: error: (argument.type.incompatible)
         requireUnsigned((@m int) s);
     }
 
