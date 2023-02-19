@@ -95,7 +95,8 @@ public class RegexAnnotatedTypeFactory extends BaseAnnotatedTypeFactory {
             AnnotationBuilder.fromClass(elements, UnknownRegex.class);
 
     /** A set containing just {@link #UNKNOWNREGEX}. */
-    final AnnotationMirrorSet UNKNOWNREGEX_SET = AnnotationMirrorSet.singleton(UNKNOWNREGEX);
+    protected final AnnotationMirrorSet UNKNOWNREGEX_SET =
+            AnnotationMirrorSet.singleton(UNKNOWNREGEX);
 
     /** The method that returns the value element of a {@code @Regex} annotation. */
     protected final ExecutableElement regexValueElement =
