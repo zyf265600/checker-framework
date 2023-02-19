@@ -16,7 +16,7 @@ public class InnerClassFieldDeclAnno {
     @AinferTreatAsSibling1 public Outer.Inner preAnnotated = null;
 
     public static void test(InnerClassFieldDeclAnno a) {
-        // :: warning: assignment
+        // :: warning: (assignment.type.incompatible)
         @AinferSibling1 Object obj = a.iShouldBeTreatedAsSibling1;
         // Test that the annotation works as expected.
         @AinferSibling1 Object obj2 = a.preAnnotated;
