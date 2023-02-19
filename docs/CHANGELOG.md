@@ -14,7 +14,7 @@ Remove the `fastAssemble` task which is subsumed by `assembleForJavac`.
 
 
 Version 3.31.0 (February 17, 2023)
-------------------------------
+----------------------------------
 
 **User-visible changes:**
 
