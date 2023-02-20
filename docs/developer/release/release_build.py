@@ -324,12 +324,16 @@ def build_checker_framework_release(
     execute(ant_cmd, True, False, CHECKER_FRAMEWORK_RELEASE)
 
     # copy the remaining checker-framework website files to checker_framework_interm_dir
-    ant_props = "-Dchecker=%s -Ddest.dir=%s -Dmanual.name=%s -Ddataflow.manual.name=%s -Dchecker.webpage=%s" % (
-        checker_dir,
-        checker_framework_interm_dir,
-        "checker-framework-manual",
-        "checker-framework-dataflow-manual",
-        "checker-framework-webpage.html",
+    ant_props = (
+        # Adding a comment to maybe help black formatting
+        "-Dchecker=%s -Ddest.dir=%s -Dmanual.name=%s -Ddataflow.manual.name=%s -Dchecker.webpage=%s"
+        % (
+            checker_dir,
+            checker_framework_interm_dir,
+            "checker-framework-manual",
+            "checker-framework-dataflow-manual",
+            "checker-framework-webpage.html",
+        )
     )
 
     # IMPORTANT: The release.xml in the directory where the Checker Framework is being built is used. Not the release.xml in the directory you ran release_build.py from.
