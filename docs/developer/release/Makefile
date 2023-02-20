@@ -3,5 +3,5 @@ python-style:
 	flake8
 
 check-python-style:
-	black . --check
+	black . --check --diff
 	flake8
