@@ -5,6 +5,9 @@ Version 3.31.0-eisop1 (February ?, 2023)
 
 **Implementation details:**
 
+Added method `AnnotatedExecutableType.getVarargType` to access the vararg type of a method/constructor.
+This allows us to remove usages of `AnnotatedTypes.adaptParameters()`.
+
 A `VariableDeclarationNode` is now correctly added to the CFG for the binding variable
 in a `BindingPatternTree`.
 
@@ -12,6 +15,7 @@ Remove the `fastAssemble` task which is subsumed by `assembleForJavac`.
 
 **Closed issues:**
 
+eisop#310
 
 Version 3.31.0 (February 17, 2023)
 ----------------------------------
