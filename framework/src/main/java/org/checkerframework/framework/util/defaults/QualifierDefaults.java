@@ -678,11 +678,7 @@ public class QualifierDefaults {
             }
         }
 
-        if (atypeFactory.shouldCache
-                && !atypeFactory.stubTypes.isParsing()
-                && !atypeFactory.ajavaTypes.isParsing()) {
-            elementAnnotatedFors.put(elt, elementAnnotatedForThisChecker);
-        }
+        elementAnnotatedFors.put(elt, elementAnnotatedForThisChecker);
 
         return elementAnnotatedForThisChecker;
     }
