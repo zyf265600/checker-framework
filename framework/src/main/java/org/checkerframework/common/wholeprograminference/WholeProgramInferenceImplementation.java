@@ -895,12 +895,10 @@ public class WholeProgramInferenceImplementation<T> implements WholeProgramInfer
             AnnotationMirrorSet upperAnnos =
                     new AnnotationMirrorSet(lhsTV.getUpperBound().getEffectiveAnnotations());
             // If the type variable has a primary annotation then it is copied to the upper bound of
-            // the
-            // use of the type variable, so remove any annotations that are the same as a primary
-            // annotations.
+            // the use of the type variable, so remove any annotations that are the same as a
+            // primary annotations.
             // TODO: this is kind of a hack.  It would be better to look up the type variable
-            // declaration
-            // to find the upper bound when there are primary annotations.
+            // declaration to find the upper bound when there are primary annotations.
             for (AnnotationMirror primary : lhsTV.getAnnotations()) {
                 upperAnnos.remove(primary);
             }

@@ -151,8 +151,7 @@ public class PropagationTypeAnnotator extends TypeAnnotator {
             } else {
                 // If this is thrown, then it means that there's a bug in one of the
                 // AnnotatedTypes.hasNoExplicit*Bound methods.  Probably something changed in the
-                // javac
-                // implementation.
+                // javac implementation.
                 throw new BugInCF(
                         "Wildcard is neither unbound nor does it have an explicit bound.");
             }
