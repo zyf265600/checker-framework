@@ -1556,7 +1556,7 @@ public class AnnotatedTypes {
      * @return true if wildcard type is explicitly super bounded
      * @deprecated Use {@link #hasExplicitSuperBound(AnnotatedTypeMirror)}
      */
-    @Deprecated
+    @Deprecated // 2023-03-01
     public static boolean isExplicitlySuperBounded(final AnnotatedWildcardType wildcardType) {
         return hasExplicitSuperBound(wildcardType);
     }
@@ -1564,12 +1564,12 @@ public class AnnotatedTypes {
     /**
      * Returns true if wildcard type has an explicit super bound.
      *
-     * @param wildcard the wildcard type to test
+     * @param wildcardType the wildcard type to test
      * @return true if wildcard type is explicitly super bounded
      */
-    public static boolean hasExplicitSuperBound(final AnnotatedTypeMirror wildcard) {
-        return ((Type.WildcardType) wildcard.getUnderlyingType()).isSuperBound()
-                && ((Type.WildcardType) wildcard.getUnderlyingType()).kind != BoundKind.UNBOUND;
+    public static boolean hasExplicitSuperBound(final AnnotatedTypeMirror wildcardType) {
+        Type.WildcardType wc = (Type.WildcardType) wildcardType.getUnderlyingType();
+        return wc.isSuperBound() && wc.kind != BoundKind.UNBOUND;
     }
 
     /**
@@ -1579,7 +1579,7 @@ public class AnnotatedTypes {
      * @return true if wildcard type is explicitly extends bounded
      * @deprecated Use {@link #hasExplicitExtendsBound(AnnotatedTypeMirror)}.
      */
-    @Deprecated
+    @Deprecated // 2023-03-01
     public static boolean isExplicitlyExtendsBounded(final AnnotatedWildcardType wildcardType) {
         return hasExplicitExtendsBound(wildcardType);
     }
@@ -1591,8 +1591,8 @@ public class AnnotatedTypes {
      * @return true if wildcard type is explicitly extends bounded
      */
     public static boolean hasExplicitExtendsBound(final AnnotatedTypeMirror wildcardType) {
-        return ((Type.WildcardType) wildcardType.getUnderlyingType()).isExtendsBound()
-                && ((Type.WildcardType) wildcardType.getUnderlyingType()).kind != BoundKind.UNBOUND;
+        Type.WildcardType wc = (Type.WildcardType) wildcardType.getUnderlyingType();
+        return wc.isExtendsBound() && wc.kind != BoundKind.UNBOUND;
     }
 
     /**
