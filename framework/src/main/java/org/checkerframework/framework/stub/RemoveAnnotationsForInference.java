@@ -431,8 +431,8 @@ public class RemoveAnnotationsForInference {
      * @param name the annotation's name (simple or fully-qualified)
      * @return true if the user requested that this annotation be kept in the source code
      */
-    static boolean shouldBeKept(String name) {
-        return (annotationsToKeep != null && annotationsToKeep.contains(name));
+    private static boolean shouldBeKept(String name) {
+        return annotationsToKeep != null && annotationsToKeep.contains(name);
     }
 
     // This approach searches upward to find all the active warning suppressions.
