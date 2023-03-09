@@ -23,6 +23,8 @@ plugins {
     id 'eclipse'
     // https://plugins.gradle.org/plugin/org.ajoberstar.grgit
     id 'org.ajoberstar.grgit' version '4.1.1' apply false
+    // To show task list as a tree, run: ./gradlew <taskname> taskTree
+    id 'com.dorongold.task-tree' version '2.1.1'
 }
 apply plugin: 'de.undercouch.download'
 
