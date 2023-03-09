@@ -1,23 +1,27 @@
-Version 3.32.0-eisop1 (March ?, 2023)
-----------------------------------------
+Version 3.32.0-eisop1 (March 9, 2023)
+-------------------------------------
 
 **User-visible changes:**
 
-The new command-line argument `-AcheckEnclosingExpr` enables
-type checking for enclosing expression types of inner class instantiations. This fixes an
-unsoundness, in particular for the Nullness Initialization Checker, which did not detect the use of
-an uninitialized outer class for an inner class instantiation.
+The new command-line argument `-AcheckEnclosingExpr` enables type checking for
+enclosing expression types of inner class instantiations. This fixes an
+unsoundness, in particular for the Nullness Initialization Checker, which did
+not detect the use of an uninitialized outer class for an inner class
+instantiation.
 The option is off by default to avoid many false-positive errors.
 
 **Implementation details:**
 
-Added method `AnnotatedExecutableType.getVarargType` to access the vararg type of a method/constructor.
+Added method `AnnotatedExecutableType.getVarargType` to access the vararg type
+of a method/constructor.
 This allows us to remove usages of `AnnotatedTypes.adaptParameters()`.
 
-A `VariableDeclarationNode` is now correctly added to the CFG for the binding variable
-in a `BindingPatternTree`.
+A `VariableDeclarationNode` is now correctly added to the CFG for the binding
+variable in a `BindingPatternTree`.
 
 Remove the `fastAssemble` task which is subsumed by `assembleForJavac`.
+
+Successfully compiles with Java 20 and 21.
 
 **Closed issues:**
 
