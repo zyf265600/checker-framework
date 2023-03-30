@@ -59,10 +59,23 @@ public class TestConfigurationBuilder {
                         .setShouldEmitDebugInfo(shouldEmitDebugInfo)
                         .addProcessors(processors)
                         .addOption("-Xmaxerrs", "9999")
+                        .addOption("-Xmaxwarns", "9999")
                         .addOption("-g")
                         .addOption("-Xlint:unchecked")
+                        .addOption("-Xlint:deprecation")
                         .addOption("-XDrawDiagnostics") // use short javac diagnostics
-                        .addSourceFiles(testSourceFiles);
+                        .addOption("-ApermitMissingJdk")
+                        .addOption("-Anocheckjdk") // temporary, for backward compatibility
+                        .addOption("-AnoJreVersionCheck");
+
+        // -Anomsgtext is needed to ensure expected errors can be matched, which is the
+        // right thing for most test cases.
+        // Note that this will be removed if -Adetailedmsgtext is added to the configuration.
+        // Check `TestConfigurationBuilder#removeConflicts()` for more details.
+        configBuilder.addOption("-Anomsgtext");
+
+        // TODO: decide whether this would be useful
+        // configBuilder.addOption("-AajavaChecks");
 
         if (outputClassDirectory != null) {
             configBuilder.addOption("-d", outputClassDirectory.getAbsolutePath());
@@ -74,6 +87,8 @@ public class TestConfigurationBuilder {
                 .addOption("-classpath", classPath);
 
         configBuilder.addOptions(options);
+
+        configBuilder.addSourceFiles(testSourceFiles);
         return configBuilder;
     }
 
@@ -228,6 +243,7 @@ public class TestConfigurationBuilder {
      *   <li>There is an output directory specified for class files
      *   <li>There is no {@code -processor} option in the optionMap (it should be added by
      *       addProcessor instead)
+     *   <li>There is no option with prefix "-J-" in the optionMap
      * </ul>
      *
      * @param requireProcessors whether or not to require that there is at least one processor
@@ -252,7 +268,29 @@ public class TestConfigurationBuilder {
             errors.add("Processors should not be added to the options list");
         }
 
+        StringBuilder jvmOptionKeys = new StringBuilder();
+        for (String optionKey : optionMap.keySet()) {
+            if (optionKey.startsWith("-J-")) {
+                jvmOptionKeys.append(optionKey).append('\n');
+            }
+        }
+        if (jvmOptionKeys.length() > 0) {
+            errors.add(
+                    "The following JVM options have no effects in a configuration.\n"
+                            + jvmOptionKeys
+                            + "If needed, please add them to your build file instead.");
+        }
+
         return errors;
+    }
+
+    /** Ensures there are no options conflicting with each other. */
+    protected void removeConflicts() {
+        final Map<String, @Nullable String> optionMap = options.getOptions();
+        if (optionMap.containsKey("-Adetailedmsgtext")) {
+            // If `detailedmsgtext` is specified, remove `nomsgtext`.
+            options.removeOption("-Anomsgtext");
+        }
     }
 
     public TestConfigurationBuilder adddToPathOption(String key, String toAppend) {
@@ -405,6 +443,7 @@ public class TestConfigurationBuilder {
      * @return a TestConfiguration using the settings in this builder
      */
     public TestConfiguration validateThenBuild(boolean requireProcessors) {
+        removeConflicts();
         List<String> errors = validate(requireProcessors);
         if (errors.isEmpty()) {
             return build();
