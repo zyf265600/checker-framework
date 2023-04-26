@@ -18,3 +18,8 @@ source "$SCRIPTDIR"/build.sh
 ##  * plume-lib is run by test-plume-lib.sh
 ##  * daikon-typecheck is run as a separate CI project
 ##  * guava is run as a separate CI project
+
+## This is moved to misc, because otherwise it would be the only work done by this script.
+# # Checker Framework demos
+# "$SCRIPTDIR/.plume-scripts/git-clone-related" eisop checker-framework.demos
+# ./gradlew :checker:demosTests --console=plain --warning-mode=all

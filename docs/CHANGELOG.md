@@ -22,6 +22,7 @@ The new command-line argument `-AwarnRedundantAnnotations` warns about redundant
 annotations.  With this flag, a warning is issued if an explicitly written
 annotation on a type is the same as the default annotation.  This feature does
 not warn about all redundant annotations, only some.
+(EISOP note: this was implemented in Version 3.27.0-eisop1.)
 
 The Value Checker is cognizant of signedness annotations.  This eliminates some
 false positive warnings.
@@ -30,6 +31,7 @@ false positive warnings.
 
 The Checker Framework no longer builds under JDK 8.
 However, you can still run the Checker Framework under JDK 8.
+(EISOP note: the EISOP Framework continues to build and run on JDK 8.)
 
 **Closed issues:**
 
@@ -66,8 +68,6 @@ Successfully compiles with Java 20 and 21.
 eisop#282, eisop#310, eisop#312, typetools#5672.
 
 
-=======
->>>>>>> 5c591a2c4 (Prep for next month's release.)
 Version 3.32.0 (March 2, 2023)
 ------------------------------
 
