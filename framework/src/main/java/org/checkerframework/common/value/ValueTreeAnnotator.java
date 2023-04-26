@@ -275,8 +275,7 @@ class ValueTreeAnnotator extends TreeAnnotator {
             }
 
             // I would like to call ((AnnotatedTypeTree) castTree).hasAnnotation(Unsigned.class),
-            // but
-            // `Unsigned` is in the checker package and this code is in the common package.
+            // but `Unsigned` is in the checker package and this code is in the common package.
             List<? extends AnnotationTree> annoTrees =
                     TreeUtils.getExplicitAnnotationTrees(null, tree.getType());
             List<AnnotationMirror> annos = TreeUtils.annotationsFromTypeAnnotationTrees(annoTrees);

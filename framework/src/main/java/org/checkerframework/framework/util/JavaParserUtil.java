@@ -41,8 +41,7 @@ public class JavaParserUtil {
      * highest version of Java that the Checker Framework can process.
      */
     // JavaParser's ParserConfiguration.LanguageLevel has no constant for JDK 18, as of version
-    // 3.25.1
-    // (2023-02-28).  See
+    // 3.25.1 (2023-02-28).  See
     // https://www.javadoc.io/doc/com.github.javaparser/javaparser-core/latest/com/github/javaparser/ParserConfiguration.LanguageLevel.html .
     public static final LanguageLevel DEFAULT_LANGUAGE_LEVEL = LanguageLevel.JAVA_17;
 
@@ -412,8 +411,7 @@ public class JavaParserUtil {
                     currentSourceVersion = ParserConfiguration.LanguageLevel.JAVA_17;
                     break;
                     // JavaParser's ParserConfiguration.LanguageLevel has no constant for JDK 18, as
-                    // of
-                    // version 3.25.1 (2023-02-28).  See
+                    // of version 3.25.1 (2023-02-28).  See
                     // https://www.javadoc.io/doc/com.github.javaparser/javaparser-core/latest/com/github/javaparser/ParserConfiguration.LanguageLevel.html .
                     // case "RELEASE_18":
                     //   currentSourceVersion = ParserConfiguration.LanguageLevel.JAVA_18;
