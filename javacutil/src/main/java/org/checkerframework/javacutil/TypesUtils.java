@@ -142,9 +142,7 @@ public final class TypesUtils {
 
                 try {
                     return Class.forName(typeString);
-                } catch (ClassNotFoundException
-                        | NoClassDefFoundError
-                        | UnsupportedClassVersionError e) {
+                } catch (ClassNotFoundException | LinkageError e) {
                     return Object.class;
                 }
 
