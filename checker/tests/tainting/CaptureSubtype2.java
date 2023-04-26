@@ -22,7 +22,7 @@ public class CaptureSubtype2 {
                                     ? extends MInterface<DInterface>,
                                     DInterface>>
                     r) {
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         this.r = r;
     }
 }

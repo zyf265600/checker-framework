@@ -4,7 +4,7 @@ public class Underflows {
     static void bytes() {
         byte min = Byte.MIN_VALUE;
         @IntVal(127) byte maxPlus1 = (byte) (min - 1);
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         @IntVal(127) short maxPlus1Short = (short) (min - 1);
     }
 
@@ -17,7 +17,7 @@ public class Underflows {
     static void shorts() {
         short min = Short.MIN_VALUE;
         @IntVal(32767) short maxPlus1 = (short) (min - 1);
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         @IntVal(32767) int maxPlus1Int = (int) (min - 1);
     }
 
