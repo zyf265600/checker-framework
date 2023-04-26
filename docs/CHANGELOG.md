@@ -1,4 +1,4 @@
-Version 3.32.0-eisop2 (March ?, 2023)
+Version 3.33.0-eisop1 (April ?, 2023)
 -------------------------------------
 
 **User-visible changes:**
@@ -11,6 +11,29 @@ define custom type and declaration annotation aliases for the canonical annotati
 **Implementation details:**
 
 **Closed issues:**
+
+
+Version 3.33.0 (April 3, 2023)
+------------------------------
+
+**User-visible changes:**
+
+The new command-line argument `-AwarnRedundantAnnotations` warns about redundant
+annotations.  With this flag, a warning is issued if an explicitly written
+annotation on a type is the same as the default annotation.  This feature does
+not warn about all redundant annotations, only some.
+
+The Value Checker is cognizant of signedness annotations.  This eliminates some
+false positive warnings.
+
+**Implementation details:**
+
+The Checker Framework no longer builds under JDK 8.
+However, you can still run the Checker Framework under JDK 8.
+
+**Closed issues:**
+
+#3785, #5436, #5708, #5717, #5720, #5721, #5727, #5732.
 
 
 Version 3.32.0-eisop1 (March 9, 2023)
@@ -43,6 +66,8 @@ Successfully compiles with Java 20 and 21.
 eisop#282, eisop#310, eisop#312, typetools#5672.
 
 
+=======
+>>>>>>> 5c591a2c4 (Prep for next month's release.)
 Version 3.32.0 (March 2, 2023)
 ------------------------------
 
@@ -100,6 +125,7 @@ Removed methods from AnnotationUtils that are no longer useful:
 `createAnnotationMap`, `createAnnotationSet`, `createUnmodifiableAnnotationSet`.
 
 **Closed issues:**
+
 #5597.
 
 
@@ -114,6 +140,7 @@ Version 3.30.0 (February 2, 2023)
 Renamed Gradle task `copyJarsToDist` to `assembleForJavac`.
 
 **Closed issues:**
+
 #5402, #5486, #5489, #5519, #5524, #5526.
 
 
