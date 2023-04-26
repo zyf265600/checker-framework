@@ -4120,7 +4120,13 @@ public class BaseTypeVisitor<Factory extends GenericAnnotatedTypeFactory<?, ?, ?
                     overriderType, overriddenType, superCPostFalse2, subCPostFalse2, postfalsemsg);
         }
 
-        private boolean checkMemberReferenceReceivers() {
+        /**
+         * Issue an "methodref.receiver.invalid" error if the method reference receiver is not
+         * valid.
+         *
+         * @return true if the method reference receiver is legal
+         */
+        protected boolean checkMemberReferenceReceivers() {
             if (overriderType.getKind() == TypeKind.ARRAY) {
                 // Assume the receiver for all method on arrays are @Top
                 // This simplifies some logic because an AnnotatedExecutableType for an array method
