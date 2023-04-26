@@ -331,7 +331,7 @@ allprojects {
             def tagletVersion = isJava8 ? 'tagletJdk8' : 'taglet'
 
             dependsOn(':checker:shadowJar')
-            dependsOn(":framework-test::${tagletVersion}Classes")
+            dependsOn(":framework-test:${tagletVersion}Classes")
             doFirst {
                 options.encoding = 'UTF-8'
                 if (!name.equals('javadocDoclintAll')) {
