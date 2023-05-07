@@ -14,7 +14,7 @@ define custom type and declaration annotation aliases for the canonical annotati
 
 
 Version 3.34.0 (May 2, 2023)
-------------------------------
+----------------------------
 
 **User-visible changes:**
 
