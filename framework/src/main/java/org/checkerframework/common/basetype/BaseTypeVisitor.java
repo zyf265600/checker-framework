@@ -1096,35 +1096,35 @@ public class BaseTypeVisitor<Factory extends GenericAnnotatedTypeFactory<?, ?, ?
             if (TreeUtils.isConstructor(tree) || TreeUtils.isVoidReturn(tree)) {
                 additionalKinds.remove(Pure.Kind.DETERMINISTIC);
             }
-            if (!additionalKinds.isEmpty()) {
-                if (additionalKinds.size() == 2) {
-                    checker.reportWarning(tree, "purity.more.pure", tree.getName());
-                } else if (additionalKinds.contains(Pure.Kind.SIDE_EFFECT_FREE)) {
-                    checker.reportWarning(tree, "purity.more.sideeffectfree", tree.getName());
-                } else if (additionalKinds.contains(Pure.Kind.DETERMINISTIC)) {
-                    checker.reportWarning(tree, "purity.more.deterministic", tree.getName());
-                } else {
-                    throw new BugInCF("Unexpected purity kind in " + additionalKinds);
-                }
-                /* NO-AFU
-                  if (infer) {
-                    WholeProgramInference wpi = atypeFactory.getWholeProgramInference();
-                    ExecutableElement methodElt = TreeUtils.elementFromDeclaration(tree);
-                    inferPurityAnno(additionalKinds, wpi, methodElt);
-                    // The purity of overridden methods is impacted by the purity of this method. If a
-                    // superclass method is pure, but an implementation in a subclass is not, WPI ought to treat
-                    // **neither** as pure. The purity kind of the superclass method is the LUB of its own
-                    // purity and the purity of all the methods that override it. Logically, this rule is the
-                    // same as the WPI rule for overrides, but purity isn't a type system and therefore must be
-                    // special-cased.
-                    Set<? extends ExecutableElement> overriddenMethods =
-                        ElementUtils.getOverriddenMethods(methodElt, types);
-                    for (ExecutableElement overriddenElt : overriddenMethods) {
-                      inferPurityAnno(additionalKinds, wpi, overriddenElt);
-                    }
-                  }
-                */
+            if (additionalKinds.isEmpty()) {
+                // No need to suggest @Impure, since it is equivalent to no annotation.
+            } else if (additionalKinds.size() == 2) {
+                checker.reportWarning(tree, "purity.more.pure", tree.getName());
+            } else if (additionalKinds.contains(Pure.Kind.SIDE_EFFECT_FREE)) {
+                checker.reportWarning(tree, "purity.more.sideeffectfree", tree.getName());
+            } else if (additionalKinds.contains(Pure.Kind.DETERMINISTIC)) {
+                checker.reportWarning(tree, "purity.more.deterministic", tree.getName());
+            } else {
+                throw new BugInCF("Unexpected purity kind in " + additionalKinds);
             }
+            /* NO-AFU
+              if (infer) {
+                WholeProgramInference wpi = atypeFactory.getWholeProgramInference();
+                ExecutableElement methodElt = TreeUtils.elementFromDeclaration(tree);
+                inferPurityAnno(additionalKinds, wpi, methodElt);
+                // The purity of overridden methods is impacted by the purity of this method. If a
+                // superclass method is pure, but an implementation in a subclass is not, WPI ought to treat
+                // **neither** as pure. The purity kind of the superclass method is the LUB of its own
+                // purity and the purity of all the methods that override it. Logically, this rule is the
+                // same as the WPI rule for overrides, but purity isn't a type system and therefore must be
+                // special-cased.
+                Set<? extends ExecutableElement> overriddenMethods =
+                    ElementUtils.getOverriddenMethods(methodElt, types);
+                for (ExecutableElement overriddenElt : overriddenMethods) {
+                  inferPurityAnno(additionalKinds, wpi, overriddenElt);
+                }
+              }
+            */
         }
     }
 
