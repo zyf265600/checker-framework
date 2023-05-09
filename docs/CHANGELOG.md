@@ -108,7 +108,7 @@ Version 3.32.0 (March 2, 2023)
 Fixed a bug in the Nullness Checker where a call to a side-effecting method did
 not make some formal parameters possibly-null.  The Nullness Checker is likely
 to issue more warnings for your code.  For ways to eliminate the new warnings,
-see https://checkerframework.org/manual/#type-refinement-side-effects .
+see https://eisop.github.io/cf/manual/#type-refinement-side-effects .
 
 If you supply the `-AinvocationPreservesArgumentNullness` command-line
 option, the Nullness Checker unsoundly assumes that arguments passed to
@@ -2443,7 +2443,7 @@ Documentation:
 For type-system developers:
  * The org.checkerframework.framework.qual.TypeQualifier{s} annotations are
    now deprecated.  To indicate which annotations a checker supports, see
-   https://checkerframework.org/manual/#creating-indicating-supported-annotations .
+   https://eisop.github.io/cf/manual/#creating-indicating-supported-annotations .
    Support for TypeQualifier{s} will be removed in the next release.
  * Renamed
    org.checkerframework.framework.qual.Default{,Qualifier}ForUnannotatedCode to
@@ -3041,7 +3041,7 @@ Adapt to underlying jsr308-langtools changes.
   JDK 7 is now required.  The Checker Framework does not build or run on JDK 6.
 
 Documentation:
-  A new tutorial is available at https://checkerframework.org/tutorial/
+  A new tutorial is available at https://eisop.github.io/cf/tutorial/
 
 
 Version 1.5.0 (14 Jan 2013)
@@ -4359,7 +4359,7 @@ Manual
     8  Annotating libraries
     9  How to create a new checker plugin
   Javadoc for the Checker Framework is included in its distribution and is
-    available online at https://checkerframework.org/api/ .
+    available online at https://eisop.github.io/cf/api/ .
 
 
 Version 0.6.4 (9 June 2008)
