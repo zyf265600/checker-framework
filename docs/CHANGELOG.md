@@ -1,3 +1,13 @@
+Version 3.34.0-eisop2 (May ?, 2023)
+-----------------------------------
+
+**User-visible changes:**
+
+**Implementation details:**
+
+**Closed issues:**
+
+
 Version 3.34.0-eisop1 (May 9, 2023)
 -----------------------------------
 
@@ -42,6 +52,7 @@ Renamings in `AnnotatedTypeFactory`:
    and changed its signature by adding two formal parameters
 
 **Closed issues:**
+
 #803, #5739, #5749, #5767, #5781, #5787.
 
 
