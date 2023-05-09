@@ -550,7 +550,7 @@ def main(argv):
             "\n"
             + "Download the following files to your local machine."
             + "\n"
-            + "  https://checkerframework.org/checker-framework-"
+            + "  https://eisop.github.io/cf/checker-framework-"
             + new_cf_version
             + ".zip\n"
             + "  https://eisop.github.io/afu/annotation-tools-"
