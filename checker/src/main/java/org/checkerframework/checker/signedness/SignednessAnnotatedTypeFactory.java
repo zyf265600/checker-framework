@@ -107,6 +107,12 @@ public class SignednessAnnotatedTypeFactory extends BaseAnnotatedTypeFactory {
     private final TypeMirror numberTM =
             elements.getTypeElement(Number.class.getCanonicalName()).asType();
 
+    /** A set containing just {@code @Signed}. */
+    private final AnnotationMirrorSet SIGNED_SINGLETON = new AnnotationMirrorSet(SIGNED);
+
+    /** A set containing just {@code @Unsigned}. */
+    private final AnnotationMirrorSet UNSIGNED_SINGLETON = new AnnotationMirrorSet(UNSIGNED);
+
     /**
      * Create a SignednessAnnotatedTypeFactory.
      *
@@ -245,6 +251,15 @@ public class SignednessAnnotatedTypeFactory extends BaseAnnotatedTypeFactory {
                 new SignednessTreeAnnotator(this), super.createTreeAnnotator());
     }
 
+    @Override
+    public AnnotationMirrorSet annotationsForIrrelevantJavaType(TypeMirror tm) {
+        if (TypesUtils.isCharOrCharacter(tm)) {
+            return UNSIGNED_SINGLETON;
+        } else {
+            return SIGNED_SINGLETON;
+        }
+    }
+
     /**
      * This TreeAnnotator ensures that:
      *
@@ -299,10 +314,8 @@ public class SignednessAnnotatedTypeFactory extends BaseAnnotatedTypeFactory {
                         TypeMirror lht = TreeUtils.typeOf(tree.getLeftOperand());
                         TypeMirror rht = TreeUtils.typeOf(tree.getRightOperand());
 
-                        if (lht.getKind() == TypeKind.CHAR
-                                || TypesUtils.isDeclaredOfName(lht, "java.lang.Character")
-                                || rht.getKind() == TypeKind.CHAR
-                                || TypesUtils.isDeclaredOfName(rht, "java.lang.Character")) {
+                        if (TypesUtils.isCharOrCharacter(lht)
+                                || TypesUtils.isCharOrCharacter(rht)) {
                             type.replaceAnnotation(SIGNED);
                         }
                     }
@@ -317,10 +330,7 @@ public class SignednessAnnotatedTypeFactory extends BaseAnnotatedTypeFactory {
         @Override
         public Void visitCompoundAssignment(CompoundAssignmentTree tree, AnnotatedTypeMirror type) {
             if (TreeUtils.isStringCompoundConcatenation(tree)) {
-                TypeMirror expr = TreeUtils.typeOf(tree.getExpression());
-
-                if (expr.getKind() == TypeKind.CHAR
-                        || TypesUtils.isDeclaredOfName(expr, "java.lang.Character")) {
+                if (TypesUtils.isCharOrCharacter(TreeUtils.typeOf(tree.getExpression()))) {
                     type.replaceAnnotation(SIGNED);
                 }
             }
@@ -339,6 +349,8 @@ public class SignednessAnnotatedTypeFactory extends BaseAnnotatedTypeFactory {
                     type.addAnnotation(SIGNED);
                 }
             }
+            log("SATF.visitTypeCast(%s, ...) final: %s%n", tree, type);
+            log("SATF: treeAnnotator=%s%n", treeAnnotator);
             return null;
         }
     }
@@ -389,9 +401,8 @@ public class SignednessAnnotatedTypeFactory extends BaseAnnotatedTypeFactory {
             ExpressionTree tree) {
         super.adaptGetClassReturnTypeToReceiver(getClassType, receiverType, tree);
         // Make the captured wildcard always @Signed, regardless of the declared type.
-        final AnnotatedDeclaredType returnAdt =
-                (AnnotatedDeclaredType) getClassType.getReturnType();
-        final List<AnnotatedTypeMirror> typeArgs = returnAdt.getTypeArguments();
+        AnnotatedDeclaredType returnAdt = (AnnotatedDeclaredType) getClassType.getReturnType();
+        List<AnnotatedTypeMirror> typeArgs = returnAdt.getTypeArguments();
         AnnotatedTypeVariable classWildcardArg = (AnnotatedTypeVariable) typeArgs.get(0);
         classWildcardArg.getUpperBound().replaceAnnotation(SIGNED);
     }
@@ -399,10 +410,10 @@ public class SignednessAnnotatedTypeFactory extends BaseAnnotatedTypeFactory {
     @Override
     protected void addAnnotationsFromDefaultForType(
             @Nullable Element element, AnnotatedTypeMirror type) {
-        if (TypesUtils.isFloatingPrimitive(type.getUnderlyingType())
-                || TypesUtils.isBoxedFloating(type.getUnderlyingType())
-                || type.getKind() == TypeKind.CHAR
-                || TypesUtils.isDeclaredOfName(type.getUnderlyingType(), "java.lang.Character")) {
+        TypeMirror underlying = type.getUnderlyingType();
+        if (TypesUtils.isFloatingPrimitive(underlying)
+                || TypesUtils.isBoxedFloating(underlying)
+                || TypesUtils.isCharOrCharacter(underlying)) {
             // Floats are always signed and chars are always unsigned.
             super.addAnnotationsFromDefaultForType(null, type);
         } else {
@@ -597,7 +608,7 @@ public class SignednessAnnotatedTypeFactory extends BaseAnnotatedTypeFactory {
     /**
      * Determines if a right shift operation, {@code >>} or {@code >>>}, is masked with a masking
      * operation of the form {@code shiftExpr & maskLit} or {@code shiftExpr | maskLit} such that
-     * the mask renders the shift signedness ({@code >>} vs {@code >>>}) irrelevent by destroying
+     * the mask renders the shift signedness ({@code >>} vs {@code >>>}) irrelevant by destroying
      * the bits duplicated into the shift result. For example, the following pairs of right shifts
      * on {@code byte b} both produce the same results under any input, because of their masks:
      *
@@ -647,7 +658,7 @@ public class SignednessAnnotatedTypeFactory extends BaseAnnotatedTypeFactory {
 
     /**
      * Determines if a right shift operation, {@code >>} or {@code >>>}, is type casted such that
-     * the cast renders the shift signedness ({@code >>} vs {@code >>>}) irrelevent by discarding
+     * the cast renders the shift signedness ({@code >>} vs {@code >>>}) irrelevant by discarding
      * the bits duplicated into the shift result. For example, the following pair of right shifts on
      * {@code short s} both produce the same results under any input, because of type casting:
      *
@@ -685,7 +696,7 @@ public class SignednessAnnotatedTypeFactory extends BaseAnnotatedTypeFactory {
     // End of special-case code for shifts that do not depend on the MSB of the first argument.
 
     @Override
-    public boolean isRelevant(TypeMirror tm) {
+    public boolean isRelevantImpl(TypeMirror tm) {
         if (TypesUtils.isFloatingPoint(tm)) {
             return false;
         }

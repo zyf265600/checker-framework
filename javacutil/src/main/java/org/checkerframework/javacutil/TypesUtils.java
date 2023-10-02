@@ -67,7 +67,7 @@ public final class TypesUtils {
         if (clazz == void.class) {
             return types.getNoType(TypeKind.VOID);
         } else if (clazz.isPrimitive()) {
-            String primitiveName = clazz.getName().toUpperCase(Locale.ROOT);
+            String primitiveName = clazz.getName().toUpperCase(Locale.getDefault());
             TypeKind primitiveKind = TypeKind.valueOf(primitiveName);
             return types.getPrimitiveType(primitiveKind);
         } else if (clazz.isArray()) {
@@ -78,7 +78,7 @@ public final class TypesUtils {
             assert name != null : "@AssumeAssertion(nullness): assumption";
             TypeElement element = elements.getTypeElement(name);
             if (element == null) {
-                throw new BugInCF("Unrecognized class: " + clazz);
+                throw new BugInCF("No element for: " + clazz);
             }
             return element.asType();
         }
@@ -329,8 +329,8 @@ public final class TypesUtils {
     }
 
     /**
-     * Returns true iff the type represents either boolean (primitive type) or a java.lang.Boolean
-     * declared type.
+     * Returns true if the type is either {@code boolean} (primitive type) or {@code
+     * java.lang.Boolean}.
      *
      * @param type the type to check
      * @return true iff type represents a boolean type
@@ -340,8 +340,18 @@ public final class TypesUtils {
     }
 
     /**
-     * Returns true iff the type represents either char (primitive type) or a java.lang.Character
-     * declared type.
+     * Returns true if the type is {@code char} or {@code Character}.
+     *
+     * @param type a type
+     * @return true if the type is {@code char} or {@code Character}
+     */
+    public static boolean isCharOrCharacter(TypeMirror type) {
+        return type.getKind() == TypeKind.CHAR
+                || TypesUtils.isDeclaredOfName(type, "java.lang.Character");
+    }
+
+    /**
+     * Returns true if the type is {@code char} or {@code Character}.
      *
      * @param type the type to check
      * @return true iff type represents a character type
@@ -535,6 +545,44 @@ public final class TypesUtils {
     }
 
     /**
+     * Returns whether or not {@code type} is a functional interface type (as defined in JLS 9.8).
+     *
+     * @param type possible functional interface type
+     * @param env the processing environment
+     * @return whether or not {@code type} is a functional interface type (as defined in JLS 9.8)
+     */
+    public static boolean isFunctionalInterface(TypeMirror type, ProcessingEnvironment env) {
+        Context ctx = ((JavacProcessingEnvironment) env).getContext();
+        com.sun.tools.javac.code.Types javacTypes = com.sun.tools.javac.code.Types.instance(ctx);
+        return javacTypes.isFunctionalInterface((Type) type);
+    }
+
+    /**
+     * Returns true if the given type is a compound type.
+     *
+     * @param type a type
+     * @return true if the given type is a compound type
+     */
+    public static boolean isCompoundType(TypeMirror type) {
+        switch (type.getKind()) {
+            case ARRAY:
+            case EXECUTABLE:
+            case INTERSECTION:
+            case UNION:
+            case TYPEVAR:
+            case WILDCARD:
+                return true;
+
+            case DECLARED:
+                DeclaredType declaredType = (DeclaredType) type;
+                return !declaredType.getTypeArguments().isEmpty();
+
+            default:
+                return false;
+        }
+    }
+
+    /**
      * Returns true if {@code type} has an enclosing type.
      *
      * @param type type to checker
@@ -543,19 +591,6 @@ public final class TypesUtils {
     public static boolean hasEnclosingType(TypeMirror type) {
         Type e = ((Type) type).getEnclosingType();
         return e.getKind() != TypeKind.NONE;
-    }
-
-    /**
-     * Returns whether or not {@code type} is a functional interface type (as defined in JLS 9.8).
-     *
-     * @param type possible functional interface type
-     * @param env ProcessingEnvironment
-     * @return whether or not {@code type} is a functional interface type (as defined in JLS 9.8)
-     */
-    public static boolean isFunctionalInterface(TypeMirror type, ProcessingEnvironment env) {
-        Context ctx = ((JavacProcessingEnvironment) env).getContext();
-        com.sun.tools.javac.code.Types javacTypes = com.sun.tools.javac.code.Types.instance(ctx);
-        return javacTypes.isFunctionalInterface((Type) type);
     }
 
     /// Type variables and wildcards
@@ -598,7 +633,7 @@ public final class TypesUtils {
      * @param wildcard wildcard type
      * @return the TypeParameterElement the wildcard is an argument to, {@code null} otherwise
      */
-    public static @Nullable TypeParameterElement wildcardToTypeParam(final WildcardType wildcard) {
+    public static @Nullable TypeParameterElement wildcardToTypeParam(WildcardType wildcard) {
         return wildcardToTypeParam((Type.WildcardType) wildcard);
     }
 
@@ -609,8 +644,7 @@ public final class TypesUtils {
      * @param wildcard wildcard type
      * @return the TypeParameterElement the wildcard is an argument to, {@code null} otherwise
      */
-    public static @Nullable TypeParameterElement wildcardToTypeParam(
-            final Type.WildcardType wildcard) {
+    public static @Nullable TypeParameterElement wildcardToTypeParam(Type.WildcardType wildcard) {
 
         final Element typeParamElement;
         if (wildcard.bound != null) {
@@ -680,7 +714,7 @@ public final class TypesUtils {
      * @return a type that is not a wildcard or typevar, or {@code null} if this type is an
      *     unbounded wildcard
      */
-    public static @Nullable TypeMirror findConcreteUpperBound(final TypeMirror boundedType) {
+    public static @Nullable TypeMirror findConcreteUpperBound(TypeMirror boundedType) {
         TypeMirror effectiveUpper = boundedType;
         outerLoop:
         while (true) {
