@@ -966,7 +966,7 @@ public final class InterningVisitor extends BaseTypeVisitor<InterningAnnotatedTy
      *
      * @return the type to check
      */
-    @Nullable DeclaredType typeToCheck(
+    private @Nullable DeclaredType typeToCheck(
             @UnknownInitialization(BaseTypeVisitor.class) InterningVisitor this) {
         @SuppressWarnings("signature:assignment.type.incompatible") // user input
         @CanonicalName String className = checker.getOption("checkclass");
