@@ -36,7 +36,6 @@ import org.checkerframework.framework.type.AnnotatedTypeFactory.ParameterizedExe
 import org.checkerframework.framework.type.AnnotatedTypeMirror;
 import org.checkerframework.framework.type.AnnotatedTypeMirror.AnnotatedDeclaredType;
 import org.checkerframework.framework.type.AnnotatedTypeMirror.AnnotatedExecutableType;
-import org.checkerframework.framework.type.QualifierHierarchy;
 import org.checkerframework.framework.util.JavaExpressionParseUtil.JavaExpressionParseException;
 import org.checkerframework.framework.util.StringToJavaExpression;
 import org.checkerframework.framework.util.dependenttypes.DependentTypesError;
@@ -1245,9 +1244,8 @@ public class LockVisitor extends BaseTypeVisitor<LockAnnotatedTypeFactory> {
             return false;
         }
         AnnotationMirrorSet annos = value.getAnnotations();
-        QualifierHierarchy hierarchy = qualHierarchy;
         AnnotationMirror lockAnno =
-                hierarchy.findAnnotationInSameHierarchy(annos, atypeFactory.LOCKHELD);
+                qualHierarchy.findAnnotationInSameHierarchy(annos, atypeFactory.LOCKHELD);
         return lockAnno != null && atypeFactory.areSameByClass(lockAnno, LockHeld.class);
     }
 
