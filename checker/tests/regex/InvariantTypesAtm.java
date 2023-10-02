@@ -1,4 +1,3 @@
-import org.checkerframework.checker.regex.qual.*;
 import org.checkerframework.framework.type.AnnotatedTypeMirror;
 
 import java.util.Map;

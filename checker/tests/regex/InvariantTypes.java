@@ -1,4 +1,4 @@
-import org.checkerframework.checker.regex.qual.*;
+import org.checkerframework.checker.regex.qual.Regex;
 
 import java.util.Arrays;
 import java.util.Collection;
