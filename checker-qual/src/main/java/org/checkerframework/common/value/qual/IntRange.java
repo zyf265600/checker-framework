@@ -28,9 +28,9 @@ import java.lang.annotation.Target;
 @SubtypeOf(UnknownVal.class)
 public @interface IntRange {
     /**
-     * Largest value in the range, inclusive.
+     * Smallest value in the range, inclusive.
      *
-     * @return the largest value in the range, inclusive
+     * @return the smallest value in the range, inclusive
      */
     long from() default Long.MIN_VALUE;
 
