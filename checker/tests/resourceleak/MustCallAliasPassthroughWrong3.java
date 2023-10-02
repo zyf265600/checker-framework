@@ -8,7 +8,7 @@ import java.io.*;
 class MustCallAliasPassthroughWrong3 {
 
     static InputStream missingMCA(@MustCallAlias InputStream is) {
-        // :: error: (return)
+        // :: error: (return.type.incompatible)
         return is;
     }
 
@@ -16,7 +16,7 @@ class MustCallAliasPassthroughWrong3 {
         return is;
     }
 
-    // :: error: required.method.not.called
+    // :: error: (required.method.not.called)
     void use_bad(@Owning InputStream is) throws Exception {
         InputStream is2 = missingMCA(is);
         is2.close();

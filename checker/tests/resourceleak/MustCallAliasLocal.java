@@ -13,7 +13,7 @@ public class MustCallAliasLocal implements Closeable {
     public @MustCallAlias MustCallAliasLocal(@MustCallAlias Closeable foo) {
         Closeable local = foo;
         // The error on the following line is a false positive:
-        // :: error: assignment
+        // :: error: (assignment.type.incompatible)
         this.foo = local;
     }
 

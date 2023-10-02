@@ -9,7 +9,7 @@ public class Issue4170 {
     public void method1() {
         var list = new ArrayList<@Untainted String>();
         ArrayList<@Untainted String> list2 = list;
-        // :: error: assignment
+        // :: error: (assignment.type.incompatible)
         ArrayList<String> list3 = new ArrayList<@Untainted String>();
         ArrayList<@Tainted String> list4 = list3;
         var stream = list.stream();
@@ -32,13 +32,13 @@ public class Issue4170 {
 
     public ArrayList<@Tainted String> method5() {
         var list = new ArrayList<@Untainted String>();
-        // :: error: (return)
+        // :: error: (return.type.incompatible)
         return list;
     }
 
     public ArrayList<@Untainted String> method6() {
         var list = new ArrayList<String>();
-        // :: error: (return)
+        // :: error: (return.type.incompatible)
         return list;
     }
 
@@ -52,7 +52,7 @@ public class Issue4170 {
     public void method9(List<@Tainted String> taintedlist, List<@Untainted String> untaintedList) {
         var list1 = taintedlist;
         List<@Tainted String> l = list1;
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         list1 = untaintedList;
     }
 }
