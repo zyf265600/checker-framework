@@ -16,7 +16,7 @@ jobs:
 #  * Anything daikon_* and guava_* depends on the framework jobs (all core CF tests for JDK 8, 11, and 17).
 #    (This avoids running these long-running jobs if something already failed in the framework.)
 
-# misc_jdk20 because JDK 20 adds more strict checking (e.g., Javadoc)
+# Include misc_jdk_latest because JDK 20+ adds more strict checking (e.g., Javadoc)
 - job: canary_jobs
   dependsOn:
    - junit_jdk17
@@ -26,7 +26,7 @@ jobs:
    - typecheck_part1_jdk17
    - typecheck_part2_jdk17
 #   - misc_jdk17
-#   - misc_jdk20
+#   - misc_jdk_latest
    - jspecify_jdk17
   pool:
     vmImage: 'ubuntu-latest'
@@ -438,8 +438,8 @@ jobs:
 - job: typecheck_jdk_next
   dependsOn:
    - canary_jobs
-   - typecheck_jdk17_part1
-   - typecheck_jdk17_part2
+   - typecheck_part1_jdk17
+   - typecheck_part2_jdk17
   pool:
     vmImage: 'ubuntu-latest'
   container: wmdietl/cf-ubuntu-jdk-next:latest
@@ -454,7 +454,8 @@ jobs:
   condition: false
   dependsOn:
    - framework_jobs
-   - daikon_jdk17
+   - daikon_part1_jdk17
+   - daikon_part2_jdk17
   pool:
     vmImage: 'ubuntu-latest'
   container: wmdietl/cf-ubuntu-jdk8:latest
@@ -469,7 +470,8 @@ jobs:
   condition: false
   dependsOn:
    - framework_jobs
-   - daikon_jdk17
+   - daikon_part1_jdk17
+   - daikon_part2_jdk17
   pool:
     vmImage: 'ubuntu-latest'
   container: wmdietl/cf-ubuntu-jdk11:latest
