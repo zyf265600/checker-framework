@@ -48,12 +48,14 @@ jobs:
    # - nonjunit_jdk_next
    - inference_jdk8
    - inference_jdk11
-   - inference_jdk17
+   - inference_part1_jdk17
+   - inference_part2_jdk17
    - inference_jdk_latest
    # - inference_jdk_next
    - typecheck_jdk8
    - typecheck_jdk11
-   - typecheck_jdk17
+   - typecheck_part1_jdk17
+   - typecheck_part2_jdk17
    - typecheck_jdk_latest
    # - typecheck_jdk_next
   pool:
@@ -67,7 +69,8 @@ jobs:
    - framework_jobs
    # - daikon_jdk8
    # - daikon_jdk11
-   - daikon_jdk17
+   - daikon_part1_jdk17
+   - daikon_part2_jdk17
    - daikon_jdk_latest
    # Not daikon_jdk_next
    # - guava_jdk8
@@ -243,7 +246,8 @@ jobs:
 - job: inference_jdk8
   dependsOn:
    - canary_jobs
-   - inference_jdk17
+   - inference_part1_jdk17
+   - inference_part2_jdk17
   pool:
     vmImage: 'ubuntu-latest'
   container: wmdietl/cf-ubuntu-jdk8:latest
@@ -305,7 +309,8 @@ jobs:
 - job: inference_jdk_next
   dependsOn:
    - canary_jobs
-   - inference_jdk17
+   - inference_part1_jdk17
+   - inference_part2_jdk17
   pool:
     vmImage: 'ubuntu-latest'
   container: wmdietl/cf-ubuntu-jdk-next:latest
@@ -375,7 +380,8 @@ jobs:
 - job: typecheck_jdk8
   dependsOn:
    - canary_jobs
-   - typecheck_jdk17
+   - typecheck_part1_jdk17
+   - typecheck_part2_jdk17
   pool:
     vmImage: 'ubuntu-latest'
   container: wmdietl/cf-ubuntu-jdk8:latest
@@ -514,7 +520,8 @@ jobs:
 - job: daikon_jdk_next
   dependsOn:
    - framework_jobs
-   - daikon_jdk17
+   - daikon_part1_jdk17
+   - daikon_part2_jdk17
   pool:
     vmImage: 'ubuntu-latest'
   container: wmdietl/cf-ubuntu-jdk-next:latest
