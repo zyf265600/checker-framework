@@ -59,7 +59,7 @@ public class ReportVisitor extends BaseTypeVisitor<BaseAnnotatedTypeFactory> {
             String trees = checker.getOption("reportTreeKinds");
             treeKinds = EnumSet.noneOf(Tree.Kind.class);
             for (String treeKind : trees.split(",")) {
-                treeKinds.add(Tree.Kind.valueOf(treeKind.toUpperCase(Locale.getDefault())));
+                treeKinds.add(Tree.Kind.valueOf(treeKind.toUpperCase(Locale.ROOT)));
             }
         } else {
             treeKinds = null;
@@ -69,7 +69,7 @@ public class ReportVisitor extends BaseTypeVisitor<BaseAnnotatedTypeFactory> {
             String mods = checker.getOption("reportModifiers");
             modifiers = EnumSet.noneOf(Modifier.class);
             for (String modifier : mods.split(",")) {
-                modifiers.add(Modifier.valueOf(modifier.toUpperCase(Locale.getDefault())));
+                modifiers.add(Modifier.valueOf(modifier.toUpperCase(Locale.ROOT)));
             }
         } else {
             modifiers = null;
