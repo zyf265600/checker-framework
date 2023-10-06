@@ -67,7 +67,7 @@ public final class TypesUtils {
         if (clazz == void.class) {
             return types.getNoType(TypeKind.VOID);
         } else if (clazz.isPrimitive()) {
-            String primitiveName = clazz.getName().toUpperCase(Locale.getDefault());
+            String primitiveName = clazz.getName().toUpperCase(Locale.ROOT);
             TypeKind primitiveKind = TypeKind.valueOf(primitiveName);
             return types.getPrimitiveType(primitiveKind);
         } else if (clazz.isArray()) {
@@ -344,17 +344,6 @@ public final class TypesUtils {
      *
      * @param type a type
      * @return true if the type is {@code char} or {@code Character}
-     */
-    public static boolean isCharOrCharacter(TypeMirror type) {
-        return type.getKind() == TypeKind.CHAR
-                || TypesUtils.isDeclaredOfName(type, "java.lang.Character");
-    }
-
-    /**
-     * Returns true if the type is {@code char} or {@code Character}.
-     *
-     * @param type the type to check
-     * @return true iff type represents a character type
      */
     public static boolean isCharType(TypeMirror type) {
         return type.getKind() == TypeKind.CHAR || isDeclaredOfName(type, "java.lang.Character");

@@ -253,7 +253,7 @@ public class SignednessAnnotatedTypeFactory extends BaseAnnotatedTypeFactory {
 
     @Override
     public AnnotationMirrorSet annotationsForIrrelevantJavaType(TypeMirror tm) {
-        if (TypesUtils.isCharOrCharacter(tm)) {
+        if (TypesUtils.isCharType(tm)) {
             return UNSIGNED_SINGLETON;
         } else {
             return SIGNED_SINGLETON;
@@ -314,8 +314,7 @@ public class SignednessAnnotatedTypeFactory extends BaseAnnotatedTypeFactory {
                         TypeMirror lht = TreeUtils.typeOf(tree.getLeftOperand());
                         TypeMirror rht = TreeUtils.typeOf(tree.getRightOperand());
 
-                        if (TypesUtils.isCharOrCharacter(lht)
-                                || TypesUtils.isCharOrCharacter(rht)) {
+                        if (TypesUtils.isCharType(lht) || TypesUtils.isCharType(rht)) {
                             type.replaceAnnotation(SIGNED);
                         }
                     }
@@ -330,7 +329,7 @@ public class SignednessAnnotatedTypeFactory extends BaseAnnotatedTypeFactory {
         @Override
         public Void visitCompoundAssignment(CompoundAssignmentTree tree, AnnotatedTypeMirror type) {
             if (TreeUtils.isStringCompoundConcatenation(tree)) {
-                if (TypesUtils.isCharOrCharacter(TreeUtils.typeOf(tree.getExpression()))) {
+                if (TypesUtils.isCharType(TreeUtils.typeOf(tree.getExpression()))) {
                     type.replaceAnnotation(SIGNED);
                 }
             }
@@ -413,7 +412,7 @@ public class SignednessAnnotatedTypeFactory extends BaseAnnotatedTypeFactory {
         TypeMirror underlying = type.getUnderlyingType();
         if (TypesUtils.isFloatingPrimitive(underlying)
                 || TypesUtils.isBoxedFloating(underlying)
-                || TypesUtils.isCharOrCharacter(underlying)) {
+                || TypesUtils.isCharType(underlying)) {
             // Floats are always signed and chars are always unsigned.
             super.addAnnotationsFromDefaultForType(null, type);
         } else {

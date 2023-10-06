@@ -160,10 +160,10 @@ public class SignednessVisitor extends BaseTypeVisitor<SignednessAnnotatedTypeFa
                     // of the right operand is java.lang.Object.
                     TypeMirror leftOpTM = TreeUtils.typeOf(leftOp);
                     TypeMirror rightOpTM = TreeUtils.typeOf(rightOp);
-                    if (!TypesUtils.isCharOrCharacter(leftOpTM)
+                    if (!TypesUtils.isCharType(leftOpTM)
                             && !qualHierarchy.isSubtype(leftAnno, atypeFactory.SIGNED)) {
                         checker.reportError(leftOp, "unsigned.concat");
-                    } else if (!TypesUtils.isCharOrCharacter(rightOpTM)
+                    } else if (!TypesUtils.isCharType(rightOpTM)
                             && !qualHierarchy.isSubtype(rightAnno, atypeFactory.SIGNED)) {
                         checker.reportError(rightOp, "unsigned.concat");
                     }
@@ -341,7 +341,7 @@ public class SignednessVisitor extends BaseTypeVisitor<SignednessAnnotatedTypeFa
                 if (TreeUtils.isStringCompoundConcatenation(tree)) {
                     // Note that exprType.getUnderlyingType() is always java.lang.String.
                     // Please refer to compoundAssignmentTreeArgTypes for more details.
-                    if (TypesUtils.isCharOrCharacter(TreeUtils.typeOf(expr))) {
+                    if (TypesUtils.isCharType(TreeUtils.typeOf(expr))) {
                         break;
                     }
                     AnnotationMirror anno = exprType.getEffectiveAnnotations().iterator().next();
