@@ -1,6 +1,7 @@
+// @below-java17-jdk-skip-test
+
 import java.util.function.Supplier;
 
-// @below-java17-jdk-skip-test
 public final class Issue5930 {
     enum TestEnum {
         FIRST,

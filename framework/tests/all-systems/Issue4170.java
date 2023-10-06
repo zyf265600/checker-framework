@@ -1,10 +1,11 @@
+// @below-java10-jdk-skip-test
+
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-// @below-java10-jdk-skip-test
 public class Issue4170 {
     public <K, V> void loadSequentially(Iterable<? extends K> keys) {
         Map<K, @Nullable V> result = new LinkedHashMap<>();
