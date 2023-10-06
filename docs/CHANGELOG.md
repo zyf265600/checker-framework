@@ -1,5 +1,5 @@
-Version 3.34.0-eisop2 (May ?, 2023)
------------------------------------
+Version 3.35.0-eisop1 (October ?, 2023)
+---------------------------------------
 
 **User-visible changes:**
 
@@ -49,7 +49,7 @@ eisop#297, eisop#376, eisop#400, eisop#519, eisop#532, eisop#533, typetools#1590
 
 
 Version 3.35.0 (June 1, 2023)
-------------------------------
+-----------------------------
 
 **User-visible changes:**
 
