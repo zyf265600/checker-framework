@@ -484,6 +484,7 @@ public abstract class BaseTypeChecker extends SourceChecker {
             }
 
             instance.setProcessingEnvironment(this.processingEnv);
+            instance.treePathCacher = this.getTreePathCacher();
             // Prevent the new checker from storing non-immediate subcheckers
             instance.subcheckers = Collections.emptyList();
             immediateSubcheckers.add(instance);
