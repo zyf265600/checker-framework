@@ -374,16 +374,11 @@ public class SupertypesSolver {
         }
 
         // If a constraint implies that a type parameter Ti is a supertype of an annotated type
-        // mirror
-        // Ai but only in a subset of all qualifier hierarchies then for all other qualifier
-        // hierarchies
-        // replace the primary annotation on Ai with the lowest possible annotation (ensuring that
-        // it
-        // won't be the LUB unless there are no other constraints, or all other constraints imply
-        // the
-        // bottom annotation is the LUB). Note: Even if we choose bottom as the lub here, the
-        // assignment
-        // context may raise this annotation.
+        // mirror Ai but only in a subset of all qualifier hierarchies then for all other qualifier
+        // hierarchies replace the primary annotation on Ai with the lowest possible annotation
+        // (ensuring that it won't be the LUB unless there are no other constraints, or all other
+        // constraints imply the bottom annotation is the LUB). Note: Even if we choose bottom as
+        // the lub here, the assignment context may raise this annotation.
         Map.Entry<AnnotatedTypeMirror, AnnotationMirrorSet> head = typesIter.next();
 
         AnnotatedTypeMirror lubType = groundMissingHierarchies(head, lowerBoundAnnos);

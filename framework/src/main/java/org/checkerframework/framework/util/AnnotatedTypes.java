@@ -883,7 +883,7 @@ public class AnnotatedTypes {
                 AnnotatedTypes.findEffectiveLowerBoundAnnotations(qualHierarchy, type1);
         AnnotationMirrorSet set2 =
                 AnnotatedTypes.findEffectiveLowerBoundAnnotations(qualHierarchy, type2);
-        Set<? extends AnnotationMirror> glbAnno = qualHierarchy.greatestLowerBounds(set1, set2);
+        Set<? extends AnnotationMirror> glbAnnos = qualHierarchy.greatestLowerBounds(set1, set2);
 
         AnnotatedIntersectionType glb =
                 (AnnotatedIntersectionType)
@@ -919,7 +919,7 @@ public class AnnotatedTypes {
         }
 
         glb.setBounds(newBounds);
-        glb.addAnnotations(glbAnno);
+        glb.addAnnotations(glbAnnos);
         return glb;
     }
 

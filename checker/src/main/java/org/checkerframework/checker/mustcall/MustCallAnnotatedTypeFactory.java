@@ -425,10 +425,9 @@ public class MustCallAnnotatedTypeFactory extends BaseAnnotatedTypeFactory
                 if (!type.hasAnnotation(POLY)) {
                     // Parameters that are not annotated with @Owning should be treated as bottom
                     // (to suppress warnings about them). An exception is polymorphic parameters,
-                    // which
-                    // might be @MustCallAlias (and so wouldn't be annotated with @Owning): these
-                    // are not
-                    // modified, to support verification of @MustCallAlias annotations.
+                    // which might be @MustCallAlias (and so wouldn't be annotated with @Owning):
+                    // these are not modified, to support verification of @MustCallAlias
+                    // annotations.
                     type.replaceAnnotation(BOTTOM);
                 }
             }

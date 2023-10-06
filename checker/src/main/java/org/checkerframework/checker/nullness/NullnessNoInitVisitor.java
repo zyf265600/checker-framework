@@ -480,7 +480,6 @@ public class NullnessNoInitVisitor extends BaseTypeVisitor<NullnessNoInitAnnotat
      * @param tree a tree that might be a comparison of a @NonNull expression with the null literal
      */
     protected void checkForRedundantTests(BinaryTree tree) {
-
         ExpressionTree leftOp = tree.getLeftOperand();
         ExpressionTree rightOp = tree.getRightOperand();
 

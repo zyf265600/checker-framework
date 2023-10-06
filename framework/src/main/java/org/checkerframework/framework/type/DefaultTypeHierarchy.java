@@ -862,10 +862,6 @@ public class DefaultTypeHierarchy extends AbstractAtmComboVisitor<Boolean, Void>
     @Override
     public Boolean visitTypevar_Typevar(
             AnnotatedTypeVariable subtype, AnnotatedTypeVariable supertype, Void p) {
-
-        TypeMirror subTM = subtype.getUnderlyingType();
-        TypeMirror superTM = supertype.getUnderlyingType();
-
         if (AnnotatedTypes.haveSameDeclaration(checker.getTypeUtils(), subtype, supertype)) {
             // The underlying types of subtype and supertype are uses of the same type parameter,
             // but they
@@ -877,7 +873,6 @@ public class DefaultTypeHierarchy extends AbstractAtmComboVisitor<Boolean, Void>
                 // If both have primary annotations then just check the primary annotations
                 // as the bounds are the same.
                 return isPrimarySubtype(subtype, supertype);
-
             } else if (!subtypeHasAnno && !supertypeHasAnno) {
                 // two unannotated uses of the same type parameter are of the same type
                 return areEqualInHierarchy(subtype, supertype);
@@ -904,6 +899,8 @@ public class DefaultTypeHierarchy extends AbstractAtmComboVisitor<Boolean, Void>
             }
         }
 
+        TypeMirror subTM = subtype.getUnderlyingType();
+        TypeMirror superTM = supertype.getUnderlyingType();
         if (TypesUtils.isCapturedTypeVariable(subTM)
                 && TypesUtils.isCapturedTypeVariable(superTM)) {
             // This should be removed when 979 is fixed.

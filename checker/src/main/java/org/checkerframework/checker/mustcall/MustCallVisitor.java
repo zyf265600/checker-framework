@@ -94,19 +94,15 @@ public class MustCallVisitor extends BaseTypeVisitor<MustCallAnnotatedTypeFactor
         Element rhsElt = TreeUtils.elementFromTree(rhs);
         if (lhsElt != null && rhsElt != null) {
             // Note that it is not necessary to check that the assignment is to a field of this,
-            // because
-            // that is implied by the other conditions:
+            // because that is implied by the other conditions:
             // * if the field is final, then the only place it can be assigned to is in the
-            // constructor
-            //   of the proper object (enforced by javac).
+            //   constructor of the proper object (enforced by javac).
             // * if the field is not final, then it cannot be assigned to in a constructor at all:
-            // the
-            //   @CreatesMustCallFor annotation cannot be written on a constructor (it has
+            //   the @CreatesMustCallFor annotation cannot be written on a constructor (it has
             //   @Target({ElementType.METHOD})), so this code relies on the standard rules for
-            // non-final
-            //   owning field reassignment, which prevent it without an @CreatesMustCallFor
-            // annotation
-            //   except in the constructor of the object containing the field.
+            //   non-final owning field reassignment, which prevent it without an
+            //   @CreatesMustCallFor annotation except in the constructor of the object containing
+            //   the field.
             boolean lhsIsOwningField =
                     lhs.getKind() == Tree.Kind.MEMBER_SELECT
                             && atypeFactory.getDeclAnnotation(lhsElt, Owning.class) != null;

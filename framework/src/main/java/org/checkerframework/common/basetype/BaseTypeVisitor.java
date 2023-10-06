@@ -812,42 +812,43 @@ public class BaseTypeVisitor<Factory extends GenericAnnotatedTypeFactory<?, ?, ?
 
         TypeMirror classType = TreeUtils.typeOf(classTree);
         AnnotationMirrorSet classBounds = atypeFactory.getTypeDeclarationBounds(classType);
-        // No explicitly-written extends clause, as in "class X {}", is equivalent to writing "class
-        // X
-        // extends @Top Object {}", so there is no need to do any subtype checking.
+        // If "@B class Y extends @A X {}", then enforce that @B must be a subtype of @A.
+        // classTree.getExtendsClause() is null when there is no explicitly-written extends clause,
+        // as in "class X {}". This is equivalent to writing "class X extends @Top Object {}", so
+        // there is no need to do any subtype checking.
         if (classTree.getExtendsClause() != null) {
-            Tree superClause = classTree.getExtendsClause();
-            checkExtendsOrImplements(superClause, classBounds, true);
+            Tree boundClause = classTree.getExtendsClause();
+            checkExtendsOrImplements(boundClause, classBounds, true);
         }
         // Do the same check as above for implements clauses.
-        for (Tree superClause : classTree.getImplementsClause()) {
-            checkExtendsOrImplements(superClause, classBounds, false);
+        for (Tree boundClause : classTree.getImplementsClause()) {
+            checkExtendsOrImplements(boundClause, classBounds, false);
         }
     }
 
     /**
      * Helper for {@link #checkExtendsAndImplements} that checks one extends or implements clause.
      *
-     * @param superClause an extends or implements clause
+     * @param boundClause an extends or implements clause
      * @param classBounds the type declarations bounds to check for consistency with {@code
-     *     superClause}
+     *     boundClause}
      * @param isExtends true for an extends clause, false for an implements clause
      */
     protected void checkExtendsOrImplements(
-            Tree superClause, AnnotationMirrorSet classBounds, boolean isExtends) {
-        AnnotatedTypeMirror superType = atypeFactory.getTypeOfExtendsImplements(superClause);
-        AnnotationMirrorSet superAnnos = superType.getAnnotations();
+            Tree boundClause, AnnotationMirrorSet classBounds, boolean isExtends) {
+        AnnotatedTypeMirror boundType = atypeFactory.getTypeOfExtendsImplements(boundClause);
+        AnnotationMirrorSet boundAnnos = boundType.getAnnotations();
         for (AnnotationMirror classAnno : classBounds) {
-            AnnotationMirror superAnno =
-                    qualHierarchy.findAnnotationInSameHierarchy(superAnnos, classAnno);
-            if (!qualHierarchy.isSubtype(classAnno, superAnno)) {
+            AnnotationMirror boundAnno =
+                    qualHierarchy.findAnnotationInSameHierarchy(boundAnnos, classAnno);
+            if (!qualHierarchy.isSubtype(classAnno, boundAnno)) {
                 checker.reportError(
-                        superClause,
+                        boundClause,
                         (isExtends
                                 ? "declaration.inconsistent.with.extends.clause"
                                 : "declaration.inconsistent.with.implements.clause"),
                         classAnno,
-                        superAnno);
+                        boundAnno);
             }
         }
     }
@@ -961,8 +962,8 @@ public class BaseTypeVisitor<Factory extends GenericAnnotatedTypeFactory<?, ?, ?
     protected void checkDefaultConstructor(ClassTree tree) {}
 
     /**
-     * Checks that the method or constructor obeys override and subtype rules to all overridden
-     * methods. (Uses the pseudo-assignment logic to do so.)
+     * Checks that the method obeys override and subtype rules to all overridden methods. (Uses the
+     * pseudo-assignment logic to do so.)
      *
      * <p>The override rule specifies that a method, m1, may override a method m2 only if:
      *
@@ -2623,8 +2624,7 @@ public class BaseTypeVisitor<Factory extends GenericAnnotatedTypeFactory<?, ?, ?
         }
 
         // Don't call TypeHierarchy#isSubtype(exprType, castType) because the underlying Java types
-        // will
-        // not be in the correct subtyping relationship if this is a downcast.
+        // will not be in the correct subtyping relationship if this is a downcast.
         if (!reported && !isTypeCastSafe(castType, exprType)) {
             checker.reportWarning(
                     typeCastTree, "cast.unsafe", exprType.toString(true), castType.toString(true));
@@ -2642,7 +2642,6 @@ public class BaseTypeVisitor<Factory extends GenericAnnotatedTypeFactory<?, ?, ?
      * @return true if the type cast is safe, false otherwise
      */
     protected boolean isTypeCastSafe(AnnotatedTypeMirror castType, AnnotatedTypeMirror exprType) {
-
         TypeKind castTypeKind = castType.getKind();
         if (castTypeKind == TypeKind.DECLARED) {
             // Don't issue an error if the annotations are equivalent to the qualifier upper bound
@@ -2980,7 +2979,6 @@ public class BaseTypeVisitor<Factory extends GenericAnnotatedTypeFactory<?, ?, ?
      * @param tree a CatchTree to check
      */
     protected void checkExceptionParameter(CatchTree tree) {
-
         AnnotationMirrorSet requiredAnnotations =
                 getExceptionParameterLowerBoundAnnotationsCached();
         VariableTree excParamTree = tree.getParameter();
@@ -3210,9 +3208,6 @@ public class BaseTypeVisitor<Factory extends GenericAnnotatedTypeFactory<?, ?, ?
             return result;
         }
         AnnotatedTypeMirror valueType = atypeFactory.getAnnotatedType(valueExpTree);
-        atypeFactory.logGat(
-                "BTV: %s.getAnnotatedType(%s) => %s%n",
-                atypeFactory.getClass().getSimpleName(), valueExpTree, valueType);
         assert valueType != null : "null type for expression: " + valueExpTree;
         result =
                 commonAssignmentCheck(varType, valueType, valueExpTree, errorKey, extraArgs)
@@ -3260,13 +3255,8 @@ public class BaseTypeVisitor<Factory extends GenericAnnotatedTypeFactory<?, ?, ?
         } else {
             // `result` is false.
             // Use an error key only if it's overridden by a checker.
-            FoundRequired pair = FoundRequired.of(valueType, varType);
-            String valueTypeString = pair.found;
-            String varTypeString = pair.required;
-            checker.reportError(
-                    valueExpTree,
-                    errorKey,
-                    ArraysPlume.concatenate(extraArgs, valueTypeString, varTypeString));
+            reportCommonAssignmentError(
+                    varType, widenedValueType, valueExpTree, errorKey, extraArgs);
         }
 
         commonAssignmentCheckEndDiagnostic(result, null, varType, valueType, valueExpTree);
@@ -3889,7 +3879,6 @@ public class BaseTypeVisitor<Factory extends GenericAnnotatedTypeFactory<?, ?, ?
      */
     protected boolean testTypevarContainment(AnnotatedTypeMirror inner, AnnotatedTypeMirror outer) {
         if (inner.getKind() == TypeKind.TYPEVAR && outer.getKind() == TypeKind.TYPEVAR) {
-
             AnnotatedTypeVariable innerAtv = (AnnotatedTypeVariable) inner;
             AnnotatedTypeVariable outerAtv = (AnnotatedTypeVariable) outer;
 
@@ -4744,7 +4733,6 @@ public class BaseTypeVisitor<Factory extends GenericAnnotatedTypeFactory<?, ?, ?
             Set<Pair<JavaExpression, AnnotationMirror>> mustSubset,
             Set<Pair<JavaExpression, AnnotationMirror>> set,
             @CompilerMessageKey String messageKey) {
-
         for (Pair<JavaExpression, AnnotationMirror> weak : mustSubset) {
             JavaExpression jexpr = weak.first;
             boolean found = false;

@@ -207,7 +207,7 @@ public class ElementUtils {
     }
 
     /**
-     * Returns true if the element is a final element: a final field, method, or final class.
+     * Returns true if the element is a final element: a final field, final method, or final class.
      *
      * @return true if the element is final
      */
