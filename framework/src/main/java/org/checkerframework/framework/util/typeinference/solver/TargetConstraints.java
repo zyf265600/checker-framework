@@ -47,7 +47,7 @@ public class TargetConstraints {
 
     protected static class Equalities {
         // Map( hierarchy top -> exact annotation in hierarchy)
-        public AnnotationMirrorMap<AnnotationMirror> primaries = new AnnotationMirrorMap<>();
+        public final AnnotationMirrorMap<AnnotationMirror> primaries = new AnnotationMirrorMap<>();
 
         // Map( type -> hierarchy top for which the primary annotation of type is equal to the
         // primary annotation of the target)
@@ -69,7 +69,8 @@ public class TargetConstraints {
     // remember these are constraint in which target is the supertype
     protected static class Supertypes {
         // Map( hierarchy top -> annotations that are subtypes to target in hierarchy)
-        public AnnotationMirrorMap<AnnotationMirrorSet> primaries = new AnnotationMirrorMap<>();
+        public final AnnotationMirrorMap<AnnotationMirrorSet> primaries =
+                new AnnotationMirrorMap<>();
 
         // Map( type -> hierarchy tops for which the primary annotations of type are subtypes of the
         // primary annotations of the target)
@@ -96,7 +97,8 @@ public class TargetConstraints {
         public Subtypes() {}
 
         /** Map from hierarchy top to annotations that are supertypes to target in hierarchy. */
-        public AnnotationMirrorMap<AnnotationMirrorSet> primaries = new AnnotationMirrorMap<>();
+        public final AnnotationMirrorMap<AnnotationMirrorSet> primaries =
+                new AnnotationMirrorMap<>();
 
         /**
          * Map from type to hierarchy tops for which the primary annotations of type are supertypes
