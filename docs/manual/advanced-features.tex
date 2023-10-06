@@ -1207,8 +1207,8 @@ the type of the initializer expression at the declaration.
 
 Flow-sensitive type refinement applies to these variables as usual.
 The base type qualifier may change at a later program point due to
-a subsequent assignment, but the qualifiers on type parameters and
-array contents remain exactly the same.
+a subsequent assignment, but the qualifiers on type arguments and
+array components remain exactly the same.
 
 \begin{Verbatim}
     var list1 = new ArrayList<@Tainted String>(); // type of list1 is ArrayList<@Tainted String>

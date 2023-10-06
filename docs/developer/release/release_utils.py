@@ -557,7 +557,7 @@ http://eisop.github.io/
 
 Changes for Checker Framework version %s:
 
-<<Insert latest Checker Framework changelog entry from https://github.com/typetools/checker-framework/blob/master/docs/CHANGELOG.md, preserving its formatting.>>
+<<Insert latest Checker Framework changelog entry from https://github.com/eisop/checker-framework/blob/master/docs/CHANGELOG.md, preserving its formatting.>>
 """ % (
         version,
         version,
