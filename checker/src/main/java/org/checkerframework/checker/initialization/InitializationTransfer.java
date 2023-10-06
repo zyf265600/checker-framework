@@ -2,7 +2,6 @@ package org.checkerframework.checker.initialization;
 
 import com.sun.source.tree.ClassTree;
 import com.sun.source.tree.MethodInvocationTree;
-import com.sun.source.tree.MethodTree;
 import com.sun.tools.javac.code.Symbol;
 
 import org.checkerframework.dataflow.analysis.RegularTransferResult;
@@ -16,7 +15,6 @@ import org.checkerframework.dataflow.expression.FieldAccess;
 import org.checkerframework.dataflow.expression.JavaExpression;
 import org.checkerframework.framework.flow.CFAbstractTransfer;
 import org.checkerframework.framework.flow.CFValue;
-import org.checkerframework.framework.type.AnnotatedTypeMirror.AnnotatedDeclaredType;
 import org.checkerframework.javacutil.TreePathUtil;
 import org.checkerframework.javacutil.TreeUtils;
 
@@ -58,22 +56,6 @@ public class InitializationTransfer
     public InitializationTransfer(InitializationAnalysis analysis) {
         super(analysis);
         this.atypeFactory = analysis.getTypeFactory();
-    }
-
-    @Override
-    protected boolean isNotFullyInitializedReceiver(MethodTree methodTree) {
-        if (super.isNotFullyInitializedReceiver(methodTree)) {
-            return true;
-        }
-        AnnotatedDeclaredType receiverType =
-                analysis.getTypeFactory().getAnnotatedType(methodTree).getReceiverType();
-        if (receiverType != null) {
-            return atypeFactory.isUnknownInitialization(receiverType)
-                    || atypeFactory.isUnderInitialization(receiverType);
-        } else {
-            // There is no receiver e.g. in static methods.
-            return false;
-        }
     }
 
     /**
