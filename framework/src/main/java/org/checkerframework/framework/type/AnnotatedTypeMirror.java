@@ -1313,11 +1313,6 @@ public abstract class AnnotatedTypeMirror implements DeepCopyable<AnnotatedTypeM
             returnTypeComputed = true;
         }
 
-        /** Replaces the return type by a shallow copy of itself. */
-        public void shallowCopyReturnType() {
-            setReturnType(returnType.shallowCopy());
-        }
-
         /**
          * The return type of a method or constructor. For constructors, the return type is not
          * VOID, but the type of the enclosing class.
@@ -1882,8 +1877,7 @@ public abstract class AnnotatedTypeMirror implements DeepCopyable<AnnotatedTypeM
         @Override
         public AnnotatedTypeVariable shallowCopy(boolean copyAnnotations) {
             // Because type variables can refer to themselves, they can't be shallow copied, so
-            // return a
-            // deep copy instead.
+            // return a deep copy instead.
             AnnotatedTypeVariable type = deepCopy(true);
             if (!copyAnnotations) {
                 type.getAnnotationsField().clear();
@@ -2226,8 +2220,7 @@ public abstract class AnnotatedTypeMirror implements DeepCopyable<AnnotatedTypeM
         @Override
         public AnnotatedWildcardType shallowCopy(boolean copyAnnotations) {
             // Because wildcards can refer to themselves, they can't be shallow copied, so return a
-            // deep
-            // copy instead.
+            // deep copy instead.
             AnnotatedWildcardType type = deepCopy(true);
             if (!copyAnnotations) {
                 type.getAnnotationsField().clear();
