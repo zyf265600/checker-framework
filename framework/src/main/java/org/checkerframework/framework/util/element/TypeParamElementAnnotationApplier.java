@@ -39,7 +39,7 @@ abstract class TypeParamElementAnnotationApplier extends IndexedElementAnnotatio
     }
 
     protected final AnnotatedTypeVariable typeParam;
-    protected final AnnotatedTypeFactory typeFactory;
+    protected final AnnotatedTypeFactory atypeFactory;
 
     /**
      * Returns target type that represents the location of the lower bound of element.
@@ -56,10 +56,10 @@ abstract class TypeParamElementAnnotationApplier extends IndexedElementAnnotatio
     protected abstract TargetType upperBoundTarget();
 
     TypeParamElementAnnotationApplier(
-            AnnotatedTypeVariable type, Element element, AnnotatedTypeFactory typeFactory) {
+            AnnotatedTypeVariable type, Element element, AnnotatedTypeFactory atypeFactory) {
         super(type, element);
         this.typeParam = type;
-        this.typeFactory = typeFactory;
+        this.atypeFactory = atypeFactory;
     }
 
     /**
@@ -102,11 +102,11 @@ abstract class TypeParamElementAnnotationApplier extends IndexedElementAnnotatio
         List<TypeCompound> lowerBoundAnnos = new ArrayList<>();
 
         for (TypeCompound anno : targeted) {
-            AnnotationMirror aliasedAnno = typeFactory.canonicalAnnotation(anno);
+            AnnotationMirror aliasedAnno = atypeFactory.canonicalAnnotation(anno);
             AnnotationMirror canonicalAnno = (aliasedAnno != null) ? aliasedAnno : anno;
 
             if (anno.position.parameter_index != paramIndex
-                    || !typeFactory.isSupportedQualifier(canonicalAnno)) {
+                    || !atypeFactory.isSupportedQualifier(canonicalAnno)) {
                 continue;
             }
 

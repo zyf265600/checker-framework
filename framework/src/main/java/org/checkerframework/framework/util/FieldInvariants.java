@@ -34,7 +34,7 @@ public class FieldInvariants {
     private final List<AnnotationMirror> qualifiers;
 
     /** The type factory associated with this. */
-    private final AnnotatedTypeFactory factory;
+    private final AnnotatedTypeFactory atypeFactory;
 
     /**
      * Creates a new FieldInvariants object. The result is well-formed if the length of qualifiers
@@ -42,11 +42,13 @@ public class FieldInvariants {
      *
      * @param fields list of fields
      * @param qualifiers list of qualifiers, or a single qualifier that applies to all fields
-     * @param factory the type factory
+     * @param atypeFactory the type factory
      */
     public FieldInvariants(
-            List<String> fields, List<AnnotationMirror> qualifiers, AnnotatedTypeFactory factory) {
-        this(null, fields, qualifiers, factory);
+            List<String> fields,
+            List<AnnotationMirror> qualifiers,
+            AnnotatedTypeFactory atypeFactory) {
+        this(null, fields, qualifiers, atypeFactory);
     }
 
     /**
@@ -57,13 +59,13 @@ public class FieldInvariants {
      * @param other other invariant object, may be null
      * @param fields list of fields
      * @param qualifiers list of qualifiers
-     * @param factory the type factory
+     * @param atypeFactory the type factory
      */
     public FieldInvariants(
             FieldInvariants other,
             List<String> fields,
             List<AnnotationMirror> qualifiers,
-            AnnotatedTypeFactory factory) {
+            AnnotatedTypeFactory atypeFactory) {
         if (qualifiers.size() == 1) {
             while (fields.size() > qualifiers.size()) {
                 qualifiers.add(qualifiers.get(0));
@@ -76,7 +78,7 @@ public class FieldInvariants {
 
         this.fields = Collections.unmodifiableList(fields);
         this.qualifiers = qualifiers;
-        this.factory = factory;
+        this.atypeFactory = atypeFactory;
     }
 
     /** The simple names of the fields that have a qualifier. May contain duplicates. */
@@ -127,7 +129,7 @@ public class FieldInvariants {
      * @return null if this is stronger, otherwise returns an error message
      */
     public @Nullable DiagMessage isStrongerThan(FieldInvariants superInvar) {
-        QualifierHierarchy qualHierarchy = factory.getQualifierHierarchy();
+        QualifierHierarchy qualHierarchy = atypeFactory.getQualifierHierarchy();
         if (!this.fields.containsAll(superInvar.fields)) {
             List<String> missingFields = new ArrayList<>(superInvar.fields);
             missingFields.removeAll(fields);

@@ -33,13 +33,13 @@ public class GlbUtil {
      * <p>Note: This method can be improved for wildcards and type variables.
      *
      * @param typeMirrors the types to glb
-     * @param typeFactory the type factory
+     * @param atypeFactory the type factory
      * @return the greatest lower bound of typeMirrors
      */
     public static AnnotatedTypeMirror glbAll(
             Map<AnnotatedTypeMirror, AnnotationMirrorSet> typeMirrors,
-            AnnotatedTypeFactory typeFactory) {
-        QualifierHierarchy qualHierarchy = typeFactory.getQualifierHierarchy();
+            AnnotatedTypeFactory atypeFactory) {
+        QualifierHierarchy qualHierarchy = atypeFactory.getQualifierHierarchy();
         if (typeMirrors.isEmpty()) {
             return null;
         }
@@ -83,10 +83,10 @@ public class GlbUtil {
             }
         }
 
-        TypeHierarchy typeHierarchy = typeFactory.getTypeHierarchy();
+        TypeHierarchy typeHierarchy = atypeFactory.getTypeHierarchy();
 
         // sort placing supertypes first
-        sortForGlb(glbTypes, typeFactory);
+        sortForGlb(glbTypes, atypeFactory);
 
         // find the lowest type in the list that is not an AnnotatedNullType
         AnnotatedTypeMirror glbType = glbTypes.get(0);
@@ -109,7 +109,7 @@ public class GlbUtil {
                     && (!TypesUtils.isErasedSubtype(
                                     glbType.getUnderlyingType(),
                                     type.getUnderlyingType(),
-                                    typeFactory.getChecker().getTypeUtils())
+                                    atypeFactory.getChecker().getTypeUtils())
                             || !typeHierarchy.isSubtype(glbType, type))) {
                 incomparable = true;
             }
@@ -117,7 +117,7 @@ public class GlbUtil {
 
         // we had two incomparable types in glbTypes
         if (incomparable) {
-            return createBottom(typeFactory, glbType.getEffectiveAnnotations());
+            return createBottom(atypeFactory, glbType.getEffectiveAnnotations());
         }
 
         return glbType;
@@ -125,8 +125,8 @@ public class GlbUtil {
 
     /** Returns an AnnotatedNullType with the given annotations as primaries. */
     private static AnnotatedNullType createBottom(
-            AnnotatedTypeFactory typeFactory, Set<? extends AnnotationMirror> annos) {
-        return typeFactory.getAnnotatedNullType(annos);
+            AnnotatedTypeFactory atypeFactory, Set<? extends AnnotationMirror> annos) {
+        return atypeFactory.getAnnotatedNullType(annos);
     }
 
     /**
@@ -136,11 +136,11 @@ public class GlbUtil {
      * {@code List<String>, AbstractList<String>, ArrayList<String>}
      *
      * @param typeMirrors the list to sort in place
-     * @param typeFactory the type factory
+     * @param atypeFactory the type factory
      */
     public static void sortForGlb(
-            List<? extends AnnotatedTypeMirror> typeMirrors, AnnotatedTypeFactory typeFactory) {
-        Collections.sort(typeMirrors, new GlbSortComparator(typeFactory));
+            List<? extends AnnotatedTypeMirror> typeMirrors, AnnotatedTypeFactory atypeFactory) {
+        Collections.sort(typeMirrors, new GlbSortComparator(atypeFactory));
     }
 
     /** A comparator for {@link #sortForGlb}. */
@@ -155,11 +155,11 @@ public class GlbUtil {
         /**
          * Creates a new GlbSortComparator.
          *
-         * @param typeFactory the type factory
+         * @param atypeFactory the type factory
          */
-        public GlbSortComparator(AnnotatedTypeFactory typeFactory) {
-            qualHierarchy = typeFactory.getQualifierHierarchy();
-            types = typeFactory.getProcessingEnv().getTypeUtils();
+        public GlbSortComparator(AnnotatedTypeFactory atypeFactory) {
+            qualHierarchy = atypeFactory.getQualifierHierarchy();
+            types = atypeFactory.getProcessingEnv().getTypeUtils();
         }
 
         @Override

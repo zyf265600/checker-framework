@@ -30,9 +30,9 @@ public class MethodApplier extends TargetedElementAnnotationApplier {
 
     /** Apply annotations from {@code element} to {@code type}. */
     public static void apply(
-            AnnotatedTypeMirror type, Element element, AnnotatedTypeFactory typeFactory)
+            AnnotatedTypeMirror type, Element element, AnnotatedTypeFactory atypeFactory)
             throws UnexpectedAnnotationLocationException {
-        new MethodApplier(type, element, typeFactory).extractAndApply();
+        new MethodApplier(type, element, atypeFactory).extractAndApply();
     }
 
     public static boolean accepts(AnnotatedTypeMirror typeMirror, Element element) {
@@ -40,16 +40,16 @@ public class MethodApplier extends TargetedElementAnnotationApplier {
                 && typeMirror instanceof AnnotatedExecutableType;
     }
 
-    private final AnnotatedTypeFactory typeFactory;
+    private final AnnotatedTypeFactory atypeFactory;
 
     /** Method being annotated, this symbol contains all relevant annotations. */
     private final Symbol.MethodSymbol methodSymbol;
 
     private final AnnotatedExecutableType methodType;
 
-    MethodApplier(AnnotatedTypeMirror type, Element element, AnnotatedTypeFactory typeFactory) {
+    MethodApplier(AnnotatedTypeMirror type, Element element, AnnotatedTypeFactory atypeFactory) {
         super(type, element);
-        this.typeFactory = typeFactory;
+        this.atypeFactory = atypeFactory;
         this.methodSymbol = (Symbol.MethodSymbol) element;
         this.methodType = (AnnotatedExecutableType) type;
     }
@@ -151,9 +151,9 @@ public class MethodApplier extends TargetedElementAnnotationApplier {
         super.extractAndApply();
 
         ElementAnnotationUtil.applyAllElementAnnotations(
-                methodType.getParameterTypes(), methodSymbol.getParameters(), typeFactory);
+                methodType.getParameterTypes(), methodSymbol.getParameters(), atypeFactory);
         ElementAnnotationUtil.applyAllElementAnnotations(
-                methodType.getTypeVariables(), methodSymbol.getTypeParameters(), typeFactory);
+                methodType.getTypeVariables(), methodSymbol.getTypeParameters(), atypeFactory);
     }
 
     // NOTE that these are the only locations not handled elsewhere, otherwise we call apply
@@ -231,7 +231,7 @@ public class MethodApplier extends TargetedElementAnnotationApplier {
      * type variables declaration.
      */
     private void applyTypeVarUseOnReturnType() throws UnexpectedAnnotationLocationException {
-        new TypeVarUseApplier(methodType.getReturnType(), methodSymbol, typeFactory)
+        new TypeVarUseApplier(methodType.getReturnType(), methodSymbol, atypeFactory)
                 .extractAndApply();
     }
 }

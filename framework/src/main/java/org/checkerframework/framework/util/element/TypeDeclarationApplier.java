@@ -19,9 +19,9 @@ import javax.lang.model.element.Element;
 public class TypeDeclarationApplier extends TargetedElementAnnotationApplier {
 
     public static void apply(
-            final AnnotatedTypeMirror type, Element element, AnnotatedTypeFactory typeFactory)
+            final AnnotatedTypeMirror type, Element element, AnnotatedTypeFactory atypeFactory)
             throws UnexpectedAnnotationLocationException {
-        new TypeDeclarationApplier(type, element, typeFactory).extractAndApply();
+        new TypeDeclarationApplier(type, element, atypeFactory).extractAndApply();
     }
 
     /**
@@ -41,14 +41,14 @@ public class TypeDeclarationApplier extends TargetedElementAnnotationApplier {
         return type instanceof AnnotatedDeclaredType && element instanceof Symbol.ClassSymbol;
     }
 
-    private final AnnotatedTypeFactory typeFactory;
+    private final AnnotatedTypeFactory atypeFactory;
     private final Symbol.ClassSymbol typeSymbol;
     private final AnnotatedDeclaredType declaredType;
 
     TypeDeclarationApplier(
-            AnnotatedTypeMirror type, Element element, AnnotatedTypeFactory typeFactory) {
+            AnnotatedTypeMirror type, Element element, AnnotatedTypeFactory atypeFactory) {
         super(type, element);
-        this.typeFactory = typeFactory;
+        this.atypeFactory = atypeFactory;
         this.typeSymbol = (Symbol.ClassSymbol) element;
         this.declaredType = (AnnotatedDeclaredType) type;
     }
@@ -124,7 +124,7 @@ public class TypeDeclarationApplier extends TargetedElementAnnotationApplier {
         type.addAnnotations(typeSymbol.getAnnotationMirrors());
 
         ElementAnnotationUtil.applyAllElementAnnotations(
-                declaredType.getTypeArguments(), typeSymbol.getTypeParameters(), typeFactory);
+                declaredType.getTypeArguments(), typeSymbol.getTypeParameters(), atypeFactory);
     }
 
     @Override

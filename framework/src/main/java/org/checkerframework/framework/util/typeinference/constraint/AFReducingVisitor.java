@@ -42,15 +42,16 @@ import javax.lang.model.type.TypeKind;
  * These are excerpts from the JLS, if you search for them you will find the corresponding JLS
  * description of the case being covered.
  */
-abstract class AFReducingVisitor extends AbstractAtmComboVisitor<Void, Set<AFConstraint>> {
+/*package-private*/ abstract class AFReducingVisitor
+        extends AbstractAtmComboVisitor<Void, Set<AFConstraint>> {
 
-    public final Class<? extends AFConstraint> reducerType;
-    public final AnnotatedTypeFactory typeFactory;
+    protected final Class<? extends AFConstraint> reducerType;
+    protected final AnnotatedTypeFactory atypeFactory;
 
     protected AFReducingVisitor(
-            Class<? extends AFConstraint> reducerType, AnnotatedTypeFactory typeFactory) {
+            Class<? extends AFConstraint> reducerType, AnnotatedTypeFactory atypeFactory) {
         this.reducerType = reducerType;
-        this.typeFactory = typeFactory;
+        this.atypeFactory = atypeFactory;
     }
 
     public abstract AFConstraint makeConstraint(
@@ -189,11 +190,11 @@ abstract class AFReducingVisitor extends AbstractAtmComboVisitor<Void, Set<AFCon
         if (!TypesUtils.isErasedSubtype(
                 subtype.getUnderlyingType(),
                 supertype.getUnderlyingType(),
-                typeFactory.getChecker().getTypeUtils())) {
+                atypeFactory.getChecker().getTypeUtils())) {
             return null;
         }
         AnnotatedDeclaredType subAsSuper =
-                AnnotatedTypes.castedAsSuper(typeFactory, subtype, supertype);
+                AnnotatedTypes.castedAsSuper(atypeFactory, subtype, supertype);
 
         List<AnnotatedTypeMirror> subTypeArgs = subAsSuper.getTypeArguments();
         List<AnnotatedTypeMirror> superTypeArgs = supertype.getTypeArguments();
@@ -304,7 +305,7 @@ abstract class AFReducingVisitor extends AbstractAtmComboVisitor<Void, Set<AFCon
 
         // at least one of the intersection bound types must be convertible to the param type
         AnnotatedDeclaredType subtypeAsParam =
-                AnnotatedTypes.castedAsSuper(typeFactory, subtype, supertype);
+                AnnotatedTypes.castedAsSuper(atypeFactory, subtype, supertype);
         if (subtypeAsParam != null && !subtypeAsParam.equals(supertype)) {
             addConstraint(subtypeAsParam, supertype, constraints);
         }
@@ -432,7 +433,7 @@ abstract class AFReducingVisitor extends AbstractAtmComboVisitor<Void, Set<AFCon
             Set<AFConstraint> constraints) {
         // we may be able to eliminate this case, since I believe the corresponding constraint will
         // just be discarded as the parameter must be a boxed primitive
-        addConstraint(typeFactory.getBoxedType(subtype), supertype, constraints);
+        addConstraint(atypeFactory.getBoxedType(subtype), supertype, constraints);
         return null;
     }
 
@@ -450,7 +451,7 @@ abstract class AFReducingVisitor extends AbstractAtmComboVisitor<Void, Set<AFCon
             AnnotatedPrimitiveType subtype,
             AnnotatedIntersectionType supertype,
             Set<AFConstraint> constraints) {
-        addConstraint(typeFactory.getBoxedType(subtype), supertype, constraints);
+        addConstraint(atypeFactory.getBoxedType(subtype), supertype, constraints);
         return null;
     }
 
@@ -486,7 +487,7 @@ abstract class AFReducingVisitor extends AbstractAtmComboVisitor<Void, Set<AFCon
         // NOT ones that may have a type variable we are inferring types for and therefore we can
         // discard this constraint
         if (!AnnotatedTypes.areCorrespondingTypeVariables(
-                typeFactory.getElementUtils(), subtype, supertype)) {
+                atypeFactory.getElementUtils(), subtype, supertype)) {
             addConstraint(subtype.getUpperBound(), supertype.getLowerBound(), constraints);
         }
 

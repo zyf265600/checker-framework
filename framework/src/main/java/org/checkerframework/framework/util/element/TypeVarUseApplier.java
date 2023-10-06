@@ -29,9 +29,9 @@ import javax.lang.model.type.TypeKind;
 public class TypeVarUseApplier {
 
     public static void apply(
-            final AnnotatedTypeMirror type, Element element, AnnotatedTypeFactory typeFactory)
+            final AnnotatedTypeMirror type, Element element, AnnotatedTypeFactory atypeFactory)
             throws UnexpectedAnnotationLocationException {
-        new TypeVarUseApplier(type, element, typeFactory).extractAndApply();
+        new TypeVarUseApplier(type, element, atypeFactory).extractAndApply();
     }
 
     /** The ElementKinds that are accepted by this. */
@@ -85,16 +85,17 @@ public class TypeVarUseApplier {
     private final Element useElem;
 
     /** The annotated type factory. */
-    private final AnnotatedTypeFactory typeFactory;
+    private final AnnotatedTypeFactory atypeFactory;
 
     /**
      * Create a new TypeVarUseApplier.
      *
      * @param type the type of the variable use
      * @param element the element for the variable use
-     * @param typeFactory the type factory
+     * @param atypeFactory the type factory
      */
-    TypeVarUseApplier(AnnotatedTypeMirror type, Element element, AnnotatedTypeFactory typeFactory) {
+    TypeVarUseApplier(
+            AnnotatedTypeMirror type, Element element, AnnotatedTypeFactory atypeFactory) {
         if (!accepts(type, element)) {
             throw new BugInCF(
                     "TypeParamUseApplier does not accept type/element combination ("
@@ -111,7 +112,7 @@ public class TypeVarUseApplier {
             this.declarationElem =
                     (TypeParameterElement) typeVariable.getUnderlyingType().asElement();
             this.useElem = element;
-            this.typeFactory = typeFactory;
+            this.atypeFactory = atypeFactory;
 
         } else {
             this.arrayType = null;
@@ -119,7 +120,7 @@ public class TypeVarUseApplier {
             this.declarationElem =
                     (TypeParameterElement) typeVariable.getUnderlyingType().asElement();
             this.useElem = element;
-            this.typeFactory = typeFactory;
+            this.atypeFactory = atypeFactory;
         }
     }
 
@@ -134,7 +135,7 @@ public class TypeVarUseApplier {
                 typeVariable, useElem.getAnnotationMirrors());
 
         // apply declaration annotations
-        ElementAnnotationApplier.apply(typeVariable, declarationElem, typeFactory);
+        ElementAnnotationApplier.apply(typeVariable, declarationElem, atypeFactory);
 
         List<Attribute.TypeCompound> annotations = getAnnotations(useElem, declarationElem);
 

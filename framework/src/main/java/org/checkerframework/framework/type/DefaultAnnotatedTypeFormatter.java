@@ -110,7 +110,7 @@ public class DefaultAnnotatedTypeFormatter implements AnnotatedTypeFormatter {
      * @param capturedType a type variable, which must be a capture-converted type variable
      * @return a deterministic capture conversion ID
      */
-    static int getCaptureConversionId(TypeVariable capturedType) {
+    protected static int getCaptureConversionId(TypeVariable capturedType) {
         return captureConversionIds.computeIfAbsent(capturedType, key -> ++prevCaptureConversionId);
     }
 

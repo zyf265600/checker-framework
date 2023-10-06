@@ -29,10 +29,10 @@ import javax.lang.model.type.TypeKind;
 public class FIsAReducer implements AFReducer {
 
     protected final FIsAReducingVisitor visitor;
-    private final AnnotatedTypeFactory typeFactory;
+    private final AnnotatedTypeFactory atypeFactory;
 
-    public FIsAReducer(AnnotatedTypeFactory typeFactory) {
-        this.typeFactory = typeFactory;
+    public FIsAReducer(AnnotatedTypeFactory atypeFactory) {
+        this.atypeFactory = atypeFactory;
         this.visitor = new FIsAReducingVisitor();
     }
 
@@ -145,7 +145,7 @@ public class FIsAReducer implements AFReducer {
             }
 
             AnnotatedDeclaredType argumentAsParam =
-                    AnnotatedTypes.castedAsSuper(typeFactory, argument, parameter);
+                    AnnotatedTypes.castedAsSuper(atypeFactory, argument, parameter);
             if (argumentAsParam == null) {
                 return null;
             }
@@ -233,7 +233,7 @@ public class FIsAReducer implements AFReducer {
                 Set<AFConstraint> constraints) {
             // we may be able to eliminate this case, since I believe the corresponding constraint
             // will just be discarded as the parameter must be a boxed primitive
-            constraints.add(new FIsA(typeFactory.getBoxedType(parameter), argument));
+            constraints.add(new FIsA(atypeFactory.getBoxedType(parameter), argument));
             return null;
         }
 
