@@ -107,7 +107,7 @@ public class BaseTypeValidator extends AnnotatedTypeScanner<Void, Tree> implemen
      */
     @Override
     public boolean isValid(AnnotatedTypeMirror type, Tree tree) {
-        List<DiagMessage> diagMessages = isValidStructurally(qualHierarchy, type);
+        List<DiagMessage> diagMessages = isValidStructurally(type);
         if (!diagMessages.isEmpty()) {
             for (DiagMessage d : diagMessages) {
                 checker.report(tree, d);
@@ -162,33 +162,29 @@ public class BaseTypeValidator extends AnnotatedTypeScanner<Void, Tree> implemen
      *       bounds of type variables and wildcards.
      * </ol>
      *
-     * @param qualHierarchy the QualifierHierarchy
      * @param type the type to test
      * @return list of reasons the type is invalid, or empty list if the type is valid
      */
-    protected List<DiagMessage> isValidStructurally(
-            QualifierHierarchy qualHierarchy, AnnotatedTypeMirror type) {
-        SimpleAnnotatedTypeScanner<List<DiagMessage>, QualifierHierarchy> scanner =
+    protected List<DiagMessage> isValidStructurally(AnnotatedTypeMirror type) {
+        SimpleAnnotatedTypeScanner<List<DiagMessage>, Void> scanner =
                 new SimpleAnnotatedTypeScanner<>(
-                        (atm, q) -> isTopLevelValidType(q, atm),
+                        (atm, p) -> isTopLevelValidType(atm),
                         DiagMessage::mergeLists,
                         Collections.emptyList());
-        return scanner.visit(type, qualHierarchy);
+        return scanner.visit(type, null);
     }
 
     /**
      * Checks every property listed in {@link #isValidStructurally}, but only for the top level
      * type. If successful, returns an empty list. If not successful, returns diagnostics.
      *
-     * @param qualHierarchy the QualifierHierarchy
      * @param type the type to be checked
      * @return the diagnostics indicating failure, or an empty list if successful
      */
     // This method returns a singleton or empyty list.  Its return type is List rather than
     // DiagMessage (with null indicting success) because its caller, isValidStructurally(), expects
     // a list.
-    protected List<DiagMessage> isTopLevelValidType(
-            QualifierHierarchy qualHierarchy, AnnotatedTypeMirror type) {
+    protected List<DiagMessage> isTopLevelValidType(AnnotatedTypeMirror type) {
         // multiple annotations from the same hierarchy
         AnnotationMirrorSet annotations = type.getAnnotations();
         AnnotationMirrorSet seenTops = new AnnotationMirrorSet();
