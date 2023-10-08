@@ -245,7 +245,7 @@ public class LowerBoundAnnotatedTypeFactory extends BaseAnnotatedTypeFactoryForI
     }
 
     /** Determine the annotation that should be associated with a literal. */
-    AnnotationMirror anmFromVal(long val) {
+    /*package-private*/ AnnotationMirror anmFromVal(long val) {
         if (val >= 1) {
             return POS;
         } else if (val >= 0) {
@@ -400,7 +400,7 @@ public class LowerBoundAnnotatedTypeFactory extends BaseAnnotatedTypeFactoryForI
      * Looks up the minlen of a member select tree. Returns null if the tree doesn't represent an
      * array's length field.
      */
-    @Nullable Integer getMinLenFromMemberSelectTree(MemberSelectTree tree) {
+    /*package-private*/ @Nullable Integer getMinLenFromMemberSelectTree(MemberSelectTree tree) {
         if (TreeUtils.isArrayLengthAccess(tree)) {
             return ValueCheckerUtils.getMinLenFromTree(tree, getValueAnnotatedTypeFactory());
         }
@@ -411,7 +411,8 @@ public class LowerBoundAnnotatedTypeFactory extends BaseAnnotatedTypeFactoryForI
      * Looks up the minlen of a method invocation tree. Returns null if the tree doesn't represent
      * an string length method.
      */
-    @Nullable Integer getMinLenFromMethodInvocationTree(MethodInvocationTree tree) {
+    /*package-private*/ @Nullable Integer getMinLenFromMethodInvocationTree(
+            MethodInvocationTree tree) {
         if (imf.isLengthOfMethodInvocation(tree)) {
             return ValueCheckerUtils.getMinLenFromTree(tree, getValueAnnotatedTypeFactory());
         }
@@ -428,7 +429,8 @@ public class LowerBoundAnnotatedTypeFactory extends BaseAnnotatedTypeFactoryForI
      * @return an AnnotationMirror representing the result if the special case is valid, or null if
      *     not
      */
-    @Nullable AnnotationMirror checkForMathRandomSpecialCase(NumericalMultiplicationNode node) {
+    /*package-private*/ @Nullable AnnotationMirror checkForMathRandomSpecialCase(
+            NumericalMultiplicationNode node) {
         AnnotationMirror forwardRes =
                 checkForMathRandomSpecialCase(
                         node.getLeftOperand().getTree(), node.getRightOperand().getTree());
