@@ -56,7 +56,7 @@ import javax.lang.model.util.Types;
  *   <li>{@link AnnotatedTypeVariable type variables},
  *   <li>{@link AnnotatedWildcardType wildcard type arguments},
  *   <li>{@link AnnotatedExecutableType executable types} (their signature and return types),
- *   <li><@link AnnotatedIntersectionType intersection types},
+ *   <li>{@link AnnotatedIntersectionType intersection types},
  *   <li>{@link AnnotatedUnionType union types},
  *   <li>{@link AnnotatedNullType the null type}, and
  *   <li>{@link AnnotatedNoType pseudo-types} corresponding to packages and to the keyword {@code
@@ -576,7 +576,7 @@ public abstract class AnnotatedTypeMirror implements DeepCopyable<AnnotatedTypeM
      *
      * @param a the annotation to check for
      * @return true iff the type has a primary annotation with the same type as {@code a}
-     * @see #hasPrimaryAnnotation(AnnotationMirror)
+     * @see #hasAnnotation(AnnotationMirror)
      */
     // typetools: hasPrimaryAnnotationRelaxed
     public boolean hasAnnotationRelaxed(AnnotationMirror a) {

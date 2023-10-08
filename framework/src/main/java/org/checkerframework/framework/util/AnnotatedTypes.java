@@ -1200,7 +1200,7 @@ public class AnnotatedTypes {
      * Checks whether type contains the given modifier, also recursively in type arguments and
      * arrays. This method might be easier to implement directly as instance method in
      * AnnotatedTypeMirror; it corresponds to a "deep" version of {@link
-     * AnnotatedTypeMirror#hasPrimaryAnnotation(AnnotationMirror)}.
+     * AnnotatedTypeMirror#hasAnnotation(AnnotationMirror)}.
      *
      * @param type the type to search
      * @param modifier the modifier to search for
