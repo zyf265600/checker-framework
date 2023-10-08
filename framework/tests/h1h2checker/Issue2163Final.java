@@ -20,7 +20,7 @@ import org.checkerframework.framework.testchecker.h1h2checker.quals.H1Top;
 }
 
 @H1S1 class Issue2163FinalBA {
-    // :: error: (annotations.on.use)
+    // :: error: (type.invalid.annotations.on.use)
     @H1Top Issue2163FinalBA() {}
 }
 
