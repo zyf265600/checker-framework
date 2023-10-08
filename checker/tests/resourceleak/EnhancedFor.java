@@ -26,7 +26,7 @@ class EnhancedFor {
         }
     }
 
-    // :: error: type.argument
+    // :: error: (type.argument.type.incompatible)
     void test3(List<Socket> list) {
         // This error is issued because `s` is a local variable, and
         // the foreach loop under the hood assigns the result of a call

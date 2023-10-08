@@ -13,11 +13,11 @@ public class SneakyDrop {
 
     public static void main(String[] args) throws Exception {
         Resource x = new Resource();
-        // :: error: type.argument
+        // :: error: (type.argument.type.incompatible)
         sneakyDrop(x);
     }
 
-    // :: error: required.method.not.called
+    // :: error: (required.method.not.called)
     public static <T> void sneakyDrop2(@Owning @MustCall("close") T value) {}
 
     public static void main2(String[] args) throws Exception {
@@ -37,7 +37,7 @@ public class SneakyDrop {
 
     public static void main4(String[] args) throws Exception {
         Resource x = new Resource();
-        // :: error: type.argument
+        // :: error: (type.argument.type.incompatible)
         sneakyDrop4(x);
     }
 

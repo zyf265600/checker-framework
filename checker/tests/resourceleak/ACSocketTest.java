@@ -157,7 +157,7 @@ public class ACSocketTest {
     // handling generics in the Must Call Checker, which prevents containers from having
     // @MustCall("close") type arguments without errors (in exchange for avoiding many false
     // positives on containers that do not have must-call obligations on their component types).
-    // :: error: type.argument
+    // :: error: type.argument.type.incompatible
     void connectToLeader(AtomicReference<Socket> socket) throws IOException {
         // :: error: required.method.not.called
         if (socket.get() == null) {

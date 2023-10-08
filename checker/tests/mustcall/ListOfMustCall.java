@@ -13,7 +13,7 @@ import java.util.*;
 @InheritableMustCall("a")
 class ListOfMustCall {
     static void test(ListOfMustCall lm) {
-        // :: error: type.argument
+        // :: error: (type.argument.type.incompatible)
         List<ListOfMustCall> l = new ArrayList<>();
         // add(E e) takes an object of the type argument's type
         l.add(lm);
@@ -22,7 +22,7 @@ class ListOfMustCall {
     }
 
     static void test2(ListOfMustCall lm) {
-        // :: error: type.argument
+        // :: error: (type.argument.type.incompatible)
         List<@MustCall("a") ListOfMustCall> l = new ArrayList<>();
         l.add(lm);
         l.remove(lm);
