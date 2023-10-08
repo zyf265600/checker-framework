@@ -10,12 +10,12 @@ import org.checkerframework.framework.testchecker.h1h2checker.quals.H1Top;
 }
 
 @H1Top class Issue2163FinalAB {
-    // :: error: (super.invocation) :: warning: (inconsistent.constructor.type)
+    // :: error: (super.invocation.invalid) :: warning: (inconsistent.constructor.type)
     @H1S1 Issue2163FinalAB() {}
 }
 
 @H1Top class Issue2163FinalAC {
-    // :: error: (super.invocation) :: warning: (inconsistent.constructor.type)
+    // :: error: (super.invocation.invalid) :: warning: (inconsistent.constructor.type)
     @H1Bot Issue2163FinalAC() {}
 }
 
@@ -25,28 +25,28 @@ import org.checkerframework.framework.testchecker.h1h2checker.quals.H1Top;
 }
 
 @H1S1 class Issue2163FinalBB {
-    // :: error: (super.invocation) :: warning: (inconsistent.constructor.type)
+    // :: error: (super.invocation.invalid) :: warning: (inconsistent.constructor.type)
     @H1S1 Issue2163FinalBB() {}
 }
 
 @H1S1 class Issue2163FinalBC {
-    // :: error: (super.invocation) :: warning: (inconsistent.constructor.type)
+    // :: error: (super.invocation.invalid) :: warning: (inconsistent.constructor.type)
     @H1Bot Issue2163FinalBC() {}
 }
 
 @H1Bot class Issue2163FinalCA {
-    // :: error: (annotations.on.use)
+    // :: error: (type.invalid.annotations.on.use)
     @H1Top Issue2163FinalCA() {}
 }
 
 @H1Bot class Issue2163FinalCB {
-    // :: error: (annotations.on.use) :: warning: (inconsistent.constructor.type) ::
-    // error: (super.invocation)
+    // :: error: (type.invalid.annotations.on.use) :: warning: (inconsistent.constructor.type)
+    // :: error: (super.invocation.invalid)
     @H1S1 Issue2163FinalCB() {}
 }
 
 @H1Bot class Issue2163FinalCC {
-    // :: error: (super.invocation) :: warning: (inconsistent.constructor.type)
+    // :: error: (super.invocation.invalid) :: warning: (inconsistent.constructor.type)
     @H1Bot Issue2163FinalCC() {}
 }
 

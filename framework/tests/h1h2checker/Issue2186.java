@@ -8,10 +8,10 @@ import java.util.ArrayList;
 
 @SuppressWarnings("anno.on.irrelevant")
 @H1S1 class Issue2186 {
-    // :: error: (super.invocation) :: warning: (inconsistent.constructor.type)
+    // :: error: (super.invocation.invalid) :: warning: (inconsistent.constructor.type)
     Issue2186() {}
 
-    // :: error: (super.invocation) :: warning: (inconsistent.constructor.type)
+    // :: error: (super.invocation.invalid) :: warning: (inconsistent.constructor.type)
     @H1Bot Issue2186(int x) {}
 
     void test() {

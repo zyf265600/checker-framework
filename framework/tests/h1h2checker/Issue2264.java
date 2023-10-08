@@ -7,13 +7,13 @@ import org.checkerframework.framework.testchecker.h1h2checker.quals.H1Top;
 public class Issue2264 extends SuperClass {
     // :: warning: (inconsistent.constructor.type)
     @H1S1 Issue2264() {
-        // :: error: (super.invocation)
+        // :: error: (super.invocation.invalid)
         super(9);
     }
 }
 
 class ImplicitSuperCall {
-    // :: error: (super.invocation) :: warning: (inconsistent.constructor.type)
+    // :: error: (super.invocation.invalid) :: warning: (inconsistent.constructor.type)
     @H1S1 ImplicitSuperCall() {}
 }
 
@@ -22,6 +22,6 @@ class SuperClass {
 }
 
 @H1S1 class TestClass {
-    // :: error: (annotations.on.use)
+    // :: error: (type.invalid.annotations.on.use)
     @H1Top TestClass() {}
 }
