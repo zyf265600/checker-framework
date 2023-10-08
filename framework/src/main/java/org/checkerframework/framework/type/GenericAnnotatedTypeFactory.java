@@ -1720,8 +1720,8 @@ public abstract class GenericAnnotatedTypeFactory<
      * @return the type of {@code expr} if it were evaluated before tree {@code tree}
      */
     public AnnotatedTypeMirror getAnnotatedTypeBefore(JavaExpression expr, ExpressionTree tree) {
-        CFAbstractStore<?, ?> store = getStoreBefore(tree);
-        CFAbstractValue<?> value = null;
+        Store store = getStoreBefore(tree);
+        Value value = null;
         if (CFAbstractStore.canInsertJavaExpression(expr)) {
             value = store.getValue(expr);
         }
