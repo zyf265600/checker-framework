@@ -550,8 +550,7 @@ public class AnnotationFileElementTypes {
                     if (recordComponentStub != null && !recordComponentStub.hasAccessorInStubs()) {
                         memberType
                                 .getReturnType()
-                                .replaceAnnotations(
-                                        recordComponentStub.type.getPrimaryAnnotations());
+                                .replaceAnnotations(recordComponentStub.type.getAnnotations());
                     }
                 }
             }
@@ -571,7 +570,7 @@ public class AnnotationFileElementTypes {
                                     .replaceAnnotations(
                                             componentsInCanonicalConstructor
                                                     .get(i)
-                                                    .getPrimaryAnnotations());
+                                                    .getAnnotations());
                         }
                     }
                 }

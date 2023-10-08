@@ -158,7 +158,7 @@ public class InferenceResult extends LinkedHashMap<TypeVariable, InferredValue> 
                     InferredValue subValue = subordinate.get(target);
                     if (subValue instanceof InferredType) {
                         AnnotatedTypeMirror copy = ((InferredType) subValue).type.deepCopy();
-                        copy.replaceAnnotations(newType.type.getPrimaryAnnotations());
+                        copy.replaceAnnotations(newType.type.getAnnotations());
                         newType = new InferredType(copy);
                     }
                 }

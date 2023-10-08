@@ -148,7 +148,7 @@ public class DefaultReflectionResolver implements ReflectionResolver {
             AnnotatedTypeMirror returnType = resolvedResult.executableType.getReturnType();
 
             // Lub return types
-            returnLub = lub(returnLub, returnType.getPrimaryAnnotations(), factory);
+            returnLub = lub(returnLub, returnType.getAnnotations(), factory);
 
             // Glb receiver types (actual method receiver is passed as first
             // argument to invoke(Object, Object[]))
@@ -163,14 +163,14 @@ public class DefaultReflectionResolver implements ReflectionResolver {
                                 factory.getQualifierHierarchy().getTopAnnotations(),
                                 factory);
             } else {
-                receiverGlb = glb(receiverGlb, receiverType.getPrimaryAnnotations(), factory);
+                receiverGlb = glb(receiverGlb, receiverType.getAnnotations(), factory);
             }
 
             // Glb parameter types.  All formal parameter types get combined together because
             // Method#invoke takes as argument an array of parameter types, so there is no way to
             // distinguish the types of different formal parameters.
             for (AnnotatedTypeMirror mirror : resolvedResult.executableType.getParameterTypes()) {
-                paramsGlb = glb(paramsGlb, mirror.getPrimaryAnnotations(), factory);
+                paramsGlb = glb(paramsGlb, mirror.getAnnotations(), factory);
             }
         }
 
@@ -185,18 +185,18 @@ public class DefaultReflectionResolver implements ReflectionResolver {
          */
 
         // return value
-        origResult.executableType.getReturnType().clearPrimaryAnnotations();
+        origResult.executableType.getReturnType().clearAnnotations();
         origResult.executableType.getReturnType().addAnnotations(returnLub);
 
         // receiver type
-        origResult.executableType.getParameterTypes().get(0).clearPrimaryAnnotations();
+        origResult.executableType.getParameterTypes().get(0).clearAnnotations();
         origResult.executableType.getParameterTypes().get(0).addAnnotations(receiverGlb);
 
         // parameter types
         if (paramsGlb != null) {
             AnnotatedArrayType origArrayType =
                     (AnnotatedArrayType) origResult.executableType.getParameterTypes().get(1);
-            origArrayType.getComponentType().clearPrimaryAnnotations();
+            origArrayType.getComponentType().clearAnnotations();
             origArrayType.getComponentType().addAnnotations(paramsGlb);
         }
 
@@ -295,11 +295,11 @@ public class DefaultReflectionResolver implements ReflectionResolver {
             AnnotatedTypeMirror returnType = executableType.getReturnType();
 
             // Lub return types
-            returnLub = lub(returnLub, returnType.getPrimaryAnnotations(), factory);
+            returnLub = lub(returnLub, returnType.getAnnotations(), factory);
 
             // Glb parameter types
             for (AnnotatedTypeMirror mirror : executableType.getParameterTypes()) {
-                paramsGlb = glb(paramsGlb, mirror.getPrimaryAnnotations(), factory);
+                paramsGlb = glb(paramsGlb, mirror.getAnnotations(), factory);
             }
         }
         if (returnLub == null) {
@@ -312,14 +312,14 @@ public class DefaultReflectionResolver implements ReflectionResolver {
          */
 
         // return value
-        origResult.executableType.getReturnType().clearPrimaryAnnotations();
+        origResult.executableType.getReturnType().clearAnnotations();
         origResult.executableType.getReturnType().addAnnotations(returnLub);
 
         // parameter types
         if (paramsGlb != null) {
             AnnotatedArrayType origArrayType =
                     (AnnotatedArrayType) origResult.executableType.getParameterTypes().get(0);
-            origArrayType.getComponentType().clearPrimaryAnnotations();
+            origArrayType.getComponentType().clearAnnotations();
             origArrayType.getComponentType().addAnnotations(paramsGlb);
         }
 

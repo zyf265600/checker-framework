@@ -108,7 +108,7 @@ public class SameLenTransfer extends CFTransfer {
                     AnnotationMirror lengthNodeAnnotation =
                             atypeFactory
                                     .getAnnotatedType(lengthNodeReceiver.getTree())
-                                    .getPrimaryAnnotationInHierarchy(UNKNOWN);
+                                    .getAnnotationInHierarchy(UNKNOWN);
 
                     AnnotationMirror combinedSameLen =
                             atypeFactory.createCombinedSameLen(
@@ -124,7 +124,7 @@ public class SameLenTransfer extends CFTransfer {
         AnnotationMirror rightAnno =
                 atypeFactory
                         .getAnnotatedType(node.getExpression().getTree())
-                        .getPrimaryAnnotationInHierarchy(UNKNOWN);
+                        .getAnnotationInHierarchy(UNKNOWN);
 
         // If the left side of the assignment is an array or a string, then have both the right and
         // left side be SameLen of each other.
@@ -225,9 +225,7 @@ public class SameLenTransfer extends CFTransfer {
      */
     AnnotationMirror getAnno(Node n) {
         if (n.isLValue()) {
-            return atypeFactory
-                    .getAnnotatedType(n.getTree())
-                    .getPrimaryAnnotationInHierarchy(UNKNOWN);
+            return atypeFactory.getAnnotatedType(n.getTree()).getAnnotationInHierarchy(UNKNOWN);
         }
         CFValue cfValue = analysis.getValue(n);
         if (cfValue == null) {
@@ -293,7 +291,7 @@ public class SameLenTransfer extends CFTransfer {
             // If the parameter has a samelen annotation, then look for other parameters in that
             // annotation and propagate default the other annotation so that it is symmetric.
             AnnotatedTypeMirror atm = params.get(index);
-            AnnotationMirror sameLenAnno = atm.getPrimaryAnnotation(SameLen.class);
+            AnnotationMirror sameLenAnno = atm.getAnnotation(SameLen.class);
             if (sameLenAnno == null) {
                 continue;
             }

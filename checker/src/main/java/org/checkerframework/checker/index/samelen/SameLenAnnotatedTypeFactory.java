@@ -127,7 +127,7 @@ public class SameLenAnnotatedTypeFactory extends BaseAnnotatedTypeFactory {
         AnnotatedTypeMirror atm = super.getAnnotatedTypeLhs(tree);
 
         if (tree.getKind() == Tree.Kind.VARIABLE) {
-            AnnotationMirror sameLenAnno = atm.getPrimaryAnnotation(SameLen.class);
+            AnnotationMirror sameLenAnno = atm.getAnnotation(SameLen.class);
             if (sameLenAnno != null) {
                 JavaExpression je = JavaExpression.fromVariableTree((VariableTree) tree);
                 String varName = je.toString();
@@ -326,7 +326,7 @@ public class SameLenAnnotatedTypeFactory extends BaseAnnotatedTypeFactory {
                         IndexUtil.getLengthSequenceTree(dimensionTree, imf, processingEnv);
                 if (sequenceTree != null) {
                     AnnotationMirror sequenceAnno =
-                            getAnnotatedType(sequenceTree).getPrimaryAnnotationInHierarchy(UNKNOWN);
+                            getAnnotatedType(sequenceTree).getAnnotationInHierarchy(UNKNOWN);
 
                     JavaExpression sequenceExpr = JavaExpression.fromTree(sequenceTree);
                     if (mayAppearInSameLen(sequenceExpr)) {

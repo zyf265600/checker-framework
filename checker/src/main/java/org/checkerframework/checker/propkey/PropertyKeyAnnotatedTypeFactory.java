@@ -72,7 +72,7 @@ public class PropertyKeyAnnotatedTypeFactory extends BaseAnnotatedTypeFactory {
 
         @Override
         public Void visitLiteral(LiteralTree tree, AnnotatedTypeMirror type) {
-            if (!type.hasPrimaryAnnotationInHierarchy(theAnnot)
+            if (!type.hasAnnotationInHierarchy(theAnnot)
                     && tree.getKind() == Tree.Kind.STRING_LITERAL
                     && strContains(lookupKeys, tree.getValue().toString())) {
                 type.addAnnotation(theAnnot);
@@ -87,14 +87,14 @@ public class PropertyKeyAnnotatedTypeFactory extends BaseAnnotatedTypeFactory {
         // Result of binary op might not be a property key.
         @Override
         public Void visitBinary(BinaryTree tree, AnnotatedTypeMirror type) {
-            type.removePrimaryAnnotation(theAnnot);
+            type.removeAnnotation(theAnnot);
             return null; // super.visitBinary(tree, type);
         }
 
         // Result of unary op might not be a property key.
         @Override
         public Void visitCompoundAssignment(CompoundAssignmentTree tree, AnnotatedTypeMirror type) {
-            type.removePrimaryAnnotation(theAnnot);
+            type.removeAnnotation(theAnnot);
             return null; // super.visitCompoundAssignment(tree, type);
         }
     }

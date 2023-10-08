@@ -89,7 +89,7 @@ public class ValueVisitor extends BaseTypeVisitor<ValueAnnotatedTypeFactory> {
         replaceSpecialIntRangeAnnotations(varType);
 
         if (valueType.getKind() == TypeKind.CHAR
-                && valueType.hasPrimaryAnnotation(getTypeFactory().UNKNOWNVAL)) {
+                && valueType.hasAnnotation(getTypeFactory().UNKNOWNVAL)) {
             valueType.addAnnotation(
                     getTypeFactory().createIntRangeAnnotation(Range.CHAR_EVERYTHING));
         }
@@ -133,9 +133,9 @@ public class ValueVisitor extends BaseTypeVisitor<ValueAnnotatedTypeFactory> {
                 new AnnotatedTypeScanner<Void, Void>() {
                     @Override
                     protected Void scan(AnnotatedTypeMirror type, Void p) {
-                        if (type.hasPrimaryAnnotation(IntRangeFromPositive.class)
-                                || type.hasPrimaryAnnotation(IntRangeFromNonNegative.class)
-                                || type.hasPrimaryAnnotation(IntRangeFromGTENegativeOne.class)) {
+                        if (type.hasAnnotation(IntRangeFromPositive.class)
+                                || type.hasAnnotation(IntRangeFromNonNegative.class)
+                                || type.hasAnnotation(IntRangeFromGTENegativeOne.class)) {
                             type.replaceAnnotation(atypeFactory.UNKNOWNVAL);
                         }
                         return super.scan(type, p);
@@ -287,12 +287,11 @@ public class ValueVisitor extends BaseTypeVisitor<ValueAnnotatedTypeFactory> {
         }
 
         AnnotatedTypeMirror castType = atypeFactory.getAnnotatedType(tree);
-        AnnotationMirror castAnno =
-                castType.getPrimaryAnnotationInHierarchy(atypeFactory.UNKNOWNVAL);
+        AnnotationMirror castAnno = castType.getAnnotationInHierarchy(atypeFactory.UNKNOWNVAL);
         AnnotationMirror exprAnno =
                 atypeFactory
                         .getAnnotatedType(tree.getExpression())
-                        .getPrimaryAnnotationInHierarchy(atypeFactory.UNKNOWNVAL);
+                        .getAnnotationInHierarchy(atypeFactory.UNKNOWNVAL);
 
         // It is always legal to cast to an IntRange type that includes all values
         // of the underlying type. Do not warn about such casts.
@@ -352,8 +351,8 @@ public class ValueVisitor extends BaseTypeVisitor<ValueAnnotatedTypeFactory> {
                 && exprTypeKind != null
                 && TypeKindUtils.isIntegral(castTypeKind)
                 && TypeKindUtils.isIntegral(exprTypeKind)) {
-            AnnotationMirrorSet castAnnos = castType.getPrimaryAnnotations();
-            AnnotationMirrorSet exprAnnos = exprType.getPrimaryAnnotations();
+            AnnotationMirrorSet castAnnos = castType.getAnnotations();
+            AnnotationMirrorSet exprAnnos = exprType.getAnnotations();
             if (castAnnos.equals(exprAnnos)) {
                 return true;
             }
@@ -450,7 +449,7 @@ public class ValueVisitor extends BaseTypeVisitor<ValueAnnotatedTypeFactory> {
             return false;
         }
 
-        AnnotationMirror anno = type.getPrimaryAnnotationInHierarchy(atypeFactory.UNKNOWNVAL);
+        AnnotationMirror anno = type.getAnnotationInHierarchy(atypeFactory.UNKNOWNVAL);
         if (anno == null) {
             return false;
         }

@@ -373,7 +373,7 @@ class MustCallConsistencyAnalyzer {
                 return mcAtf.BOTTOM;
             }
 
-            return mcAtf.getAnnotatedType(typeElt).getPrimaryAnnotationInHierarchy(mcAtf.TOP);
+            return mcAtf.getAnnotatedType(typeElt).getAnnotationInHierarchy(mcAtf.TOP);
         }
 
         @Override
@@ -1191,8 +1191,7 @@ class MustCallConsistencyAnalyzer {
         MustCallAnnotatedTypeFactory mcAtf =
                 typeFactory.getTypeFactoryOfSubchecker(MustCallChecker.class);
         AnnotatedTypeMirror mustCallAnnotatedType = mcAtf.getAnnotatedType(node.getTree());
-        AnnotationMirror mustCallAnnotation =
-                mustCallAnnotatedType.getPrimaryAnnotation(MustCall.class);
+        AnnotationMirror mustCallAnnotation = mustCallAnnotatedType.getAnnotation(MustCall.class);
         return typeFactory.getMustCallValues(mcAtf.withoutClose(mustCallAnnotation)).isEmpty();
     }
 
@@ -1390,7 +1389,7 @@ class MustCallConsistencyAnalyzer {
                 AnnotationMirror mcAnno =
                         mcTypeFactory
                                 .getAnnotatedType(lhs.getElement())
-                                .getPrimaryAnnotation(MustCall.class);
+                                .getAnnotation(MustCall.class);
                 List<String> mcValues =
                         AnnotationUtils.getElementValueArray(
                                 mcAnno, mcTypeFactory.getMustCallValueElement(), String.class);
@@ -1484,10 +1483,7 @@ class MustCallConsistencyAnalyzer {
         }
         if (mcAnno == null) {
             // No stored value (or the stored value is Poly/top), so use the declared type.
-            mcAnno =
-                    mcTypeFactory
-                            .getAnnotatedType(lhs.getElement())
-                            .getPrimaryAnnotation(MustCall.class);
+            mcAnno = mcTypeFactory.getAnnotatedType(lhs.getElement()).getAnnotation(MustCall.class);
         }
         // if mcAnno is still null, then the declared type must be something other than
         // @MustCall (probably @MustCallUnknown). Do nothing in this case: a warning

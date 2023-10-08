@@ -657,7 +657,7 @@ public class UpperBoundTransfer extends IndexAbstractTransfer {
                             AnnotationMirror lessThanType =
                                     lessThanAtypeFactory
                                             .getAnnotatedType(n.getLeftOperand().getTree())
-                                            .getPrimaryAnnotation(LessThan.class);
+                                            .getAnnotation(LessThan.class);
 
                             if (lessThanType != null
                                     && lessThanAtypeFactory.isLessThan(lessThanType, to)) {
@@ -784,15 +784,15 @@ public class UpperBoundTransfer extends IndexAbstractTransfer {
         AnnotatedTypeMirror substringIndexType =
                 atypeFactory.getSubstringIndexAnnotatedTypeFactory().getAnnotatedType(nodeTree);
         AnnotationMirror substringIndexAnno =
-                substringIndexType.getPrimaryAnnotation(SubstringIndexFor.class);
+                substringIndexType.getAnnotation(SubstringIndexFor.class);
         // Annotation from the Lower bound hierarchy
         AnnotatedTypeMirror lowerBoundType =
                 atypeFactory.getLowerBoundAnnotatedTypeFactory().getAnnotatedType(nodeTree);
         // If the index has an SubstringIndexFor annotation and at the same time is non-negative,
         // convert the SubstringIndexFor annotation to a upper bound qualifier.
         if (substringIndexAnno != null
-                && (lowerBoundType.hasPrimaryAnnotation(NonNegative.class)
-                        || lowerBoundType.hasPrimaryAnnotation(Positive.class))) {
+                && (lowerBoundType.hasAnnotation(NonNegative.class)
+                        || lowerBoundType.hasAnnotation(Positive.class))) {
             UBQualifier substringIndexQualifier =
                     UBQualifier.createUBQualifier(
                             substringIndexAnno, (UpperBoundChecker) atypeFactory.getChecker());

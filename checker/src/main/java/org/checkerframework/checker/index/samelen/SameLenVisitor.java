@@ -40,13 +40,13 @@ public class SameLenVisitor extends BaseTypeVisitor<SameLenAnnotatedTypeFactory>
         if (IndexUtil.isSequenceType(valueType.getUnderlyingType())
                 && TreeUtils.isExpressionTree(valueTree)
                 // if both annotations are @PolySameLen, there is nothing to do
-                && !(valueType.hasPrimaryAnnotation(PolySameLen.class)
-                        && varType.hasPrimaryAnnotation(PolySameLen.class))) {
+                && !(valueType.hasAnnotation(PolySameLen.class)
+                        && varType.hasAnnotation(PolySameLen.class))) {
 
             JavaExpression rhs = JavaExpression.fromTree((ExpressionTree) valueTree);
             if (rhs != null && SameLenAnnotatedTypeFactory.mayAppearInSameLen(rhs)) {
                 String rhsExpr = rhs.toString();
-                AnnotationMirror sameLenAnno = valueType.getPrimaryAnnotation(SameLen.class);
+                AnnotationMirror sameLenAnno = valueType.getAnnotation(SameLen.class);
                 Collection<String> exprs;
                 if (sameLenAnno == null) {
                     exprs = Collections.singletonList(rhsExpr);

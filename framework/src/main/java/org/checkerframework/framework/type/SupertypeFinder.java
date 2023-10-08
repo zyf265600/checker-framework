@@ -128,7 +128,7 @@ final class SupertypeFinder {
         @Override
         public List<AnnotatedTypeMirror> visitPrimitive(AnnotatedPrimitiveType type, Void p) {
             List<AnnotatedTypeMirror> superTypes = new ArrayList<>(1);
-            AnnotationMirrorSet annotations = type.getPrimaryAnnotations();
+            AnnotationMirrorSet annotations = type.getAnnotations();
 
             // Find Boxed type
             TypeElement boxed = types.boxedClass(type.getUnderlyingType());
@@ -172,7 +172,7 @@ final class SupertypeFinder {
 
         @Override
         public List<AnnotatedDeclaredType> visitDeclared(AnnotatedDeclaredType type, Void p) {
-            // AnnotationMirrorSet annotations = type.getPrimaryAnnotations();
+            // AnnotationMirrorSet annotations = type.getAnnotations();
 
             TypeElement typeElement = (TypeElement) type.getUnderlyingType().asElement();
 
@@ -198,7 +198,7 @@ final class SupertypeFinder {
                 TypeElement jlaElement =
                         atypeFactory.elements.getTypeElement(Annotation.class.getCanonicalName());
                 AnnotatedDeclaredType jlaAnnotation = atypeFactory.fromElement(jlaElement);
-                jlaAnnotation.addAnnotations(type.getPrimaryAnnotations());
+                jlaAnnotation.addAnnotations(type.getAnnotations());
                 supertypes.add(jlaAnnotation);
             }
 
@@ -411,7 +411,7 @@ final class SupertypeFinder {
                     t.addAnnotations(bounds);
                 }
             }
-            adt.addAnnotations(type.getPrimaryAnnotations());
+            adt.addAnnotations(type.getAnnotations());
             return adt;
         }
 
@@ -431,7 +431,7 @@ final class SupertypeFinder {
         @Override
         public List<AnnotatedTypeMirror> visitArray(AnnotatedArrayType type, Void p) {
             List<AnnotatedTypeMirror> superTypes = new ArrayList<>();
-            AnnotationMirrorSet annotations = type.getPrimaryAnnotations();
+            AnnotationMirrorSet annotations = type.getAnnotations();
             AnnotatedTypeMirror objectType = atypeFactory.getAnnotatedType(Object.class);
             objectType.addAnnotations(annotations);
             superTypes.add(objectType);

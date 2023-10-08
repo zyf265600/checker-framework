@@ -562,7 +562,7 @@ public class TypeArgInferenceUtil {
                                 (AnnotatedTypeVariable)
                                         AnnotatedTypeMirror.createType(
                                                 typeVariable, factory, false));
-                wt.replaceAnnotations(entry.getValue().getPrimaryAnnotations());
+                wt.replaceAnnotations(entry.getValue().getAnnotations());
                 result.put(typeVariable, wt);
             }
         }

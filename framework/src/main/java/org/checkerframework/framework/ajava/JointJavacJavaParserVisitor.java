@@ -1148,7 +1148,7 @@ public abstract class JointJavacJavaParserVisitor extends SimpleTreeVisitor<Void
         // TODO: Implement this.
         //
         // Some notes:
-        // - javacTree.getPrimaryAnnotations() seems to always return empty, any annotations on the
+        // - javacTree.getAnnotations() seems to always return empty, any annotations on the
         // base
         // type seem to go on the type itself in javacTree.getType(). The JavaParser version doesn't
         // even have a corresponding getPrimaryAnnotations method.
@@ -1219,7 +1219,7 @@ public abstract class JointJavacJavaParserVisitor extends SimpleTreeVisitor<Void
     public Void visitPackage(PackageTree javacTree, Node javaParserNode) {
         PackageDeclaration node = castNode(PackageDeclaration.class, javaParserNode, javacTree);
         processPackage(javacTree, node);
-        // visitLists(javacTree.getPrimaryAnnotations(), node.getPrimaryAnnotations());
+        // visitLists(javacTree.getAnnotations(), node.getAnnotations());
         javacTree.getPackageName().accept(this, node.getName());
         return null;
     }

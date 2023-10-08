@@ -117,8 +117,8 @@ public abstract class AbstractQualifierPolymorphism implements QualifierPolymorp
                                     polyQuals.entrySet()) {
                                 AnnotationMirror poly = entry.getKey();
                                 AnnotationMirror top = entry.getValue();
-                                if (type.hasPrimaryAnnotation(poly)) {
-                                    type.removePrimaryAnnotation(poly);
+                                if (type.hasAnnotation(poly)) {
+                                    type.removeAnnotation(poly);
                                     if (type.getKind() != TypeKind.TYPEVAR
                                             && type.getKind() != TypeKind.WILDCARD) {
                                         // Do not add qualifiers to type variables and
@@ -141,7 +141,7 @@ public abstract class AbstractQualifierPolymorphism implements QualifierPolymorp
         this.polyScanner =
                 new SimpleAnnotatedTypeScanner<>(
                         (type, notused) -> {
-                            for (AnnotationMirror a : type.getPrimaryAnnotations()) {
+                            for (AnnotationMirror a : type.getAnnotations()) {
                                 if (qualHierarchy.isPolymorphicQualifier(a)) {
                                     return true;
                                 }
@@ -238,7 +238,7 @@ public abstract class AbstractQualifierPolymorphism implements QualifierPolymorp
         //        collector.visit(factory.getReceiverType(tree), type.getReceiverType()));
 
         AnnotatedTypeMirror newClassType = type.getReturnType().deepCopy();
-        newClassType.clearPrimaryAnnotations();
+        newClassType.clearAnnotations();
         newClassType.replaceAnnotations(atypeFactory.getExplicitNewClassAnnos(tree));
 
         instantiationMapping =
@@ -263,7 +263,7 @@ public abstract class AbstractQualifierPolymorphism implements QualifierPolymorp
         AnnotationMirrorMap<AnnotationMirror> matchingMapping = new AnnotationMirrorMap<>();
         polyQuals.forEach(
                 (polyAnnotation, topAnno) -> {
-                    AnnotationMirror annoOnOwner = owner.getPrimaryAnnotationInHierarchy(topAnno);
+                    AnnotationMirror annoOnOwner = owner.getAnnotationInHierarchy(topAnno);
                     if (annoOnOwner != null) {
                         matchingMapping.put(polyAnnotation, annoOnOwner);
                     }
@@ -345,8 +345,8 @@ public abstract class AbstractQualifierPolymorphism implements QualifierPolymorp
         for (Map.Entry<AnnotationMirror, AnnotationMirror> kv : polyQuals.entrySet()) {
             AnnotationMirror top = kv.getValue();
             AnnotationMirror poly = kv.getKey();
-            if (polyType.hasPrimaryAnnotation(poly)) {
-                AnnotationMirror typeQual = type.getPrimaryAnnotationInHierarchy(top);
+            if (polyType.hasAnnotation(poly)) {
+                AnnotationMirror typeQual = type.getAnnotationInHierarchy(top);
                 if (typeQual != null) {
                     if (atypeFactory.hasQualifierParameterInHierarchy(type, top)) {
                         polyInstantiationForQualifierParameter.put(poly, typeQual);

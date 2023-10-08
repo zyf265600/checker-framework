@@ -165,7 +165,7 @@ public class MethodValAnnotatedTypeFactory extends BaseAnnotatedTypeFactory {
                 getTypeFactoryOfSubchecker(ClassValChecker.class);
         AnnotatedTypeMirror classAnno = classValATF.getAnnotatedType(tree);
 
-        AnnotationMirror classValAnno = classAnno.getPrimaryAnnotation(ClassVal.class);
+        AnnotationMirror classValAnno = classAnno.getAnnotation(ClassVal.class);
         if (classValAnno != null) {
             return AnnotationUtils.getElementValueArray(
                     classValAnno, classValValueElement, String.class);
@@ -173,7 +173,7 @@ public class MethodValAnnotatedTypeFactory extends BaseAnnotatedTypeFactory {
             return Collections.emptyList();
         }
 
-        AnnotationMirror classBoundAnno = classAnno.getPrimaryAnnotation(ClassBound.class);
+        AnnotationMirror classBoundAnno = classAnno.getAnnotation(ClassBound.class);
         if (classBoundAnno != null) {
             return AnnotationUtils.getElementValueArray(
                     classBoundAnno, classBoundValueElement, String.class);
@@ -192,7 +192,7 @@ public class MethodValAnnotatedTypeFactory extends BaseAnnotatedTypeFactory {
     private List<String> getMethodNamesFromStringArg(ExpressionTree arg) {
         ValueAnnotatedTypeFactory valueATF = getTypeFactoryOfSubchecker(ValueChecker.class);
         AnnotatedTypeMirror valueAnno = valueATF.getAnnotatedType(arg);
-        AnnotationMirror annotation = valueAnno.getPrimaryAnnotation(StringVal.class);
+        AnnotationMirror annotation = valueAnno.getAnnotation(StringVal.class);
         if (annotation != null) {
             return AnnotationUtils.getElementValueArray(
                     annotation, stringValValueElement, String.class);
@@ -434,11 +434,11 @@ public class MethodValAnnotatedTypeFactory extends BaseAnnotatedTypeFactory {
                     ValueAnnotatedTypeFactory valueATF =
                             getTypeFactoryOfSubchecker(ValueChecker.class);
                     AnnotatedTypeMirror valueType = valueATF.getAnnotatedType(argument);
-                    AnnotationMirror arrayLenAnno = valueType.getPrimaryAnnotation(ArrayLen.class);
+                    AnnotationMirror arrayLenAnno = valueType.getAnnotation(ArrayLen.class);
                     if (arrayLenAnno != null) {
                         return AnnotationUtils.getElementValueArray(
                                 arrayLenAnno, arrayLenValueElement, Integer.class);
-                    } else if (valueType.getPrimaryAnnotation(BottomVal.class) != null) {
+                    } else if (valueType.getAnnotation(BottomVal.class) != null) {
                         // happens in this case: (Class[]) null
                         return ZERO_LIST;
                     }

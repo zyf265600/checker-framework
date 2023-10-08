@@ -123,7 +123,7 @@ public class DefaultQualifierForUseTypeAnnotator extends TypeAnnotator {
      */
     protected AnnotationMirrorSet getExplicitAnnos(Element element) {
         AnnotatedTypeMirror explicitAnnoOnDecl = atypeFactory.fromElement(element);
-        return explicitAnnoOnDecl.getPrimaryAnnotations();
+        return explicitAnnoOnDecl.getAnnotations();
     }
 
     /**

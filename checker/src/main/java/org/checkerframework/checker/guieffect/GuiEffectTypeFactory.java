@@ -101,14 +101,14 @@ public class GuiEffectTypeFactory extends BaseAnnotatedTypeFactory {
     public boolean isPolymorphicType(TypeElement cls) {
         assert (cls != null);
         return getDeclAnnotation(cls, PolyUIType.class) != null
-                || fromElement(cls).hasPrimaryAnnotation(PolyUI.class);
+                || fromElement(cls).hasAnnotation(PolyUI.class);
     }
 
     public boolean isUIType(TypeElement cls) {
         if (debugSpew) {
             System.err.println(" isUIType(" + cls + ")");
         }
-        boolean targetClassUIP = fromElement(cls).hasPrimaryAnnotation(UI.class);
+        boolean targetClassUIP = fromElement(cls).hasAnnotation(UI.class);
         AnnotationMirror targetClassUITypeP = getDeclAnnotation(cls, UIType.class);
         AnnotationMirror targetClassSafeTypeP = getDeclAnnotation(cls, SafeType.class);
 
@@ -136,7 +136,7 @@ public class GuiEffectTypeFactory extends BaseAnnotatedTypeFactory {
         // an @UIType polymorphic explicitly
         // AnnotationMirror targetClassPolyP = getDeclAnnotation(cls, PolyUI.class);
         // AnnotationMirror targetClassPolyTypeP = getDeclAnnotation(cls, PolyUIType.class);
-        boolean targetClassSafeP = fromElement(cls).hasPrimaryAnnotation(AlwaysSafe.class);
+        boolean targetClassSafeP = fromElement(cls).hasAnnotation(AlwaysSafe.class);
         if (targetClassSafeP) {
             return false; // explicitly annotated otherwise
         }
@@ -302,9 +302,9 @@ public class GuiEffectTypeFactory extends BaseAnnotatedTypeFactory {
             }
 
             // Instantiate type-polymorphic effects
-            if (srcType.hasPrimaryAnnotation(AlwaysSafe.class)) {
+            if (srcType.hasAnnotation(AlwaysSafe.class)) {
                 targetEffect = new Effect(SafeEffect.class);
-            } else if (srcType.hasPrimaryAnnotation(UI.class)) {
+            } else if (srcType.hasAnnotation(UI.class)) {
                 targetEffect = new Effect(UIEffect.class);
             }
             // Poly substitution would be a noop.
@@ -362,7 +362,7 @@ public class GuiEffectTypeFactory extends BaseAnnotatedTypeFactory {
     @Override
     public AnnotatedTypeMirror getAnnotatedType(Tree tree) {
         AnnotatedTypeMirror typeMirror = super.getAnnotatedType(tree);
-        if (typeMirror.hasPrimaryAnnotation(UI.class)) {
+        if (typeMirror.hasAnnotation(UI.class)) {
             return typeMirror;
         }
         // Check if this an @UI anonymous class or lambda due to inference, or an expression
@@ -377,11 +377,11 @@ public class GuiEffectTypeFactory extends BaseAnnotatedTypeFactory {
             boolean isTrueOperandUI =
                     (cet.getTrueExpression() != null
                             && this.getAnnotatedType(cet.getTrueExpression())
-                                    .hasPrimaryAnnotation(UI.class));
+                                    .hasAnnotation(UI.class));
             boolean isFalseOperandUI =
                     (cet.getFalseExpression() != null
                             && this.getAnnotatedType(cet.getFalseExpression())
-                                    .hasPrimaryAnnotation(UI.class));
+                                    .hasAnnotation(UI.class));
             if (isTrueOperandUI || isFalseOperandUI) {
                 typeMirror.replaceAnnotation(AnnotationBuilder.fromClass(elements, UI.class));
             }
@@ -488,9 +488,9 @@ public class GuiEffectTypeFactory extends BaseAnnotatedTypeFactory {
                     // parses as @UI on an anon class decl extending Runnable
                     boolean isAnonInstantiation =
                             isAnonymousType(declaringType)
-                                    && (fromElement(declaringType).hasPrimaryAnnotation(UI.class)
+                                    && (fromElement(declaringType).hasAnnotation(UI.class)
                                             || uiAnonClasses.contains(declaringType));
-                    if (!isAnonInstantiation && !overriddenType.hasPrimaryAnnotation(UI.class)) {
+                    if (!isAnonInstantiation && !overriddenType.hasAnnotation(UI.class)) {
                         checker.reportError(
                                 errorTree,
                                 "override.effect.invalid.nonui",
@@ -631,13 +631,11 @@ public class GuiEffectTypeFactory extends BaseAnnotatedTypeFactory {
 
             // STEP 2: Fix up the method receiver annotation
             AnnotatedTypeMirror.AnnotatedDeclaredType receiverType = methType.getReceiverType();
-            if (receiverType != null && !receiverType.hasPrimaryAnnotationInHierarchy(UI)) {
+            if (receiverType != null && !receiverType.hasAnnotationInHierarchy(UI)) {
                 receiverType.addAnnotation(
                         isPolymorphicType(cls)
                                 ? POLYUI
-                                : fromElement(cls).hasPrimaryAnnotation(UI.class)
-                                        ? UI
-                                        : ALWAYSSAFE);
+                                : fromElement(cls).hasAnnotation(UI.class) ? UI : ALWAYSSAFE);
             }
             return super.visitMethod(tree, type);
         }

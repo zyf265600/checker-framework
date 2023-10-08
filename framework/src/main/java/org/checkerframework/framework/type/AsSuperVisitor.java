@@ -120,11 +120,11 @@ public class AsSuperVisitor extends AbstractAtmComboVisitor<AnnotatedTypeMirror,
             AnnotationMirrorSet lubs = null;
             for (AnnotatedDeclaredType altern : annotatedUnionType.getAlternatives()) {
                 if (lubs == null) {
-                    lubs = altern.getPrimaryAnnotations();
+                    lubs = altern.getAnnotations();
                 } else {
                     AnnotationMirrorSet newLubs = new AnnotationMirrorSet();
                     for (AnnotationMirror lub : lubs) {
-                        AnnotationMirror anno = altern.getPrimaryAnnotationInHierarchy(lub);
+                        AnnotationMirror anno = altern.getAnnotationInHierarchy(lub);
                         newLubs.add(qualHierarchy.leastUpperBound(anno, lub));
                     }
                     lubs = newLubs;
@@ -152,16 +152,16 @@ public class AsSuperVisitor extends AbstractAtmComboVisitor<AnnotatedTypeMirror,
     private AnnotatedTypeMirror copyPrimaryAnnos(AnnotatedTypeMirror from, AnnotatedTypeMirror to) {
         // There may have been annotations added by a recursive call to asSuper, so replace existing
         // annotations
-        to.replaceAnnotations(new ArrayList<>(from.getPrimaryAnnotations()));
+        to.replaceAnnotations(new ArrayList<>(from.getAnnotations()));
         // if to is a Typevar or Wildcard, then replaceAnnotations also sets primary annotations on
-        // the bounds to from.getPrimaryAnnotations()
+        // the bounds to from.getAnnotations()
 
         if (to.getKind() == TypeKind.UNION) {
             // Make sure that the alternatives have a primary annotations
             // Alternatives cannot have type arguments, so asSuper isn't called recursively
             AnnotatedUnionType unionType = (AnnotatedUnionType) to;
             for (AnnotatedDeclaredType altern : unionType.getAlternatives()) {
-                altern.addMissingAnnotations(unionType.getPrimaryAnnotations());
+                altern.addMissingAnnotations(unionType.getAnnotations());
             }
         }
         return to;
@@ -608,7 +608,7 @@ public class AsSuperVisitor extends AbstractAtmComboVisitor<AnnotatedTypeMirror,
         // Clear the superType annotations and copy over the primary annotations before computing
         // bounds, so that the superType annotations don't override the type annotations on the
         // bounds.
-        superType.clearPrimaryAnnotations();
+        superType.clearAnnotations();
         copyPrimaryAnnos(type, superType);
 
         AnnotatedTypeMirror upperBound = visit(type.getUpperBound(), superType.getUpperBound(), p);

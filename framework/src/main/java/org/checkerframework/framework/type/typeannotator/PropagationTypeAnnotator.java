@@ -103,10 +103,9 @@ public class PropagationTypeAnnotator extends TypeAnnotator {
                         (AnnotatedTypeVariable) declaration.getTypeArguments().get(i);
                 AnnotatedWildcardType wct = (AnnotatedWildcardType) typeArgs.get(i);
                 wct.getExtendsBound()
-                        .replaceAnnotations(typeParam.getUpperBound().getPrimaryAnnotations());
-                wct.getSuperBound()
-                        .replaceAnnotations(typeParam.getLowerBound().getPrimaryAnnotations());
-                wct.replaceAnnotations(typeParam.getPrimaryAnnotations());
+                        .replaceAnnotations(typeParam.getUpperBound().getAnnotations());
+                wct.getSuperBound().replaceAnnotations(typeParam.getLowerBound().getAnnotations());
+                wct.replaceAnnotations(typeParam.getAnnotations());
             }
         }
 
@@ -193,9 +192,8 @@ public class PropagationTypeAnnotator extends TypeAnnotator {
         }
 
         for (AnnotationMirror top : tops) {
-            if (wildcardBound.getPrimaryAnnotationInHierarchy(top) == null) {
-                AnnotationMirror typeParamAnno =
-                        typeParamBound.getPrimaryAnnotationInHierarchy(top);
+            if (wildcardBound.getAnnotationInHierarchy(top) == null) {
+                AnnotationMirror typeParamAnno = typeParamBound.getAnnotationInHierarchy(top);
                 if (typeParamAnno == null) {
                     throw new BugInCF(
                             StringsPlume.joinLines(

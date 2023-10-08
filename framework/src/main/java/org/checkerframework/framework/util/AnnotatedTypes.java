@@ -141,7 +141,7 @@ public class AnnotatedTypes {
             // @A List<@B String>, then the returned type is @C List<@B String>.)
             @SuppressWarnings("unchecked")
             T copy = (T) supertype.deepCopy();
-            copy.replaceAnnotations(subtype.getPrimaryAnnotations());
+            copy.replaceAnnotations(subtype.getAnnotations());
             return copy;
         }
 
@@ -160,21 +160,19 @@ public class AnnotatedTypes {
                 && AnnotatedTypes.isEnum(asSuperType)
                 && AnnotatedTypes.isDeclarationOfJavaLangEnum(types, elements, supertype)) {
             AnnotatedDeclaredType resultAtd = ((AnnotatedDeclaredType) supertype).deepCopy();
-            resultAtd.clearPrimaryAnnotations();
-            resultAtd.addAnnotations(asSuperType.getPrimaryAnnotations());
+            resultAtd.clearAnnotations();
+            resultAtd.addAnnotations(asSuperType.getAnnotations());
 
             AnnotatedDeclaredType asSuperAdt = (AnnotatedDeclaredType) asSuperType;
             if (!resultAtd.getTypeArguments().isEmpty()
                     && !asSuperAdt.getTypeArguments().isEmpty()) {
                 AnnotatedTypeMirror sourceTypeArg = asSuperAdt.getTypeArguments().get(0);
                 AnnotatedTypeMirror resultTypeArg = resultAtd.getTypeArguments().get(0);
-                resultTypeArg.clearPrimaryAnnotations();
+                resultTypeArg.clearAnnotations();
                 if (resultTypeArg.getKind() == TypeKind.TYPEVAR) {
                     // Only change the upper bound of a type variable.
                     AnnotatedTypeVariable resultTypeArgTV = (AnnotatedTypeVariable) resultTypeArg;
-                    resultTypeArgTV
-                            .getUpperBound()
-                            .addAnnotations(sourceTypeArg.getPrimaryAnnotations());
+                    resultTypeArgTV.getUpperBound().addAnnotations(sourceTypeArg.getAnnotations());
                 } else {
                     resultTypeArg.addAnnotations(sourceTypeArg.getEffectiveAnnotations());
                 }
@@ -956,11 +954,11 @@ public class AnnotatedTypes {
             AnnotatedTypeMirror subtype,
             AnnotatedTypeMirror supertype) {
         AnnotatedTypeMirror glb = subtype.deepCopy();
-        glb.clearPrimaryAnnotations();
+        glb.clearAnnotations();
 
         for (AnnotationMirror top : qualHierarchy.getTopAnnotations()) {
-            AnnotationMirror subAnno = subtype.getPrimaryAnnotationInHierarchy(top);
-            AnnotationMirror superAnno = supertype.getPrimaryAnnotationInHierarchy(top);
+            AnnotationMirror subAnno = subtype.getAnnotationInHierarchy(top);
+            AnnotationMirror superAnno = supertype.getAnnotationInHierarchy(top);
             if (subAnno != null && superAnno != null) {
                 glb.addAnnotation(qualHierarchy.greatestLowerBound(subAnno, superAnno));
             } else if (subAnno == null && superAnno == null) {
@@ -1219,7 +1217,7 @@ public class AnnotatedTypes {
             AnnotatedTypeMirror type,
             AnnotationMirror modifier,
             List<AnnotatedTypeMirror> visited) {
-        boolean found = type.hasPrimaryAnnotation(modifier);
+        boolean found = type.hasAnnotation(modifier);
         boolean vis = visited.contains(type);
         visited.add(type);
 
@@ -1415,7 +1413,7 @@ public class AnnotatedTypes {
             AnnotationMirror top,
             boolean canBeEmpty) {
         AnnotatedTypeMirror source = toSearch;
-        while (source.getPrimaryAnnotationInHierarchy(top) == null) {
+        while (source.getAnnotationInHierarchy(top) == null) {
 
             switch (source.getKind()) {
                 case TYPEVAR:
@@ -1456,7 +1454,7 @@ public class AnnotatedTypes {
             }
         }
 
-        return source.getPrimaryAnnotationInHierarchy(top);
+        return source.getAnnotationInHierarchy(top);
     }
 
     /**
@@ -1502,7 +1500,7 @@ public class AnnotatedTypes {
             kind = source.getKind();
         }
 
-        return source.getPrimaryAnnotations();
+        return source.getAnnotations();
     }
 
     /**
@@ -1550,16 +1548,16 @@ public class AnnotatedTypes {
             kind = source.getKind();
         }
 
-        return source.getPrimaryAnnotations();
+        return source.getAnnotations();
     }
 
     private static AnnotationMirror glbOfBoundsInHierarchy(
             AnnotatedIntersectionType isect,
             AnnotationMirror top,
             QualifierHierarchy qualHierarchy) {
-        AnnotationMirror anno = isect.getPrimaryAnnotationInHierarchy(top);
+        AnnotationMirror anno = isect.getAnnotationInHierarchy(top);
         for (AnnotatedTypeMirror bound : isect.getBounds()) {
-            AnnotationMirror boundAnno = bound.getPrimaryAnnotationInHierarchy(top);
+            AnnotationMirror boundAnno = bound.getAnnotationInHierarchy(top);
             if (boundAnno != null && (anno == null || qualHierarchy.isSubtype(boundAnno, anno))) {
                 anno = boundAnno;
             }
@@ -1696,19 +1694,19 @@ public class AnnotatedTypes {
 
         // Collect all polymorphic qualifiers; we should substitute them.
         AnnotationMirrorSet polys = new AnnotationMirrorSet();
-        for (AnnotationMirror anno : returnType.getPrimaryAnnotations()) {
+        for (AnnotationMirror anno : returnType.getAnnotations()) {
             if (qualHierarchy.isPolymorphicQualifier(anno)) {
                 polys.add(anno);
             }
         }
 
-        for (AnnotationMirror cta : constructor.getReturnType().getPrimaryAnnotations()) {
+        for (AnnotationMirror cta : constructor.getReturnType().getAnnotations()) {
             AnnotationMirror ctatop = qualHierarchy.getTopAnnotation(cta);
-            if (returnType.hasPrimaryAnnotationInHierarchy(cta)) {
+            if (returnType.hasAnnotationInHierarchy(cta)) {
                 continue;
             }
             if (atypeFactory.isSupportedQualifier(cta)
-                    && !returnType.hasPrimaryAnnotationInHierarchy(cta)) {
+                    && !returnType.hasAnnotationInHierarchy(cta)) {
                 for (AnnotationMirror fromDecl : decret) {
                     if (atypeFactory.isSupportedQualifier(fromDecl)
                             && AnnotationUtils.areSame(

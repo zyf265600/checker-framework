@@ -46,7 +46,7 @@ public class SignatureTransfer extends CFTransfer {
                 && ElementUtils.matchesElement(method, "isEmpty")) {
 
             AnnotatedTypeMirror receiverAtm = atypeFactory.getAnnotatedType(receiver.getTree());
-            if (receiverAtm.hasPrimaryAnnotation(CanonicalNameOrEmpty.class)) {
+            if (receiverAtm.hasAnnotation(CanonicalNameOrEmpty.class)) {
 
                 CFStore thenStore = superResult.getRegularStore();
                 CFStore elseStore = thenStore.copy();

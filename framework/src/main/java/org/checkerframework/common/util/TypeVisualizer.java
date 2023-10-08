@@ -557,7 +557,7 @@ public class TypeVisualizer {
              */
             public String getAnnoStr(AnnotatedTypeMirror atm) {
                 StringJoiner sj = new StringJoiner(" ");
-                for (AnnotationMirror anno : atm.getPrimaryAnnotations()) {
+                for (AnnotationMirror anno : atm.getAnnotations()) {
                     // TODO: More comprehensive escaping
                     sj.add(annoFormatter.formatAnnotationMirror(anno).replace("\"", "\\"));
                 }

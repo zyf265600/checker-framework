@@ -113,8 +113,8 @@ public class StructuralEqualityComparer extends AbstractAtmComboVisitor<Boolean,
     protected boolean arePrimeAnnosEqual(AnnotatedTypeMirror type1, AnnotatedTypeMirror type2) {
         if (currentTop != null) {
             return AnnotationUtils.areSame(
-                    type1.getPrimaryAnnotationInHierarchy(currentTop),
-                    type2.getPrimaryAnnotationInHierarchy(currentTop));
+                    type1.getAnnotationInHierarchy(currentTop),
+                    type2.getAnnotationInHierarchy(currentTop));
         } else {
             throw new BugInCF("currentTop null");
         }

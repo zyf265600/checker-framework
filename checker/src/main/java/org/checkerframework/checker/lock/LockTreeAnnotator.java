@@ -52,8 +52,7 @@ public class LockTreeAnnotator extends TreeAnnotator {
 
     @Override
     public Void visitNewArray(NewArrayTree tree, AnnotatedTypeMirror type) {
-        if (!type.hasPrimaryAnnotationInHierarchy(
-                ((LockAnnotatedTypeFactory) atypeFactory).NEWOBJECT)) {
+        if (!type.hasAnnotationInHierarchy(((LockAnnotatedTypeFactory) atypeFactory).NEWOBJECT)) {
             type.replaceAnnotation(((LockAnnotatedTypeFactory) atypeFactory).NEWOBJECT);
         }
         return super.visitNewArray(tree, type);

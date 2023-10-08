@@ -391,7 +391,7 @@ public class AnnotatedTypeCopier
     protected void maybeCopyPrimaryAnnotations(
             AnnotatedTypeMirror source, AnnotatedTypeMirror dest) {
         if (copyAnnotations) {
-            dest.addAnnotations(source.getPrimaryAnnotationsField());
+            dest.addAnnotations(source.getAnnotationsField());
         }
     }
 }

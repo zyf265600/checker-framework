@@ -30,7 +30,7 @@ public class ViewpointTestViewpointAdapter extends AbstractViewpointAdapter {
 
     @Override
     protected AnnotationMirror extractAnnotationMirror(AnnotatedTypeMirror atm) {
-        return atm.getPrimaryAnnotationInHierarchy(TOP);
+        return atm.getAnnotationInHierarchy(TOP);
     }
 
     @Override

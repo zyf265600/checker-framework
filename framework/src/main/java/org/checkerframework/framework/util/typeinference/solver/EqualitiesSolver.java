@@ -322,7 +322,7 @@ public class EqualitiesSolver {
             AnnotationMirrorSet found = new AnnotationMirrorSet();
             for (AnnotationMirror top : missingAnnos) {
                 if (currentHierarchies.contains(top)) {
-                    AnnotationMirror newAnno = currentType.getPrimaryAnnotationInHierarchy(top);
+                    AnnotationMirror newAnno = currentType.getAnnotationInHierarchy(top);
                     if (newAnno != null) {
                         mergedType.replaceAnnotation(newAnno);
                         found.add(top);

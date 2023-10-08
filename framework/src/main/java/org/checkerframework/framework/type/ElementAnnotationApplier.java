@@ -229,8 +229,8 @@ public final class ElementAnnotationApplier {
             TypeParameterElement tpelt =
                     (TypeParameterElement) type.getUnderlyingType().asElement();
 
-            if (type.getPrimaryAnnotations().isEmpty()
-                    && type.getUpperBound().getPrimaryAnnotations().isEmpty()
+            if (type.getAnnotations().isEmpty()
+                    && type.getUpperBound().getAnnotations().isEmpty()
                     && tpelt.getEnclosingElement().getKind() != ElementKind.TYPE_PARAMETER) {
                 try {
                     ElementAnnotationApplier.applyInternal(type, tpelt, factory);

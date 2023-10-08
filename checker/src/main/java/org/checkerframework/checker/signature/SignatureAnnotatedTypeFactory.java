@@ -277,10 +277,10 @@ public class SignatureAnnotatedTypeFactory extends BaseAnnotatedTypeFactory {
                 ExpressionTree receiver = TreeUtils.getReceiverTree(tree);
                 AnnotatedTypeMirror receiverType = getAnnotatedType(receiver);
                 if ((oldChar == '.' && newChar == '/')
-                        && receiverType.getPrimaryAnnotation(BinaryName.class) != null) {
+                        && receiverType.getAnnotation(BinaryName.class) != null) {
                     type.replaceAnnotation(INTERNAL_FORM);
                 } else if ((oldChar == '/' && newChar == '.')
-                        && receiverType.getPrimaryAnnotation(InternalForm.class) != null) {
+                        && receiverType.getAnnotation(InternalForm.class) != null) {
                     type.replaceAnnotation(BINARY_NAME);
                 }
             } else {

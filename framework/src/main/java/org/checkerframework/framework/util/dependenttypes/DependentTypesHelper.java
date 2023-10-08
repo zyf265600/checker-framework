@@ -1006,13 +1006,13 @@ public class DependentTypesHelper {
             // to the upper and lower bounds.  These annotations cannot be viewpoint-adapted again,
             // so remove them, viewpoint-adapt any other annotations in the bound, and then add them
             // back.
-            AnnotationMirrorSet primarys = type.getPrimaryAnnotations();
-            type.getLowerBound().removePrimaryAnnotations(primarys);
+            AnnotationMirrorSet primarys = type.getAnnotations();
+            type.getLowerBound().removeAnnotations(primarys);
             Void r = scan(type.getLowerBound(), func);
             type.getLowerBound().addAnnotations(primarys);
             visitedNodes.put(type, r);
 
-            type.getUpperBound().removePrimaryAnnotations(primarys);
+            type.getUpperBound().removeAnnotations(primarys);
             r = scanAndReduce(type.getUpperBound(), func, r);
             type.getUpperBound().addAnnotations(primarys);
             visitedNodes.put(type, r);
@@ -1022,7 +1022,7 @@ public class DependentTypesHelper {
         @Override
         protected Void scan(
                 AnnotatedTypeMirror type, Function<AnnotationMirror, AnnotationMirror> func) {
-            for (AnnotationMirror anno : new AnnotationMirrorSet(type.getPrimaryAnnotations())) {
+            for (AnnotationMirror anno : new AnnotationMirrorSet(type.getAnnotations())) {
                 AnnotationMirror newAnno = func.apply(anno);
                 if (newAnno != null) {
                     // This code must remove and then add, rather than call `replace`, because a
@@ -1031,7 +1031,7 @@ public class DependentTypesHelper {
                     // https://github.com/typetools/checker-framework/issues/4451 .)
                     // AnnotatedTypeMirror#replace only removes one annotation that is in the same
                     // hierarchy as the passed argument.
-                    type.removePrimaryAnnotation(anno);
+                    type.removeAnnotation(anno);
                     type.addAnnotation(newAnno);
                 }
             }
@@ -1244,7 +1244,7 @@ public class DependentTypesHelper {
             super(
                     (AnnotatedTypeMirror type, Void aVoid) -> {
                         List<DependentTypesError> errors = new ArrayList<>();
-                        for (AnnotationMirror am : type.getPrimaryAnnotations()) {
+                        for (AnnotationMirror am : type.getAnnotations()) {
                             if (isExpressionAnno(am)) {
                                 errors.addAll(errorElements(am));
                             }
@@ -1292,7 +1292,7 @@ public class DependentTypesHelper {
             }
             AnnotationMirrorSet replacements = new AnnotationMirrorSet();
             for (String vpa : annoToElements.keySet()) {
-                AnnotationMirror anno = from.getPrimaryAnnotation(vpa);
+                AnnotationMirror anno = from.getAnnotation(vpa);
                 if (anno != null) {
                     // Only replace annotations that might have been changed.
                     replacements.add(anno);
@@ -1351,7 +1351,7 @@ public class DependentTypesHelper {
     private final AnnotatedTypeScanner<Boolean, Void> hasDependentTypeScanner =
             new SimpleAnnotatedTypeScanner<>(
                     (type, __) -> {
-                        for (AnnotationMirror annotationMirror : type.getPrimaryAnnotations()) {
+                        for (AnnotationMirror annotationMirror : type.getAnnotations()) {
                             if (isExpressionAnno(annotationMirror)) {
                                 return true;
                             }

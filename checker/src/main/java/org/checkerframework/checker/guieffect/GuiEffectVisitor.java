@@ -109,14 +109,14 @@ public class GuiEffectVisitor extends BaseTypeVisitor<GuiEffectTypeFactory> {
             // parameter should be rejected.
             AnnotatedTypeMirror overriddenReceiver =
                     overrider.getReceiverType().getErased().shallowCopy(false);
-            overriddenReceiver.addAnnotations(overridden.getReceiverType().getPrimaryAnnotations());
+            overriddenReceiver.addAnnotations(overridden.getReceiverType().getAnnotations());
             if (!atypeFactory
                     .getTypeHierarchy()
                     .isSubtype(overriddenReceiver, overrider.getReceiverType().getErased())) {
                 // This is the point at which the default check would issue an error.
                 // We additionally permit overrides to move from @PolyUI receivers to @AlwaysSafe
                 // receivers, if it's in a @AlwaysSafe specialization of a @PolyUIType
-                boolean safeParent = overriddenType.getPrimaryAnnotation(AlwaysSafe.class) != null;
+                boolean safeParent = overriddenType.getAnnotation(AlwaysSafe.class) != null;
                 boolean polyParentDecl =
                         atypeFactory.getDeclAnnotation(
                                         overriddenType.getUnderlyingType().asElement(),
@@ -131,7 +131,7 @@ public class GuiEffectVisitor extends BaseTypeVisitor<GuiEffectTypeFactory> {
                 // The *only* extra leeway we want to permit is overriding @PolyUI receiver to
                 // @AlwaysSafe.  But with generics, the tentative check below is inadequate.
                 boolean safeReceiverOverride =
-                        overrider.getReceiverType().getPrimaryAnnotation(AlwaysSafe.class) != null;
+                        overrider.getReceiverType().getAnnotation(AlwaysSafe.class) != null;
                 if (safeParent && polyParentDecl && safeReceiverOverride) {
                     return true;
                 }
@@ -210,24 +210,24 @@ public class GuiEffectVisitor extends BaseTypeVisitor<GuiEffectTypeFactory> {
             AnnotatedTypeMirror.AnnotatedDeclaredType useType,
             Tree tree) {
         boolean ret =
-                useType.hasPrimaryAnnotation(AlwaysSafe.class)
-                        || useType.hasPrimaryAnnotation(PolyUI.class)
+                useType.hasAnnotation(AlwaysSafe.class)
+                        || useType.hasAnnotation(PolyUI.class)
                         || atypeFactory.isPolymorphicType(
                                 (TypeElement) declarationType.getUnderlyingType().asElement())
-                        || (useType.hasPrimaryAnnotation(UI.class)
-                                && declarationType.hasPrimaryAnnotation(UI.class));
+                        || (useType.hasAnnotation(UI.class)
+                                && declarationType.hasAnnotation(UI.class));
         if (debugSpew && !ret) {
             System.err.println("use: " + useType);
-            System.err.println("use safe: " + useType.hasPrimaryAnnotation(AlwaysSafe.class));
-            System.err.println("use poly: " + useType.hasPrimaryAnnotation(PolyUI.class));
-            System.err.println("use ui: " + useType.hasPrimaryAnnotation(UI.class));
+            System.err.println("use safe: " + useType.hasAnnotation(AlwaysSafe.class));
+            System.err.println("use poly: " + useType.hasAnnotation(PolyUI.class));
+            System.err.println("use ui: " + useType.hasAnnotation(UI.class));
             System.err.println(
-                    "declaration safe: " + declarationType.hasPrimaryAnnotation(AlwaysSafe.class));
+                    "declaration safe: " + declarationType.hasAnnotation(AlwaysSafe.class));
             System.err.println(
                     "declaration poly: "
                             + atypeFactory.isPolymorphicType(
                                     (TypeElement) declarationType.getUnderlyingType().asElement()));
-            System.err.println("declaration ui: " + declarationType.hasPrimaryAnnotation(UI.class));
+            System.err.println("declaration ui: " + declarationType.hasAnnotation(UI.class));
             System.err.println("declaration: " + declarationType);
         }
         return ret;
@@ -313,12 +313,8 @@ public class GuiEffectVisitor extends BaseTypeVisitor<GuiEffectTypeFactory> {
                     // Skip if already inferred @UI
                     && !effStack.peek().isUI()
                     // Ignore if explicitly annotated
-                    && !atypeFactory
-                            .fromElement(callerReceiverElt)
-                            .hasPrimaryAnnotation(AlwaysSafe.class)
-                    && !atypeFactory
-                            .fromElement(callerReceiverElt)
-                            .hasPrimaryAnnotation(UI.class)) {
+                    && !atypeFactory.fromElement(callerReceiverElt).hasAnnotation(AlwaysSafe.class)
+                    && !atypeFactory.fromElement(callerReceiverElt).hasAnnotation(UI.class)) {
                 boolean overridesPolymorphic = false;
                 Map<AnnotatedTypeMirror.AnnotatedDeclaredType, ExecutableElement>
                         overriddenMethods =

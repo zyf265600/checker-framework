@@ -168,7 +168,7 @@ public class ResourceLeakTransfer extends CalledMethodsTransfer {
                 AnnotationMirror anm =
                         rlTypeFactory
                                 .getAnnotatedType(node.getTree())
-                                .getPrimaryAnnotationInHierarchy(rlTypeFactory.top);
+                                .getAnnotationInHierarchy(rlTypeFactory.top);
                 if (anm == null) {
                     anm = rlTypeFactory.top;
                 }

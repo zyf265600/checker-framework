@@ -457,7 +457,7 @@ public class NullnessNoInitAnnotatedTypeFactory
      * @param context tree used to get dataflow value
      */
     protected void replacePolyQualifier(AnnotatedTypeMirror lhsType, Tree context) {
-        if (lhsType.hasPrimaryAnnotation(PolyNull.class)) {
+        if (lhsType.hasAnnotation(PolyNull.class)) {
             NullnessNoInitValue inferred = getInferredValueFor(context);
             if (inferred != null) {
                 if (inferred.isPolyNullNonNull) {
@@ -587,7 +587,7 @@ public class NullnessNoInitAnnotatedTypeFactory
                 // We thus use the GLB of those two annotations.
                 res.addAnnotations(
                         qualHierarchy.greatestLowerBounds(
-                                declared.getPrimaryAnnotations(), refined.getPrimaryAnnotations()));
+                                declared.getAnnotations(), refined.getAnnotations()));
                 return res;
             }
         }
@@ -762,7 +762,7 @@ public class NullnessNoInitAnnotatedTypeFactory
                         // Maybe this call is only necessary if argNullness is @NonNull.
                         ((AnnotatedArrayType) type)
                                 .getComponentType()
-                                .replaceAnnotations(arrayArgComponentType.getPrimaryAnnotations());
+                                .replaceAnnotations(arrayArgComponentType.getAnnotations());
                     }
                 }
             }
@@ -889,7 +889,7 @@ public class NullnessNoInitAnnotatedTypeFactory
     @Override
     public AnnotatedTypeMirror getDefaultValueAnnotatedType(TypeMirror typeMirror) {
         AnnotatedTypeMirror result = super.getDefaultValueAnnotatedType(typeMirror);
-        if (getAnnotationByClass(result.getPrimaryAnnotations(), Nullable.class) != null) {
+        if (getAnnotationByClass(result.getAnnotations(), Nullable.class) != null) {
             result.replaceAnnotation(MONOTONIC_NONNULL);
         }
         return result;
@@ -911,7 +911,7 @@ public class NullnessNoInitAnnotatedTypeFactory
     public void wpiAdjustForUpdateField(
         Tree lhsTree, Element element, String fieldName, AnnotatedTypeMirror rhsATM) {
       // Synthetic variable names contain "#". Ignore them.
-      if (!rhsATM.hasPrimaryAnnotation(Nullable.class) || fieldName.contains("#")) {
+      if (!rhsATM.hasAnnotation(Nullable.class) || fieldName.contains("#")) {
         return;
       }
       TreePath lhsPath = getPath(lhsTree);
@@ -928,7 +928,7 @@ public class NullnessNoInitAnnotatedTypeFactory
     // then change rhs to @Nullable
     @Override
     public void wpiAdjustForUpdateNonField(AnnotatedTypeMirror rhsATM) {
-      if (rhsATM.hasPrimaryAnnotation(MonotonicNonNull.class)) {
+      if (rhsATM.hasAnnotation(MonotonicNonNull.class)) {
         rhsATM.replaceAnnotation(NULLABLE);
       }
     }
@@ -953,14 +953,14 @@ public class NullnessNoInitAnnotatedTypeFactory
         @Nullable List<AnnotationMirror> preconds) {
       // TODO: This does not handle the possibility that the user set a different default
       // annotation.
-      if (!(declaredType.hasPrimaryAnnotation(NULLABLE)
-          || declaredType.hasPrimaryAnnotation(POLYNULL)
-          || declaredType.hasPrimaryAnnotation(MONOTONIC_NONNULL))) {
+      if (!(declaredType.hasAnnotation(NULLABLE)
+          || declaredType.hasAnnotation(POLYNULL)
+          || declaredType.hasAnnotation(MONOTONIC_NONNULL))) {
         return null;
       }
 
       if (preOrPost == BeforeOrAfter.AFTER
-          && declaredType.hasPrimaryAnnotation(MONOTONIC_NONNULL)
+          && declaredType.hasAnnotation(MONOTONIC_NONNULL)
           && preconds.contains(requiresNonNullAnno(expression))) {
         // The postcondition is implied by the precondition and the field being
         // @MonotonicNonNull.

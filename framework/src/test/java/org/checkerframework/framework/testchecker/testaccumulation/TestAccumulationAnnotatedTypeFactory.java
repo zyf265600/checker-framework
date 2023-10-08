@@ -67,7 +67,7 @@ public class TestAccumulationAnnotatedTypeFactory extends AccumulationAnnotatedT
             // time.
             if (returnsThis(tree)) {
                 String methodName = TreeUtils.getMethodName(tree.getMethodSelect());
-                AnnotationMirror oldAnno = type.getPrimaryAnnotationInHierarchy(top);
+                AnnotationMirror oldAnno = type.getAnnotationInHierarchy(top);
                 type.replaceAnnotation(
                         qualHierarchy.greatestLowerBound(
                                 oldAnno, createAccumulatorAnnotation(methodName)));

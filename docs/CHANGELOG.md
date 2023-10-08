@@ -80,10 +80,13 @@ call `getEffectiveAnnotation*` or `hasEffectiveAnnotation*` instead.
  * `removeAnnotation*()` => `removePrimaryAnnotation*()`.
  * `isAnnotatedInHierarchy()` => `hasPrimaryAnnotationInHierarchy()`
  * `removeNonTopAnnotationInHierarchy()` should not be used.
+(EISOP note: these renamings break javac convention and are inconsistently applied.
+Only the last two changes are retained.)
 
 Dataflow Framework:
  * New `ExpressionStatementNode` marks an expression that is used as a statement.
  * Removed class `StringConcatenateAssignmentNode`, which is now desugared.
+(EISOP note: these were performed in 3.21.2-eisop1 and 3.21.3-eisop1, respectively.)
 
 `GenericAnnotatedTypeFactory`:
  * Renamed `getTypeFactoryOfSubchecker()` to `getTypeFactoryOfSubcheckerOrNull`.

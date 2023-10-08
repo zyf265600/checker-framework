@@ -152,7 +152,7 @@ public class InterningAnnotatedTypeFactory extends BaseAnnotatedTypeFactory {
 
     @Override
     public void addComputedTypeAnnotations(Element element, AnnotatedTypeMirror type) {
-        if (!type.hasPrimaryAnnotationInHierarchy(INTERNED)
+        if (!type.hasAnnotationInHierarchy(INTERNED)
                 && ElementUtils.isCompileTimeConstant(element)) {
             type.addAnnotation(INTERNED);
         }

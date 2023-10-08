@@ -76,7 +76,7 @@ public class AliasingVisitor extends BaseTypeVisitor<AliasingAnnotatedTypeFactor
                 // Check if a call to super() might create an alias: that
                 // happens when the parent's respective constructor is not @Unique.
                 AnnotatedTypeMirror superResult = atypeFactory.getAnnotatedType(tree);
-                if (!superResult.hasPrimaryAnnotation(Unique.class)) {
+                if (!superResult.hasAnnotation(Unique.class)) {
                     checker.reportError(tree, "unique.leaked");
                 }
             } else {
@@ -104,13 +104,11 @@ public class AliasingVisitor extends BaseTypeVisitor<AliasingAnnotatedTypeFactor
                         // it is not being leaked (2. and 3. from the javadoc).
                         VariableElement param = params.get(i);
                         boolean hasNonLeaked =
-                                atypeFactory
-                                        .getAnnotatedType(param)
-                                        .hasPrimaryAnnotation(NonLeaked.class);
+                                atypeFactory.getAnnotatedType(param).hasAnnotation(NonLeaked.class);
                         boolean hasLeakedToResult =
                                 atypeFactory
                                         .getAnnotatedType(param)
-                                        .hasPrimaryAnnotation(LeakedToResult.class);
+                                        .hasAnnotation(LeakedToResult.class);
                         isUniqueCheck(tree, parentIsStatement, hasNonLeaked, hasLeakedToResult);
                     } else {
                         // Not possible to leak reference here (case 1. from the javadoc).
@@ -122,9 +120,8 @@ public class AliasingVisitor extends BaseTypeVisitor<AliasingAnnotatedTypeFactor
                         atypeFactory.getAnnotatedType(methodElement);
                 AnnotatedDeclaredType receiverType = annotatedType.getReceiverType();
                 if (receiverType != null) {
-                    boolean hasNonLeaked = receiverType.hasPrimaryAnnotation(NonLeaked.class);
-                    boolean hasLeakedToResult =
-                            receiverType.hasPrimaryAnnotation(LeakedToResult.class);
+                    boolean hasNonLeaked = receiverType.hasAnnotation(NonLeaked.class);
+                    boolean hasLeakedToResult = receiverType.hasAnnotation(LeakedToResult.class);
                     isUniqueCheck(tree, parentIsStatement, hasNonLeaked, hasLeakedToResult);
                 }
             }
@@ -205,8 +202,8 @@ public class AliasingVisitor extends BaseTypeVisitor<AliasingAnnotatedTypeFactor
             if (canBeLeaked(valueTree)) {
                 Tree.Kind parentKind = getCurrentPath().getParentPath().getLeaf().getKind();
 
-                if (!varType.hasPrimaryAnnotation(NonLeaked.class)
-                        && !(varType.hasPrimaryAnnotation(LeakedToResult.class)
+                if (!varType.hasAnnotation(NonLeaked.class)
+                        && !(varType.hasAnnotation(LeakedToResult.class)
                                 && parentKind == Tree.Kind.EXPRESSION_STATEMENT)) {
                     checker.reportError(valueTree, "unique.leaked");
                     result = false;
@@ -236,13 +233,13 @@ public class AliasingVisitor extends BaseTypeVisitor<AliasingAnnotatedTypeFactor
             checker.reportError(tree, "unique.location.forbidden");
         } else if (tree.getType().getKind() == Tree.Kind.ARRAY_TYPE) {
             AnnotatedArrayType arrayType = (AnnotatedArrayType) varType;
-            if (arrayType.getComponentType().hasPrimaryAnnotation(Unique.class)) {
+            if (arrayType.getComponentType().hasAnnotation(Unique.class)) {
                 checker.reportError(tree, "unique.location.forbidden");
             }
         } else if (tree.getType().getKind() == Tree.Kind.PARAMETERIZED_TYPE) {
             AnnotatedDeclaredType declaredType = (AnnotatedDeclaredType) varType;
             for (AnnotatedTypeMirror atm : declaredType.getTypeArguments()) {
-                if (atm.hasPrimaryAnnotation(Unique.class)) {
+                if (atm.hasAnnotation(Unique.class)) {
                     checker.reportError(tree, "unique.location.forbidden");
                 }
             }
@@ -268,13 +265,13 @@ public class AliasingVisitor extends BaseTypeVisitor<AliasingAnnotatedTypeFactor
             AnnotatedExecutableType constructorType, ExecutableElement constructorElement) {
         // @Unique is verified, so don't check this.
         AnnotatedTypeMirror returnType = constructorType.getReturnType();
-        if (returnType.hasPrimaryAnnotation(atypeFactory.UNIQUE)) {
+        if (returnType.hasAnnotation(atypeFactory.UNIQUE)) {
             return;
         }
 
         // Don't issue warnings about @LeakedToResult or (implicit) @MaybeLeaked on constructor
         // results.
-        if (!returnType.hasPrimaryAnnotation(atypeFactory.NON_LEAKED)) {
+        if (!returnType.hasAnnotation(atypeFactory.NON_LEAKED)) {
             // TODO: the visitor should not change qualifiers.
             // Possible problem from aliasing of `returnType`, but all tests pass.
             returnType.replaceAnnotation(atypeFactory.NON_LEAKED);
@@ -290,7 +287,7 @@ public class AliasingVisitor extends BaseTypeVisitor<AliasingAnnotatedTypeFactor
             // Check if a call to super() might create an alias: that
             // happens when the parent's respective constructor is not @Unique.
             AnnotatedTypeMirror superResult = atypeFactory.getAnnotatedType(superCall);
-            if (!superResult.hasPrimaryAnnotation(Unique.class)) {
+            if (!superResult.hasAnnotation(Unique.class)) {
                 checker.reportError(superCall, "unique.leaked");
             }
         }
@@ -352,6 +349,6 @@ public class AliasingVisitor extends BaseTypeVisitor<AliasingAnnotatedTypeFactor
                 && atypeFactory
                         .getAnnotatedType(enclosingMethod)
                         .getReturnType()
-                        .hasPrimaryAnnotation(Unique.class);
+                        .hasAnnotation(Unique.class);
     }
 }

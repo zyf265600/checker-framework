@@ -175,8 +175,7 @@ public class ResourceLeakAnnotatedTypeFactory extends CalledMethodsAnnotatedType
                 getTypeFactoryOfSubchecker(MustCallChecker.class);
         AnnotatedTypeMirror mustCallAnnotatedType =
                 mustCallAnnotatedTypeFactory.getAnnotatedType(tree);
-        AnnotationMirror mustCallAnnotation =
-                mustCallAnnotatedType.getPrimaryAnnotation(MustCall.class);
+        AnnotationMirror mustCallAnnotation = mustCallAnnotatedType.getAnnotation(MustCall.class);
         if (mustCallAnnotation != null) {
             return getMustCallValues(mustCallAnnotation).isEmpty();
         } else {
@@ -202,8 +201,7 @@ public class ResourceLeakAnnotatedTypeFactory extends CalledMethodsAnnotatedType
                 getTypeFactoryOfSubchecker(MustCallChecker.class);
         AnnotatedTypeMirror mustCallAnnotatedType =
                 mustCallAnnotatedTypeFactory.getAnnotatedType(element);
-        AnnotationMirror mustCallAnnotation =
-                mustCallAnnotatedType.getPrimaryAnnotation(MustCall.class);
+        AnnotationMirror mustCallAnnotation = mustCallAnnotatedType.getAnnotation(MustCall.class);
         if (mustCallAnnotation != null) {
             return getMustCallValues(mustCallAnnotation).isEmpty();
         } else {
@@ -235,8 +233,7 @@ public class ResourceLeakAnnotatedTypeFactory extends CalledMethodsAnnotatedType
                 getTypeFactoryOfSubchecker(MustCallChecker.class);
         AnnotatedTypeMirror mustCallAnnotatedType =
                 mustCallAnnotatedTypeFactory.getAnnotatedType(element);
-        AnnotationMirror mustCallAnnotation =
-                mustCallAnnotatedType.getPrimaryAnnotation(MustCall.class);
+        AnnotationMirror mustCallAnnotation = mustCallAnnotatedType.getAnnotation(MustCall.class);
         return getMustCallValues(mustCallAnnotation);
     }
 

@@ -203,9 +203,9 @@ public class BoundsInitializer {
      * @return the original primary annotations on {@code type}, or null if none
      */
     private static @Nullable AnnotationMirrorSet saveAnnotations(AnnotatedTypeMirror type) {
-        if (!type.getPrimaryAnnotationsField().isEmpty()) {
-            AnnotationMirrorSet annos = new AnnotationMirrorSet(type.getPrimaryAnnotations());
-            type.clearPrimaryAnnotations();
+        if (!type.getAnnotationsField().isEmpty()) {
+            AnnotationMirrorSet annos = new AnnotationMirrorSet(type.getAnnotations());
+            type.clearAnnotations();
             return annos;
         }
 

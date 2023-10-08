@@ -266,9 +266,9 @@ public class FormatterTreeUtil {
          *     null if it is
          */
         public final @Nullable Result<String> errMissingFormatAnnotation() {
-            if (!formatStringType.hasPrimaryAnnotation(Format.class)) {
+            if (!formatStringType.hasAnnotation(Format.class)) {
                 String msg = "(is a @Format annotation missing?)";
-                AnnotationMirror inv = formatStringType.getPrimaryAnnotation(InvalidFormat.class);
+                AnnotationMirror inv = formatStringType.getAnnotation(InvalidFormat.class);
                 if (inv != null) {
                     msg = invalidFormatAnnotationToErrorMessage(inv);
                 }
@@ -353,7 +353,7 @@ public class FormatterTreeUtil {
          * @see ConversionCategory
          */
         public final ConversionCategory[] getFormatCategories() {
-            AnnotationMirror anno = formatStringType.getPrimaryAnnotation(Format.class);
+            AnnotationMirror anno = formatStringType.getAnnotation(Format.class);
             return formatAnnotationToCategories(anno);
         }
 

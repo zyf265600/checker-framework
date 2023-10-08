@@ -102,7 +102,7 @@ public class SupertypesSolver {
             boolean failed = false;
             for (AnnotationMirror top : tops) {
                 if (!equalityAnnos.contains(top)) {
-                    AnnotationMirror lubAnno = lub.getPrimaryAnnotationInHierarchy(top);
+                    AnnotationMirror lubAnno = lub.getAnnotationInHierarchy(top);
                     if (lubAnno == null) {
                         // If the LUB and the Equality were the SAME typevar, and the lub was
                         // unannotated then "NO ANNOTATION" is the correct choice.

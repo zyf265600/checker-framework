@@ -124,7 +124,7 @@ class TypeFromTypeTreeVisitor extends TypeFromTreeVisitor {
 
         AnnotatedTypeMirror result = f.type(tree); // use creator?
         AnnotatedTypeMirror atype = visit(tree.getType(), f);
-        result.addAnnotations(atype.getPrimaryAnnotations());
+        result.addAnnotations(atype.getAnnotations());
         // new ArrayList<>() type is AnnotatedExecutableType for some reason
 
         // Don't initialize the type arguments if they are empty. The type arguments might be a
