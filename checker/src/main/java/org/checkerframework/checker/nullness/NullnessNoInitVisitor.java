@@ -218,7 +218,7 @@ public class NullnessNoInitVisitor extends BaseTypeVisitor<NullnessNoInitAnnotat
      * @return the initialized element, or null
      */
     @SuppressWarnings("UnusedMethod")
-    private Element initializedElement(Tree varTree) {
+    private @Nullable Element initializedElement(Tree varTree) {
         switch (varTree.getKind()) {
             case VARIABLE:
                 // It's a variable declaration.
@@ -332,7 +332,7 @@ public class NullnessNoInitVisitor extends BaseTypeVisitor<NullnessNoInitAnnotat
             checker.reportError(
                     tree,
                     "new.array.type.invalid",
-                    componentType.getAnnotations(),
+                    componentType.getPrimaryAnnotations(),
                     type.toString());
         }
 
@@ -697,16 +697,17 @@ public class NullnessNoInitVisitor extends BaseTypeVisitor<NullnessNoInitAnnotat
                 method.getReceiverType() != null) {
             // TODO: should all or some constructors be excluded?
             // method.getElement().getKind() != ElementKind.CONSTRUCTOR) {
-            AnnotationMirrorSet receiverAnnos = atypeFactory.getReceiverType(tree).getAnnotations();
+            AnnotationMirrorSet receiverAnnos =
+                    atypeFactory.getReceiverType(tree).getPrimaryAnnotations();
             AnnotatedTypeMirror methodReceiver = method.getReceiverType().getErased();
             AnnotatedTypeMirror treeReceiver = methodReceiver.shallowCopy(false);
             AnnotatedTypeMirror rcv = atypeFactory.getReceiverType(tree);
             treeReceiver.addAnnotations(rcv.getEffectiveAnnotations());
             // If receiver is Nullable, then we don't want to issue a warning about method
             // invocability (we'd rather have only the "dereference.of.nullable" message).
-            if (treeReceiver.hasAnnotation(NULLABLE)
+            if (treeReceiver.hasPrimaryAnnotation(NULLABLE)
                     || receiverAnnos.contains(MONOTONIC_NONNULL)
-                    || treeReceiver.hasAnnotation(POLYNULL)) {
+                    || treeReceiver.hasPrimaryAnnotation(POLYNULL)) {
                 return;
             }
         }
@@ -778,20 +779,21 @@ public class NullnessNoInitVisitor extends BaseTypeVisitor<NullnessNoInitAnnotat
         ExpressionTree identifier = tree.getIdentifier();
         if (identifier instanceof AnnotatedTypeTree) {
             AnnotatedTypeTree t = (AnnotatedTypeTree) identifier;
-            for (AnnotationMirror a : atypeFactory.getAnnotatedType(t).getAnnotations()) {
+            for (AnnotationMirror a : atypeFactory.getAnnotatedType(t).getPrimaryAnnotations()) {
                 // is this an annotation of the nullness checker?
                 boolean nullnessCheckerAnno =
                         containsSameByName(atypeFactory.getNullnessAnnotations(), a);
                 if (nullnessCheckerAnno && !AnnotationUtils.areSame(NONNULL, a)) {
                     // The type is not non-null => warning
-                    checker.reportWarning(tree, "new.class.type.invalid", type.getAnnotations());
+                    checker.reportWarning(
+                            tree, "new.class.type.invalid", type.getPrimaryAnnotations());
                     // Note that other consistency checks are made by isValid.
                 }
             }
             if (t.toString().contains("@PolyNull")) {
                 // TODO: this is a hack, but PolyNull gets substituted
                 // afterwards
-                checker.reportWarning(tree, "new.class.type.invalid", type.getAnnotations());
+                checker.reportWarning(tree, "new.class.type.invalid", type.getPrimaryAnnotations());
             }
         }
         // TODO: It might be nicer to introduce a framework-level

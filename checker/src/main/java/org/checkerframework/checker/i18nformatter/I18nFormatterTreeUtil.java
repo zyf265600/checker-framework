@@ -31,6 +31,7 @@ import org.checkerframework.framework.type.AnnotatedTypeMirror.AnnotatedExecutab
 import org.checkerframework.framework.util.JavaExpressionParseUtil;
 import org.checkerframework.javacutil.AnnotationBuilder;
 import org.checkerframework.javacutil.AnnotationUtils;
+import org.checkerframework.javacutil.BugInCF;
 import org.checkerframework.javacutil.TreeUtils;
 
 import java.util.List;
@@ -223,7 +224,8 @@ public class I18nFormatterTreeUtil {
         checker.reportWarning(res.location, msgKey, args);
     }
 
-    private I18nConversionCategory[] asFormatCallCategoriesLowLevel(MethodInvocationNode node) {
+    private I18nConversionCategory @Nullable [] asFormatCallCategoriesLowLevel(
+            MethodInvocationNode node) {
         Node vararg = node.getArgument(1);
         if (vararg instanceof ArrayCreationNode) {
             List<Node> convs = ((ArrayCreationNode) vararg).getInitializers();
@@ -282,7 +284,7 @@ public class I18nFormatterTreeUtil {
         AnnotatedExecutableType methodAnno = atypeFactory.getAnnotatedType(method);
         for (AnnotatedTypeMirror paramType : methodAnno.getParameterTypes()) {
             // find @FormatFor
-            if (paramType.getAnnotation(I18nFormatFor.class) != null) {
+            if (paramType.getPrimaryAnnotation(I18nFormatFor.class) != null) {
                 return atypeFactory.treeUtil.new I18nFormatCall(tree, atypeFactory);
             }
         }
@@ -320,6 +322,7 @@ public class I18nFormatterTreeUtil {
          * @param tree method invocation tree
          * @param atypeFactory type factory
          */
+        @SuppressWarnings("nullness:initialization.fields.uninitialized")
         public I18nFormatCall(MethodInvocationTree tree, AnnotatedTypeFactory atypeFactory) {
             this.tree = tree;
             this.atypeFactory = atypeFactory;
@@ -360,7 +363,7 @@ public class I18nFormatterTreeUtil {
             int paramIndex = -1;
             int i = 0;
             for (AnnotatedTypeMirror paramType : methodAnno.getParameterTypes()) {
-                if (paramType.getAnnotation(I18nFormatFor.class) != null) {
+                if (paramType.getPrimaryAnnotation(I18nFormatFor.class) != null) {
                     this.formatArg = theargs.get(i);
                     this.formatAnno = atypeFactory.getAnnotatedType(formatArg);
 
@@ -370,7 +373,8 @@ public class I18nFormatterTreeUtil {
                     }
 
                     String formatforArg =
-                            getI18nFormatForValue(paramType.getAnnotation(I18nFormatFor.class));
+                            getI18nFormatForValue(
+                                    paramType.getPrimaryAnnotation(I18nFormatFor.class));
 
                     paramIndex = JavaExpressionParseUtil.parameterIndex(formatforArg);
                     if (paramIndex == -1) {
@@ -397,14 +401,14 @@ public class I18nFormatterTreeUtil {
         public Result<FormatType> getFormatType() {
             FormatType type;
             if (isValidFormatForInvocation()) {
-                if (formatAnno.hasAnnotation(I18nFormat.class)) {
+                if (formatAnno.hasPrimaryAnnotation(I18nFormat.class)) {
                     type = FormatType.I18NFORMAT;
-                } else if (formatAnno.hasAnnotation(I18nFormatFor.class)) {
+                } else if (formatAnno.hasPrimaryAnnotation(I18nFormatFor.class)) {
                     type = FormatType.I18NFORMATFOR;
                 } else {
                     type = FormatType.I18NINVALID;
                     invalidMessage = "(is a @I18nFormat annotation missing?)";
-                    AnnotationMirror inv = formatAnno.getAnnotation(I18nInvalidFormat.class);
+                    AnnotationMirror inv = formatAnno.getPrimaryAnnotation(I18nInvalidFormat.class);
                     if (inv != null) {
                         invalidMessage = getI18nInvalidFormatValue(inv);
                     }
@@ -505,7 +509,7 @@ public class I18nFormatterTreeUtil {
          * @see I18nConversionCategory
          */
         public final I18nConversionCategory[] getFormatCategories() {
-            AnnotationMirror anno = formatAnno.getAnnotation(I18nFormat.class);
+            AnnotationMirror anno = formatAnno.getPrimaryAnnotation(I18nFormat.class);
             return formatAnnotationToCategories(anno);
         }
 
@@ -554,7 +558,7 @@ public class I18nFormatterTreeUtil {
                 case DOUBLE:
                     return Double.class;
                 default:
-                    return null;
+                    throw new BugInCF("unknown primitive type " + t);
             }
         }
 
@@ -565,16 +569,16 @@ public class I18nFormatterTreeUtil {
                             new SimpleElementVisitor8<Class<? extends Object>, Class<Void>>() {
                                 @Override
                                 public Class<? extends Object> visitType(
-                                        TypeElement e, Class<Void> v) {
+                                        TypeElement te, Class<Void> v) {
                                     try {
                                         @SuppressWarnings(
                                                 "signature") // https://tinyurl.com/cfissue/658:
                                         // Name.toString should be @PolySignature
-                                        @BinaryName String cname = e.getQualifiedName().toString();
+                                        @BinaryName String cname = te.getQualifiedName().toString();
                                         return Class.forName(cname);
-                                    } catch (ClassNotFoundException e1) {
+                                    } catch (ClassNotFoundException e) {
                                         // The lookup should work for all the classes we care about.
-                                        return null;
+                                        throw new Error(e);
                                     }
                                 }
                             },

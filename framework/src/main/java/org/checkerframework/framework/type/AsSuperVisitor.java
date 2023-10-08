@@ -120,11 +120,11 @@ public class AsSuperVisitor extends AbstractAtmComboVisitor<AnnotatedTypeMirror,
             AnnotationMirrorSet lubs = null;
             for (AnnotatedDeclaredType altern : annotatedUnionType.getAlternatives()) {
                 if (lubs == null) {
-                    lubs = altern.getAnnotations();
+                    lubs = altern.getPrimaryAnnotations();
                 } else {
                     AnnotationMirrorSet newLubs = new AnnotationMirrorSet();
                     for (AnnotationMirror lub : lubs) {
-                        AnnotationMirror anno = altern.getAnnotationInHierarchy(lub);
+                        AnnotationMirror anno = altern.getPrimaryAnnotationInHierarchy(lub);
                         newLubs.add(qualHierarchy.leastUpperBound(anno, lub));
                     }
                     lubs = newLubs;
@@ -132,15 +132,6 @@ public class AsSuperVisitor extends AbstractAtmComboVisitor<AnnotatedTypeMirror,
             }
             type.replaceAnnotations(lubs);
         }
-    }
-
-    @Override
-    protected String defaultErrorMessage(
-            AnnotatedTypeMirror type, AnnotatedTypeMirror superType, Void p) {
-        return String.format(
-                "AsSuperVisitor: Unexpected combination: type: %s superType: %s.%n"
-                        + "type: %s%nsuperType: %s",
-                type.getKind(), superType.getKind(), type, superType);
     }
 
     private AnnotatedTypeMirror errorTypeNotErasedSubtypeOfSuperType(
@@ -161,16 +152,16 @@ public class AsSuperVisitor extends AbstractAtmComboVisitor<AnnotatedTypeMirror,
     private AnnotatedTypeMirror copyPrimaryAnnos(AnnotatedTypeMirror from, AnnotatedTypeMirror to) {
         // There may have been annotations added by a recursive call to asSuper, so replace existing
         // annotations
-        to.replaceAnnotations(new ArrayList<>(from.getAnnotations()));
+        to.replaceAnnotations(new ArrayList<>(from.getPrimaryAnnotations()));
         // if to is a Typevar or Wildcard, then replaceAnnotations also sets primary annotations on
-        // the bounds to from.getAnnotations()
+        // the bounds to from.getPrimaryAnnotations()
 
         if (to.getKind() == TypeKind.UNION) {
             // Make sure that the alternatives have a primary annotations
             // Alternatives cannot have type arguments, so asSuper isn't called recursively
             AnnotatedUnionType unionType = (AnnotatedUnionType) to;
             for (AnnotatedDeclaredType altern : unionType.getAlternatives()) {
-                altern.addMissingAnnotations(unionType.getAnnotations());
+                altern.addMissingAnnotations(unionType.getPrimaryAnnotations());
             }
         }
         return to;
@@ -551,29 +542,13 @@ public class AsSuperVisitor extends AbstractAtmComboVisitor<AnnotatedTypeMirror,
         if (TypesUtils.isBoxedPrimitive(superType.getUnderlyingType())) {
             TypeMirror unboxedSuper = types.unboxedType(superType.getUnderlyingType());
             if (unboxedSuper.getKind() != type.getKind()
-                    && canBeNarrowingPrimitiveConversion(unboxedSuper)) {
+                    && TypesUtils.canBeNarrowingPrimitiveConversion(unboxedSuper, types)) {
                 AnnotatedPrimitiveType narrowedType =
                         atypeFactory.getNarrowedPrimitive(type, unboxedSuper);
                 return visit(narrowedType, superType, p);
             }
         }
         return visitPrimitive_Other(type, superType, p);
-    }
-
-    /**
-     * Returns true if the type is byte, short, char, Byte, Short, or Character. All other
-     * narrowings require a cast. See JLS 5.1.3.
-     *
-     * @param type a type
-     * @return true if assignment to the type may be a narrowing
-     */
-    private boolean canBeNarrowingPrimitiveConversion(TypeMirror type) {
-        // See CFGBuilder.CFGTranslationPhaseOne#conversionRequiresNarrowing()
-        TypeMirror unboxedType = TypesUtils.isBoxedPrimitive(type) ? types.unboxedType(type) : type;
-        TypeKind unboxedKind = unboxedType.getKind();
-        return unboxedKind == TypeKind.BYTE
-                || unboxedKind == TypeKind.SHORT
-                || unboxedKind == TypeKind.CHAR;
     }
 
     @Override
@@ -633,7 +608,7 @@ public class AsSuperVisitor extends AbstractAtmComboVisitor<AnnotatedTypeMirror,
         // Clear the superType annotations and copy over the primary annotations before computing
         // bounds, so that the superType annotations don't override the type annotations on the
         // bounds.
-        superType.clearAnnotations();
+        superType.clearPrimaryAnnotations();
         copyPrimaryAnnos(type, superType);
 
         AnnotatedTypeMirror upperBound = visit(type.getUpperBound(), superType.getUpperBound(), p);

@@ -457,7 +457,7 @@ public class NullnessNoInitAnnotatedTypeFactory
      * @param context tree used to get dataflow value
      */
     protected void replacePolyQualifier(AnnotatedTypeMirror lhsType, Tree context) {
-        if (lhsType.hasAnnotation(PolyNull.class)) {
+        if (lhsType.hasPrimaryAnnotation(PolyNull.class)) {
             NullnessNoInitValue inferred = getInferredValueFor(context);
             if (inferred != null) {
                 if (inferred.isPolyNullNonNull) {
@@ -541,7 +541,9 @@ public class NullnessNoInitAnnotatedTypeFactory
     @Override
     public boolean isNotFullyInitializedReceiver(MethodTree methodDeclTree) {
         InitializationFieldAccessAnnotatedTypeFactory initFactory =
-                getChecker().getTypeFactoryOfSubchecker(InitializationFieldAccessSubchecker.class);
+                getChecker()
+                        .getTypeFactoryOfSubcheckerOrNull(
+                                InitializationFieldAccessSubchecker.class);
         if (initFactory == null) {
             // init checker is deactivated.
             return super.isNotFullyInitializedReceiver(methodDeclTree);
@@ -552,7 +554,9 @@ public class NullnessNoInitAnnotatedTypeFactory
     @Override
     public AnnotatedTypeMirror getAnnotatedTypeBefore(JavaExpression expr, ExpressionTree tree) {
         InitializationFieldAccessAnnotatedTypeFactory initFactory =
-                getChecker().getTypeFactoryOfSubchecker(InitializationFieldAccessSubchecker.class);
+                getChecker()
+                        .getTypeFactoryOfSubcheckerOrNull(
+                                InitializationFieldAccessSubchecker.class);
         if (initFactory == null) {
             // init checker is deactivated.
             return super.getAnnotatedTypeBefore(expr, tree);
@@ -583,7 +587,7 @@ public class NullnessNoInitAnnotatedTypeFactory
                 // We thus use the GLB of those two annotations.
                 res.addAnnotations(
                         qualHierarchy.greatestLowerBounds(
-                                declared.getAnnotations(), refined.getAnnotations()));
+                                declared.getPrimaryAnnotations(), refined.getPrimaryAnnotations()));
                 return res;
             }
         }
@@ -650,9 +654,7 @@ public class NullnessNoInitAnnotatedTypeFactory
                 // If a @Nullable expression is cast to a primitive, then an unboxing.of.nullable
                 // error is issued.  Treat the cast as if it were annotated as @NonNull to avoid an
                 // "type.invalid.annotations.on.use" error.
-                if (!type.isAnnotatedInHierarchy(NONNULL)) {
-                    type.addAnnotation(NONNULL);
-                }
+                type.addMissingAnnotation(NONNULL);
             }
             return super.visitTypeCast(tree, type);
         }
@@ -675,10 +677,8 @@ public class NullnessNoInitAnnotatedTypeFactory
         public Void visitVariable(VariableTree tree, AnnotatedTypeMirror type) {
             Element elt = TreeUtils.elementFromDeclaration(tree);
             if (elt.getKind() == ElementKind.EXCEPTION_PARAMETER) {
-                if (!type.isAnnotatedInHierarchy(NONNULL)) {
-                    // case 9. exception parameter
-                    type.addAnnotation(NONNULL);
-                }
+                // case 9. exception parameter
+                type.addMissingAnnotation(NONNULL);
             }
             return null;
         }
@@ -739,9 +739,7 @@ public class NullnessNoInitAnnotatedTypeFactory
             super.visitNewArray(tree, type);
 
             // The result of newly allocated structures is always non-null.
-            if (!type.isAnnotatedInHierarchy(NONNULL)) {
-                type.replaceAnnotation(NONNULL);
-            }
+            type.replaceAnnotation(NONNULL);
 
             return null;
         }
@@ -764,7 +762,7 @@ public class NullnessNoInitAnnotatedTypeFactory
                         // Maybe this call is only necessary if argNullness is @NonNull.
                         ((AnnotatedArrayType) type)
                                 .getComponentType()
-                                .replaceAnnotations(arrayArgComponentType.getAnnotations());
+                                .replaceAnnotations(arrayArgComponentType.getPrimaryAnnotations());
                     }
                 }
             }
@@ -800,7 +798,7 @@ public class NullnessNoInitAnnotatedTypeFactory
      * @return true if some annotation is a nullness annotation
      */
     protected boolean containsNullnessAnnotation(
-            List<? extends AnnotationTree> annoTrees, Tree typeTree) {
+            @Nullable List<? extends AnnotationTree> annoTrees, Tree typeTree) {
         List<? extends AnnotationTree> annos =
                 TreeUtils.getExplicitAnnotationTrees(annoTrees, typeTree);
         return containsNullnessAnnotation(annos);
@@ -891,7 +889,7 @@ public class NullnessNoInitAnnotatedTypeFactory
     @Override
     public AnnotatedTypeMirror getDefaultValueAnnotatedType(TypeMirror typeMirror) {
         AnnotatedTypeMirror result = super.getDefaultValueAnnotatedType(typeMirror);
-        if (getAnnotationByClass(result.getAnnotations(), Nullable.class) != null) {
+        if (getAnnotationByClass(result.getPrimaryAnnotations(), Nullable.class) != null) {
             result.replaceAnnotation(MONOTONIC_NONNULL);
         }
         return result;
@@ -913,7 +911,7 @@ public class NullnessNoInitAnnotatedTypeFactory
     public void wpiAdjustForUpdateField(
         Tree lhsTree, Element element, String fieldName, AnnotatedTypeMirror rhsATM) {
       // Synthetic variable names contain "#". Ignore them.
-      if (!rhsATM.hasAnnotation(Nullable.class) || fieldName.contains("#")) {
+      if (!rhsATM.hasPrimaryAnnotation(Nullable.class) || fieldName.contains("#")) {
         return;
       }
       TreePath lhsPath = getPath(lhsTree);
@@ -930,9 +928,9 @@ public class NullnessNoInitAnnotatedTypeFactory
     // then change rhs to @Nullable
     @Override
     public void wpiAdjustForUpdateNonField(AnnotatedTypeMirror rhsATM) {
-        if (rhsATM.hasAnnotation(MonotonicNonNull.class)) {
-            rhsATM.replaceAnnotation(NULLABLE);
-        }
+      if (rhsATM.hasPrimaryAnnotation(MonotonicNonNull.class)) {
+        rhsATM.replaceAnnotation(NULLABLE);
+      }
     }
 
     @Override
@@ -955,14 +953,14 @@ public class NullnessNoInitAnnotatedTypeFactory
         @Nullable List<AnnotationMirror> preconds) {
       // TODO: This does not handle the possibility that the user set a different default
       // annotation.
-      if (!(declaredType.hasAnnotation(NULLABLE)
-          || declaredType.hasAnnotation(POLYNULL)
-          || declaredType.hasAnnotation(MONOTONIC_NONNULL))) {
+      if (!(declaredType.hasPrimaryAnnotation(NULLABLE)
+          || declaredType.hasPrimaryAnnotation(POLYNULL)
+          || declaredType.hasPrimaryAnnotation(MONOTONIC_NONNULL))) {
         return null;
       }
 
       if (preOrPost == BeforeOrAfter.AFTER
-          && declaredType.hasAnnotation(MONOTONIC_NONNULL)
+          && declaredType.hasPrimaryAnnotation(MONOTONIC_NONNULL)
           && preconds.contains(requiresNonNullAnno(expression))) {
         // The postcondition is implied by the precondition and the field being
         // @MonotonicNonNull.

@@ -99,7 +99,7 @@ public class ResourceLeakVisitor extends CalledMethodsVisitor {
         for (JavaExpression targetExpr : createsMustCallExprs) {
             AnnotationMirror mustCallAnno =
                     mcAtf.getAnnotatedType(TypesUtils.getTypeElement(targetExpr.getType()))
-                            .getAnnotationInHierarchy(mcAtf.TOP);
+                            .getPrimaryAnnotationInHierarchy(mcAtf.TOP);
             if (rlTypeFactory.getMustCallValues(mustCallAnno).isEmpty()) {
                 checker.reportError(
                         tree,
@@ -253,7 +253,7 @@ public class ResourceLeakVisitor extends CalledMethodsVisitor {
         AnnotationMirror mcAnno =
                 mustCallAnnotatedTypeFactory
                         .getAnnotatedType(containingClass)
-                        .getAnnotationInHierarchy(mustCallAnnotatedTypeFactory.TOP);
+                        .getPrimaryAnnotationInHierarchy(mustCallAnnotatedTypeFactory.TOP);
         List<String> mcValues =
                 AnnotationUtils.getElementValueArray(
                         mcAnno,

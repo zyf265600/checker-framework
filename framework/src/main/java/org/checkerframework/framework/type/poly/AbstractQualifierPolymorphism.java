@@ -117,8 +117,8 @@ public abstract class AbstractQualifierPolymorphism implements QualifierPolymorp
                                     polyQuals.entrySet()) {
                                 AnnotationMirror poly = entry.getKey();
                                 AnnotationMirror top = entry.getValue();
-                                if (type.hasAnnotation(poly)) {
-                                    type.removeAnnotation(poly);
+                                if (type.hasPrimaryAnnotation(poly)) {
+                                    type.removePrimaryAnnotation(poly);
                                     if (type.getKind() != TypeKind.TYPEVAR
                                             && type.getKind() != TypeKind.WILDCARD) {
                                         // Do not add qualifiers to type variables and
@@ -141,7 +141,7 @@ public abstract class AbstractQualifierPolymorphism implements QualifierPolymorp
         this.polyScanner =
                 new SimpleAnnotatedTypeScanner<>(
                         (type, notused) -> {
-                            for (AnnotationMirror a : type.getAnnotations()) {
+                            for (AnnotationMirror a : type.getPrimaryAnnotations()) {
                                 if (qualHierarchy.isPolymorphicQualifier(a)) {
                                     return true;
                                 }
@@ -238,7 +238,7 @@ public abstract class AbstractQualifierPolymorphism implements QualifierPolymorp
         //        collector.visit(factory.getReceiverType(tree), type.getReceiverType()));
 
         AnnotatedTypeMirror newClassType = type.getReturnType().deepCopy();
-        newClassType.clearAnnotations();
+        newClassType.clearPrimaryAnnotations();
         newClassType.replaceAnnotations(atypeFactory.getExplicitNewClassAnnos(tree));
 
         instantiationMapping =
@@ -263,7 +263,7 @@ public abstract class AbstractQualifierPolymorphism implements QualifierPolymorp
         AnnotationMirrorMap<AnnotationMirror> matchingMapping = new AnnotationMirrorMap<>();
         polyQuals.forEach(
                 (polyAnnotation, topAnno) -> {
-                    AnnotationMirror annoOnOwner = owner.getAnnotationInHierarchy(topAnno);
+                    AnnotationMirror annoOnOwner = owner.getPrimaryAnnotationInHierarchy(topAnno);
                     if (annoOnOwner != null) {
                         matchingMapping.put(polyAnnotation, annoOnOwner);
                     }
@@ -345,8 +345,8 @@ public abstract class AbstractQualifierPolymorphism implements QualifierPolymorp
         for (Map.Entry<AnnotationMirror, AnnotationMirror> kv : polyQuals.entrySet()) {
             AnnotationMirror top = kv.getValue();
             AnnotationMirror poly = kv.getKey();
-            if (polyType.hasAnnotation(poly)) {
-                AnnotationMirror typeQual = type.getAnnotationInHierarchy(top);
+            if (polyType.hasPrimaryAnnotation(poly)) {
+                AnnotationMirror typeQual = type.getPrimaryAnnotationInHierarchy(top);
                 if (typeQual != null) {
                     if (atypeFactory.hasQualifierParameterInHierarchy(type, top)) {
                         polyInstantiationForQualifierParameter.put(poly, typeQual);
@@ -399,7 +399,7 @@ public abstract class AbstractQualifierPolymorphism implements QualifierPolymorp
          *
          * <p>Uses reference equality rather than equals because the visitor may visit two types
          * that are structurally equal, but not actually the same. For example, the wildcards in
-         * {@code Pair<?,?>} may be equal, but they both should be visited.
+         * {@code IPair<?,?>} may be equal, but they both should be visited.
          */
         private final Set<AnnotatedTypeMirror> visitedTypes =
                 Collections.newSetFromMap(new IdentityHashMap<AnnotatedTypeMirror, Boolean>());
@@ -525,15 +525,6 @@ public abstract class AbstractQualifierPolymorphism implements QualifierPolymorp
             AnnotatedTypeMirror asSuper = AnnotatedTypes.asSuper(atypeFactory, type, polyType);
 
             return visit(asSuper, polyType, null);
-        }
-
-        @Override
-        protected String defaultErrorMessage(
-                AnnotatedTypeMirror type1, AnnotatedTypeMirror type2, Void aVoid) {
-            return String.format(
-                    "AbstractQualifierPolymorphism:"
-                            + " Unexpected combination: type1: %s (%s) type2: %s (%s).",
-                    type1, type1.getKind(), type2, type2.getKind());
         }
 
         @Override

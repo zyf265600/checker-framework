@@ -25,6 +25,7 @@ import com.sun.tools.javac.util.Context;
 import com.sun.tools.javac.util.Name;
 import com.sun.tools.javac.util.Names;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.common.basetype.BaseTypeChecker;
 import org.checkerframework.common.reflection.qual.Invoke;
 import org.checkerframework.common.reflection.qual.MethodVal;
@@ -147,7 +148,7 @@ public class DefaultReflectionResolver implements ReflectionResolver {
             AnnotatedTypeMirror returnType = resolvedResult.executableType.getReturnType();
 
             // Lub return types
-            returnLub = lub(returnLub, returnType.getAnnotations(), factory);
+            returnLub = lub(returnLub, returnType.getPrimaryAnnotations(), factory);
 
             // Glb receiver types (actual method receiver is passed as first
             // argument to invoke(Object, Object[]))
@@ -162,14 +163,14 @@ public class DefaultReflectionResolver implements ReflectionResolver {
                                 factory.getQualifierHierarchy().getTopAnnotations(),
                                 factory);
             } else {
-                receiverGlb = glb(receiverGlb, receiverType.getAnnotations(), factory);
+                receiverGlb = glb(receiverGlb, receiverType.getPrimaryAnnotations(), factory);
             }
 
             // Glb parameter types.  All formal parameter types get combined together because
             // Method#invoke takes as argument an array of parameter types, so there is no way to
             // distinguish the types of different formal parameters.
             for (AnnotatedTypeMirror mirror : resolvedResult.executableType.getParameterTypes()) {
-                paramsGlb = glb(paramsGlb, mirror.getAnnotations(), factory);
+                paramsGlb = glb(paramsGlb, mirror.getPrimaryAnnotations(), factory);
             }
         }
 
@@ -184,18 +185,18 @@ public class DefaultReflectionResolver implements ReflectionResolver {
          */
 
         // return value
-        origResult.executableType.getReturnType().clearAnnotations();
+        origResult.executableType.getReturnType().clearPrimaryAnnotations();
         origResult.executableType.getReturnType().addAnnotations(returnLub);
 
         // receiver type
-        origResult.executableType.getParameterTypes().get(0).clearAnnotations();
+        origResult.executableType.getParameterTypes().get(0).clearPrimaryAnnotations();
         origResult.executableType.getParameterTypes().get(0).addAnnotations(receiverGlb);
 
         // parameter types
         if (paramsGlb != null) {
             AnnotatedArrayType origArrayType =
                     (AnnotatedArrayType) origResult.executableType.getParameterTypes().get(1);
-            origArrayType.getComponentType().clearAnnotations();
+            origArrayType.getComponentType().clearPrimaryAnnotations();
             origArrayType.getComponentType().addAnnotations(paramsGlb);
         }
 
@@ -294,11 +295,11 @@ public class DefaultReflectionResolver implements ReflectionResolver {
             AnnotatedTypeMirror returnType = executableType.getReturnType();
 
             // Lub return types
-            returnLub = lub(returnLub, returnType.getAnnotations(), factory);
+            returnLub = lub(returnLub, returnType.getPrimaryAnnotations(), factory);
 
             // Glb parameter types
             for (AnnotatedTypeMirror mirror : executableType.getParameterTypes()) {
-                paramsGlb = glb(paramsGlb, mirror.getAnnotations(), factory);
+                paramsGlb = glb(paramsGlb, mirror.getPrimaryAnnotations(), factory);
             }
         }
         if (returnLub == null) {
@@ -311,14 +312,14 @@ public class DefaultReflectionResolver implements ReflectionResolver {
          */
 
         // return value
-        origResult.executableType.getReturnType().clearAnnotations();
+        origResult.executableType.getReturnType().clearPrimaryAnnotations();
         origResult.executableType.getReturnType().addAnnotations(returnLub);
 
         // parameter types
         if (paramsGlb != null) {
             AnnotatedArrayType origArrayType =
                     (AnnotatedArrayType) origResult.executableType.getParameterTypes().get(0);
-            origArrayType.getComponentType().clearAnnotations();
+            origArrayType.getComponentType().clearPrimaryAnnotations();
             origArrayType.getComponentType().addAnnotations(paramsGlb);
         }
 
@@ -628,7 +629,7 @@ public class DefaultReflectionResolver implements ReflectionResolver {
      * @return the lub of the two types
      */
     private Set<? extends AnnotationMirror> lub(
-            Set<? extends AnnotationMirror> set1,
+            @Nullable Set<? extends AnnotationMirror> set1,
             Set<? extends AnnotationMirror> set2,
             AnnotatedTypeFactory atypeFactory) {
         if (set1 == null || set1.isEmpty()) {
@@ -650,7 +651,7 @@ public class DefaultReflectionResolver implements ReflectionResolver {
      * @return the glb of the two types
      */
     private Set<? extends AnnotationMirror> glb(
-            Set<? extends AnnotationMirror> set1,
+            @Nullable Set<? extends AnnotationMirror> set1,
             Set<? extends AnnotationMirror> set2,
             AnnotatedTypeFactory atypeFactory) {
         if (set1 == null || set1.isEmpty()) {

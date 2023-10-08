@@ -6,6 +6,7 @@ import com.sun.source.tree.MethodTree;
 import com.sun.source.tree.Tree;
 import com.sun.source.tree.VariableTree;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.framework.type.AnnotatedTypeMirror.AnnotatedDeclaredType;
 import org.checkerframework.framework.type.AnnotatedTypeMirror.AnnotatedExecutableType;
 import org.checkerframework.framework.util.AnnotatedTypes;
@@ -46,7 +47,7 @@ class TypeFromMemberVisitor extends TypeFromTreeVisitor {
                 && variableTree.getInitializer() != null) {
             result = f.getAnnotatedType(variableTree.getInitializer());
             // Let normal defaulting happen for the primary annotation.
-            result.clearAnnotations();
+            result.clearPrimaryAnnotations();
         } else {
             // (variableTree.getType() does not include the annotation before the type, so those
             // are added to the type below).
@@ -149,7 +150,7 @@ class TypeFromMemberVisitor extends TypeFromTreeVisitor {
      *
      * @return the type of the lambda parameter, or null if paramElement is not a lambda parameter
      */
-    private static AnnotatedTypeMirror inferLambdaParamAnnotations(
+    private static @Nullable AnnotatedTypeMirror inferLambdaParamAnnotations(
             AnnotatedTypeFactory f, AnnotatedTypeMirror lambdaParam, Element paramElement) {
         if (paramElement.getKind() != ElementKind.PARAMETER
                 || f.declarationFromElement(paramElement) == null
@@ -173,7 +174,7 @@ class TypeFromMemberVisitor extends TypeFromTreeVisitor {
                     funcTypeParam.underlyingType, lambdaParam.underlyingType, f.types)) {
                 return AnnotatedTypes.asSuper(f, funcTypeParam, lambdaParam);
             }
-            lambdaParam.addMissingAnnotations(funcTypeParam.getAnnotations());
+            lambdaParam.addMissingAnnotations(funcTypeParam.getPrimaryAnnotations());
             return lambdaParam;
         }
         return null;

@@ -155,6 +155,7 @@ import com.sun.source.tree.WhileLoopTree;
 import com.sun.source.tree.WildcardTree;
 import com.sun.source.util.SimpleTreeVisitor;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.javacutil.BugInCF;
 import org.checkerframework.javacutil.TreeUtils;
 
@@ -1147,9 +1148,10 @@ public abstract class JointJavacJavaParserVisitor extends SimpleTreeVisitor<Void
         // TODO: Implement this.
         //
         // Some notes:
-        // - javacTree.getAnnotations() seems to always return empty, any annotations on the base
+        // - javacTree.getPrimaryAnnotations() seems to always return empty, any annotations on the
+        // base
         // type seem to go on the type itself in javacTree.getType(). The JavaParser version doesn't
-        // even have a corresponding getAnnotations method.
+        // even have a corresponding getPrimaryAnnotations method.
         // - When there are no initializers, both systems use similar representations. The
         // dimensions line up.
         // - When there is an initializer, they differ greatly for multi-dimensional arrays. Javac
@@ -1217,7 +1219,7 @@ public abstract class JointJavacJavaParserVisitor extends SimpleTreeVisitor<Void
     public Void visitPackage(PackageTree javacTree, Node javaParserNode) {
         PackageDeclaration node = castNode(PackageDeclaration.class, javaParserNode, javacTree);
         processPackage(javacTree, node);
-        // visitLists(javacTree.getAnnotations(), node.getAnnotations());
+        // visitLists(javacTree.getPrimaryAnnotations(), node.getPrimaryAnnotations());
         javacTree.getPackageName().accept(this, node.getName());
         return null;
     }
@@ -2321,7 +2323,8 @@ public abstract class JointJavacJavaParserVisitor extends SimpleTreeVisitor<Void
      * @param javacTree a javac tree or null
      * @param javaParserNode an optional JavaParser node, which might not be present
      */
-    protected void visitOptional(Tree javacTree, Optional<? extends Node> javaParserNode) {
+    protected void visitOptional(
+            @Nullable Tree javacTree, Optional<? extends Node> javaParserNode) {
         assert javacTree != null == javaParserNode.isPresent()
                 : String.format("visitOptional(%s, %s)", javacTree, javaParserNode);
         if (javacTree != null) {

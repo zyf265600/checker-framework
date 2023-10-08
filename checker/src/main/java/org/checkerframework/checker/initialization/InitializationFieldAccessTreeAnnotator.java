@@ -9,6 +9,7 @@ import org.checkerframework.framework.type.AnnotatedTypeMirror;
 import org.checkerframework.framework.type.GenericAnnotatedTypeFactory;
 import org.checkerframework.framework.type.treeannotator.TreeAnnotator;
 import org.checkerframework.javacutil.AnnotationUtils;
+import org.checkerframework.javacutil.BugInCF;
 import org.checkerframework.javacutil.TreeUtils;
 
 import javax.lang.model.element.Element;
@@ -87,7 +88,11 @@ public class InitializationFieldAccessTreeAnnotator extends TreeAnnotator {
         InitializationFieldAccessAnnotatedTypeFactory initFactory =
                 atypeFactory
                         .getChecker()
-                        .getTypeFactoryOfSubchecker(InitializationFieldAccessSubchecker.class);
+                        .getTypeFactoryOfSubcheckerOrNull(
+                                InitializationFieldAccessSubchecker.class);
+        if (initFactory == null) {
+            throw new BugInCF("Did not find InitializationFieldAccessSubchecker!");
+        }
         AnnotatedTypeMirror receiver = initFactory.getReceiverType(tree);
         if (receiver == null) {
             return;
@@ -103,7 +108,7 @@ public class InitializationFieldAccessTreeAnnotator extends TreeAnnotator {
         Element element = TreeUtils.elementFromUse(tree);
         AnnotatedTypeMirror fieldAnnotations = factory.getAnnotatedType(element);
         if (AnnotationUtils.containsSameByName(
-                fieldAnnotations.getAnnotations(), initFactory.UNKNOWN_INITIALIZATION)) {
+                fieldAnnotations.getPrimaryAnnotations(), initFactory.UNKNOWN_INITIALIZATION)) {
             return;
         }
 
@@ -139,7 +144,7 @@ public class InitializationFieldAccessTreeAnnotator extends TreeAnnotator {
             // The receiver is not initialized for this frame and the type being computed is
             // not a LHS.
             // Replace all annotations with the top annotation for that hierarchy.
-            type.clearAnnotations();
+            type.clearPrimaryAnnotations();
             type.addAnnotations(factory.getQualifierHierarchy().getTopAnnotations());
         }
     }

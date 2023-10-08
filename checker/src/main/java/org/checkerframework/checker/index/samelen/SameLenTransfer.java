@@ -6,6 +6,7 @@ import com.sun.source.util.TreePath;
 
 import org.checkerframework.checker.index.IndexUtil;
 import org.checkerframework.checker.index.qual.SameLen;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.dataflow.analysis.ConditionalTransferResult;
 import org.checkerframework.dataflow.analysis.TransferInput;
 import org.checkerframework.dataflow.analysis.TransferResult;
@@ -67,7 +68,7 @@ public class SameLenTransfer extends CFTransfer {
      * Gets the receiver sequence of a length access node, or null if {@code lengthNode} is not a
      * length access.
      */
-    private Node getLengthReceiver(Node lengthNode) {
+    private @Nullable Node getLengthReceiver(Node lengthNode) {
         if (isArrayLengthAccess(lengthNode)) {
             // lengthNode is a.length
             FieldAccessNode lengthFieldAccessNode = (FieldAccessNode) lengthNode;
@@ -107,7 +108,7 @@ public class SameLenTransfer extends CFTransfer {
                     AnnotationMirror lengthNodeAnnotation =
                             atypeFactory
                                     .getAnnotatedType(lengthNodeReceiver.getTree())
-                                    .getAnnotationInHierarchy(UNKNOWN);
+                                    .getPrimaryAnnotationInHierarchy(UNKNOWN);
 
                     AnnotationMirror combinedSameLen =
                             atypeFactory.createCombinedSameLen(
@@ -123,7 +124,7 @@ public class SameLenTransfer extends CFTransfer {
         AnnotationMirror rightAnno =
                 atypeFactory
                         .getAnnotatedType(node.getExpression().getTree())
-                        .getAnnotationInHierarchy(UNKNOWN);
+                        .getPrimaryAnnotationInHierarchy(UNKNOWN);
 
         // If the left side of the assignment is an array or a string, then have both the right and
         // left side be SameLen of each other.
@@ -224,7 +225,9 @@ public class SameLenTransfer extends CFTransfer {
      */
     AnnotationMirror getAnno(Node n) {
         if (n.isLValue()) {
-            return atypeFactory.getAnnotatedType(n.getTree()).getAnnotationInHierarchy(UNKNOWN);
+            return atypeFactory
+                    .getAnnotatedType(n.getTree())
+                    .getPrimaryAnnotationInHierarchy(UNKNOWN);
         }
         CFValue cfValue = analysis.getValue(n);
         if (cfValue == null) {
@@ -290,7 +293,7 @@ public class SameLenTransfer extends CFTransfer {
             // If the parameter has a samelen annotation, then look for other parameters in that
             // annotation and propagate default the other annotation so that it is symmetric.
             AnnotatedTypeMirror atm = params.get(index);
-            AnnotationMirror sameLenAnno = atm.getAnnotation(SameLen.class);
+            AnnotationMirror sameLenAnno = atm.getPrimaryAnnotation(SameLen.class);
             if (sameLenAnno == null) {
                 continue;
             }

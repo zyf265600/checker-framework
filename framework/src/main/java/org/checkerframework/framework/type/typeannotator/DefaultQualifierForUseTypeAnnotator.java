@@ -9,8 +9,8 @@ import org.checkerframework.framework.type.AnnotatedTypeMirror.AnnotatedDeclared
 import org.checkerframework.javacutil.AnnotationBuilder;
 import org.checkerframework.javacutil.AnnotationMirrorSet;
 import org.checkerframework.javacutil.AnnotationUtils;
-import org.checkerframework.javacutil.CollectionUtils;
 import org.checkerframework.javacutil.TreeUtils;
+import org.plumelib.util.CollectionsPlume;
 
 import java.util.List;
 import java.util.Map;
@@ -64,7 +64,7 @@ public class DefaultQualifierForUseTypeAnnotator extends TypeAnnotator {
      * element.
      */
     protected final Map<Element, AnnotationMirrorSet> elementToDefaults =
-            CollectionUtils.createLRUCache(100);
+            CollectionsPlume.createLruCache(100);
 
     /** Clears all caches. */
     public void clearCache() {
@@ -123,7 +123,7 @@ public class DefaultQualifierForUseTypeAnnotator extends TypeAnnotator {
      */
     protected AnnotationMirrorSet getExplicitAnnos(Element element) {
         AnnotatedTypeMirror explicitAnnoOnDecl = atypeFactory.fromElement(element);
-        return explicitAnnoOnDecl.getAnnotations();
+        return explicitAnnoOnDecl.getPrimaryAnnotations();
     }
 
     /**

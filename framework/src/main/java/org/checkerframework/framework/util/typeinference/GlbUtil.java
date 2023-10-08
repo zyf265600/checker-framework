@@ -1,5 +1,6 @@
 package org.checkerframework.framework.util.typeinference;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.framework.type.AnnotatedTypeFactory;
 import org.checkerframework.framework.type.AnnotatedTypeMirror;
 import org.checkerframework.framework.type.AnnotatedTypeMirror.AnnotatedNullType;
@@ -36,7 +37,7 @@ public class GlbUtil {
      * @param atypeFactory the type factory
      * @return the greatest lower bound of typeMirrors
      */
-    public static AnnotatedTypeMirror glbAll(
+    public static @Nullable AnnotatedTypeMirror glbAll(
             Map<AnnotatedTypeMirror, AnnotationMirrorSet> typeMirrors,
             AnnotatedTypeFactory atypeFactory) {
         QualifierHierarchy qualHierarchy = atypeFactory.getQualifierHierarchy();
@@ -186,8 +187,8 @@ public class GlbUtil {
          * @return the comparison of type1 and type2
          */
         private int compareAnnotations(AnnotatedTypeMirror type1, AnnotatedTypeMirror type2) {
-            AnnotationMirrorSet annos1 = type1.getAnnotations();
-            AnnotationMirrorSet annos2 = type2.getAnnotations();
+            AnnotationMirrorSet annos1 = type1.getPrimaryAnnotations();
+            AnnotationMirrorSet annos2 = type2.getPrimaryAnnotations();
             if (AnnotationUtils.areSame(annos1, annos2)) {
                 return 0;
             } else if (qualHierarchy.isSubtype(annos1, annos2)) {

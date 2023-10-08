@@ -12,6 +12,7 @@ import com.sun.source.tree.NewClassTree;
 import com.sun.source.tree.Tree;
 import com.sun.source.tree.TypeCastTree;
 
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.checker.signature.qual.BinaryName;
 import org.checkerframework.checker.signature.qual.Identifier;
 import org.checkerframework.common.value.qual.ArrayLen;
@@ -140,7 +141,7 @@ class ValueTreeAnnotator extends TreeAnnotator {
         AnnotationMirror dimType =
                 atypeFactory
                         .getAnnotatedType(dimensions.get(0))
-                        .getAnnotationInHierarchy(atypeFactory.UNKNOWNVAL);
+                        .getPrimaryAnnotationInHierarchy(atypeFactory.UNKNOWNVAL);
 
         if (AnnotationUtils.areSameByName(dimType, atypeFactory.BOTTOMVAL)) {
             type.replaceAnnotation(atypeFactory.BOTTOMVAL);
@@ -194,7 +195,7 @@ class ValueTreeAnnotator extends TreeAnnotator {
                 if (dimension < arrayLenOfDimensions.size()) {
                     rolv = arrayLenOfDimensions.get(dimension);
                 }
-                AnnotationMirror arrayLen = componentType.getAnnotation(ArrayLen.class);
+                AnnotationMirror arrayLen = componentType.getPrimaryAnnotation(ArrayLen.class);
                 if (arrayLen != null) {
                     List<Integer> currentLengths = atypeFactory.getArrayLength(arrayLen);
                     if (rolv != null) {
@@ -205,7 +206,7 @@ class ValueTreeAnnotator extends TreeAnnotator {
                 } else {
                     // Check for an arrayLenRange annotation
                     AnnotationMirror arrayLenRangeAnno =
-                            componentType.getAnnotation(ArrayLenRange.class);
+                            componentType.getPrimaryAnnotation(ArrayLenRange.class);
                     Range range;
                     if (arrayLenRangeAnno != null) {
                         range = atypeFactory.getRange(arrayLenRangeAnno);
@@ -237,7 +238,7 @@ class ValueTreeAnnotator extends TreeAnnotator {
     }
 
     /** Convert a char array to a String. Return null if unable to convert. */
-    private String getCharArrayStringVal(List<? extends ExpressionTree> initializers) {
+    private @Nullable String getCharArrayStringVal(List<? extends ExpressionTree> initializers) {
         boolean allLiterals = true;
         StringBuilder stringVal = new StringBuilder();
         for (ExpressionTree e : initializers) {
@@ -245,7 +246,7 @@ class ValueTreeAnnotator extends TreeAnnotator {
                     atypeFactory.getRange(
                             atypeFactory
                                     .getAnnotatedType(e)
-                                    .getAnnotationInHierarchy(atypeFactory.UNKNOWNVAL));
+                                    .getPrimaryAnnotationInHierarchy(atypeFactory.UNKNOWNVAL));
             if (range != null && range.from == range.to) {
                 char charVal = (char) range.from;
                 stringVal.append(charVal);
@@ -269,7 +270,7 @@ class ValueTreeAnnotator extends TreeAnnotator {
             AnnotationMirror oldAnno =
                     atypeFactory
                             .getAnnotatedType(tree.getExpression())
-                            .getAnnotationInHierarchy(atypeFactory.UNKNOWNVAL);
+                            .getPrimaryAnnotationInHierarchy(atypeFactory.UNKNOWNVAL);
             if (oldAnno == null) {
                 return null;
             }
@@ -328,7 +329,7 @@ class ValueTreeAnnotator extends TreeAnnotator {
      * @param castTo the type to cast to
      * @return the Value Checker annotation's value, casted to the given type
      */
-    private List<?> getValues(AnnotatedTypeMirror type, TypeMirror castTo) {
+    private @Nullable List<?> getValues(AnnotatedTypeMirror type, TypeMirror castTo) {
         return getValues(type, castTo, false);
     }
 
@@ -342,8 +343,9 @@ class ValueTreeAnnotator extends TreeAnnotator {
      * @param isUnsigned if true, treat {@code castTo} as unsigned
      * @return the Value Checker annotation's value, casted to the given type
      */
-    private List<?> getValues(AnnotatedTypeMirror type, TypeMirror castTo, boolean isUnsigned) {
-        AnnotationMirror anno = type.getAnnotationInHierarchy(atypeFactory.UNKNOWNVAL);
+    private @Nullable List<?> getValues(
+            AnnotatedTypeMirror type, TypeMirror castTo, boolean isUnsigned) {
+        AnnotationMirror anno = type.getPrimaryAnnotationInHierarchy(atypeFactory.UNKNOWNVAL);
         if (anno == null) {
             // If type is an AnnotatedTypeVariable (or other type without a primary annotation)
             // then anno will be null. It would be safe to use the annotation on the upper
@@ -410,14 +412,16 @@ class ValueTreeAnnotator extends TreeAnnotator {
      * @return the Range of the Math.min or Math.max method, or null if the argument is none of
      *     these methods or their arguments are not annotated in ValueChecker hierarchy
      */
-    private Range getRangeForMathMinMax(MethodInvocationTree tree) {
+    private @Nullable Range getRangeForMathMinMax(MethodInvocationTree tree) {
         if (atypeFactory.getMethodIdentifier().isMathMin(tree, atypeFactory.getProcessingEnv())) {
             AnnotatedTypeMirror arg1 = atypeFactory.getAnnotatedType(tree.getArguments().get(0));
             AnnotatedTypeMirror arg2 = atypeFactory.getAnnotatedType(tree.getArguments().get(1));
             Range rangeArg1 =
-                    atypeFactory.getRange(arg1.getAnnotationInHierarchy(atypeFactory.UNKNOWNVAL));
+                    atypeFactory.getRange(
+                            arg1.getPrimaryAnnotationInHierarchy(atypeFactory.UNKNOWNVAL));
             Range rangeArg2 =
-                    atypeFactory.getRange(arg2.getAnnotationInHierarchy(atypeFactory.UNKNOWNVAL));
+                    atypeFactory.getRange(
+                            arg2.getPrimaryAnnotationInHierarchy(atypeFactory.UNKNOWNVAL));
             if (rangeArg1 != null && rangeArg2 != null) {
                 return rangeArg1.min(rangeArg2);
             }
@@ -427,9 +431,11 @@ class ValueTreeAnnotator extends TreeAnnotator {
             AnnotatedTypeMirror arg1 = atypeFactory.getAnnotatedType(tree.getArguments().get(0));
             AnnotatedTypeMirror arg2 = atypeFactory.getAnnotatedType(tree.getArguments().get(1));
             Range rangeArg1 =
-                    atypeFactory.getRange(arg1.getAnnotationInHierarchy(atypeFactory.UNKNOWNVAL));
+                    atypeFactory.getRange(
+                            arg1.getPrimaryAnnotationInHierarchy(atypeFactory.UNKNOWNVAL));
             Range rangeArg2 =
-                    atypeFactory.getRange(arg2.getAnnotationInHierarchy(atypeFactory.UNKNOWNVAL));
+                    atypeFactory.getRange(
+                            arg2.getPrimaryAnnotationInHierarchy(atypeFactory.UNKNOWNVAL));
             if (rangeArg1 != null && rangeArg2 != null) {
                 return rangeArg1.max(rangeArg2);
             }
@@ -439,7 +445,7 @@ class ValueTreeAnnotator extends TreeAnnotator {
 
     @Override
     public Void visitMethodInvocation(MethodInvocationTree tree, AnnotatedTypeMirror type) {
-        if (type.hasAnnotation(atypeFactory.UNKNOWNVAL)) {
+        if (type.hasPrimaryAnnotation(atypeFactory.UNKNOWNVAL)) {
             Range range = getRangeForMathMinMax(tree);
             if (range != null) {
                 type.replaceAnnotation(atypeFactory.createIntRangeAnnotation(range));

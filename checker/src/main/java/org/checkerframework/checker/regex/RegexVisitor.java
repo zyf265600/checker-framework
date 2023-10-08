@@ -110,9 +110,10 @@ public class RegexVisitor extends BaseTypeVisitor<RegexAnnotatedTypeFactory> {
                 int annoGroups = 0;
                 AnnotatedTypeMirror receiverType = atypeFactory.getAnnotatedType(receiver);
 
-                if (receiverType != null && receiverType.hasAnnotation(Regex.class)) {
+                if (receiverType != null && receiverType.hasPrimaryAnnotation(Regex.class)) {
                     annoGroups =
-                            atypeFactory.getGroupCount(receiverType.getAnnotation(Regex.class));
+                            atypeFactory.getGroupCount(
+                                    receiverType.getPrimaryAnnotation(Regex.class));
                 }
                 if (paramGroups > annoGroups) {
                     checker.reportError(

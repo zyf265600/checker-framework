@@ -11,9 +11,9 @@ import org.checkerframework.framework.type.AnnotatedTypeMirror;
 import org.checkerframework.framework.type.AnnotatedTypeMirror.AnnotatedDeclaredType;
 import org.checkerframework.framework.type.AnnotatedTypeReplacer;
 import org.checkerframework.framework.util.TypeArgumentMapper;
-import org.checkerframework.javacutil.Pair;
 import org.checkerframework.javacutil.TreePathUtil;
 import org.checkerframework.javacutil.TreeUtils;
+import org.plumelib.util.IPair;
 
 import java.util.List;
 import java.util.Set;
@@ -117,13 +117,13 @@ public class KeyForPropagator {
             return;
         }
 
-        Set<Pair<Integer, Integer>> typeParamMappings =
+        Set<IPair<Integer, Integer>> typeParamMappings =
                 TypeArgumentMapper.mapTypeArgumentIndices(subtypeElement, supertypeElement, types);
 
         List<AnnotatedTypeMirror> subtypeArgs = subtype.getTypeArguments();
         List<AnnotatedTypeMirror> supertypeArgs = supertype.getTypeArguments();
 
-        for (Pair<Integer, Integer> path : typeParamMappings) {
+        for (IPair<Integer, Integer> path : typeParamMappings) {
             AnnotatedTypeMirror subtypeArg = subtypeArgs.get(path.first);
             AnnotatedTypeMirror supertypeArg = supertypeArgs.get(path.second);
 
@@ -198,10 +198,10 @@ public class KeyForPropagator {
     private class KeyForPropagationReplacer extends AnnotatedTypeReplacer {
         @Override
         protected void replaceAnnotations(AnnotatedTypeMirror from, AnnotatedTypeMirror to) {
-            AnnotationMirror fromKeyFor = from.getAnnotationInHierarchy(UNKNOWN_KEYFOR);
+            AnnotationMirror fromKeyFor = from.getPrimaryAnnotationInHierarchy(UNKNOWN_KEYFOR);
             if (fromKeyFor != null) {
-                if (to.hasAnnotation(UNKNOWN_KEYFOR)
-                        || to.getAnnotationInHierarchy(UNKNOWN_KEYFOR) == null) {
+                if (to.hasPrimaryAnnotation(UNKNOWN_KEYFOR)
+                        || to.getPrimaryAnnotationInHierarchy(UNKNOWN_KEYFOR) == null) {
                     to.replaceAnnotation(fromKeyFor);
                 }
             }

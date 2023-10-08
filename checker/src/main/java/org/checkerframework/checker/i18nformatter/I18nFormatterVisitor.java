@@ -92,7 +92,7 @@ public class I18nFormatterVisitor extends BaseTypeVisitor<I18nFormatterAnnotated
                                         ExecutableElement method =
                                                 TreeUtils.elementFromUse(fc.getTree());
                                         CharSequence methodName =
-                                                ElementUtils.getSimpleNameOrDescription(method);
+                                                ElementUtils.getSimpleDescription(method);
                                         tu.failure(
                                                 param,
                                                 "argument.type.incompatible",
@@ -132,8 +132,10 @@ public class I18nFormatterVisitor extends BaseTypeVisitor<I18nFormatterAnnotated
             Object... extraArgs) {
         boolean result = true;
 
-        AnnotationMirror rhs = valueType.getAnnotationInHierarchy(atypeFactory.I18NUNKNOWNFORMAT);
-        AnnotationMirror lhs = varType.getAnnotationInHierarchy(atypeFactory.I18NUNKNOWNFORMAT);
+        AnnotationMirror rhs =
+                valueType.getPrimaryAnnotationInHierarchy(atypeFactory.I18NUNKNOWNFORMAT);
+        AnnotationMirror lhs =
+                varType.getPrimaryAnnotationInHierarchy(atypeFactory.I18NUNKNOWNFORMAT);
 
         // "i18nformat.missing.arguments" and "i18nformat.excess.arguments" are issued here for
         // assignments.
