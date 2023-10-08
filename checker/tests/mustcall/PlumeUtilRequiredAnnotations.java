@@ -1,10 +1,9 @@
 // 6/1/2023: We changed the defaulting rules despite the issues described below, because we
-// discovered
-// a soundness bug that demonstrated that the only reason the other defaulting scheme didn't
-// produce a lot of false positive errors was a mistake in our implementation: both defaulting
-// schemes produce (different) false positives, but defaulting to @MustCall({}) on the upper bound
-// of type variables limits the extra warnings to code that actually uses resources, which
-// is desirable. As part of this change, the expected warnings in this test case were removed,
+// discovered a soundness bug that demonstrated that the only reason the other defaulting scheme
+// didn't produce a lot of false positive errors was a mistake in our implementation:
+// both defaulting schemes produce (different) false positives, but defaulting to @MustCall({}) on
+// the upper bound of type variables limits the extra warnings to code that actually uses resources,
+// which is desirable. As part of this change, the expected warnings in this test case were removed,
 // but I have preserved their locations with "a type.argument error used to be issued here".
 // The following comment is the original note attached to this test case:
 
