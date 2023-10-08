@@ -22,7 +22,6 @@ import org.checkerframework.checker.compilermsgs.qual.CompilerMessageKey;
 import org.checkerframework.checker.formatter.qual.FormatMethod;
 import org.checkerframework.checker.interning.qual.InternedDistinct;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.checker.nullness.qual.PolyNull;
 import org.checkerframework.checker.signature.qual.CanonicalName;
@@ -732,7 +731,7 @@ public abstract class SourceChecker extends AbstractTypeProcessor implements Opt
             SourceChecker checker = this;
 
             while (checker != null) {
-                @NonNull String className = checker.getClass().getCanonicalName();
+                String className = checker.getClass().getCanonicalName();
                 assert className != null : "@AssumeAssertion(nullness): checker classes have names";
                 upstreamCheckerNames.add(className);
                 checker = checker.parentChecker;
