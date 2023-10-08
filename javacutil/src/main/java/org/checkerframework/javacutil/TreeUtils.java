@@ -2701,6 +2701,19 @@ public final class TreeUtils {
     }
 
     /**
+     * Determine whether the given tree is of Kind RECORD, in a way that works on all versions of
+     * Java.
+     *
+     * @param tree the tree to get the kind for
+     * @return whether the tree is of the kind RECORD
+     */
+    public static boolean isRecordTree(Tree tree) {
+        Tree.Kind kind = tree.getKind();
+        // Must use String comparison because we may be on an older JDK:
+        return kind.name().equals("RECORD");
+    }
+
+    /**
      * Calls getKind() on the given tree, but returns CLASS if the Kind is RECORD. This is needed
      * because the Checker Framework runs on JDKs before the RECORD item was added, so RECORD can't
      * be used in case statements, and usually we want to treat them the same as classes.
@@ -2709,12 +2722,10 @@ public final class TreeUtils {
      * @return the kind of the tree, but CLASS if the kind was RECORD
      */
     public static Tree.Kind getKindRecordAsClass(Tree tree) {
-        Tree.Kind kind = tree.getKind();
-        // Must use String comparison because we may be on an older JDK:
-        if (kind.name().equals("RECORD")) {
-            kind = Tree.Kind.CLASS;
+        if (isRecordTree(tree)) {
+            return Tree.Kind.CLASS;
         }
-        return kind;
+        return tree.getKind();
     }
 
     /**
