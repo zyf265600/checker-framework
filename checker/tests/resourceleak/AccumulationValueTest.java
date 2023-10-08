@@ -91,7 +91,7 @@ public class AccumulationValueTest {
     }
 
     void wrongMCAnnoUse(@Owning MCAB mcab) {
-        // :: error: argument
+        // :: error: argument.type.incompatible
         wrongMCAnno(mcab);
     }
 }
