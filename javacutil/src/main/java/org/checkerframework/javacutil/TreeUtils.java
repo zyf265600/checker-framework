@@ -92,6 +92,7 @@ import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.ExecutableType;
 import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
+import javax.lang.model.type.TypeVariable;
 import javax.lang.model.util.ElementFilter;
 
 /**
@@ -99,7 +100,6 @@ import javax.lang.model.util.ElementFilter;
  *
  * @see TreePathUtil
  */
-// TODO: use JCP to add version-specific behavior
 public final class TreeUtils {
 
     // Class cannot be instantiated.
@@ -375,7 +375,7 @@ public final class TreeUtils {
      * @param tree an expression tree
      * @return the outermost non-parenthesized tree enclosed by the given tree
      */
-    @SuppressWarnings("interning:return.type.incompatible") // polymorphism implementation
+    @SuppressWarnings("interning:return") // polymorphism implementation
     public static @PolyInterned ExpressionTree withoutParens(@PolyInterned ExpressionTree tree) {
         ExpressionTree t = tree;
         while (t.getKind() == Tree.Kind.PARENTHESIZED) {
@@ -416,11 +416,8 @@ public final class TreeUtils {
      * @param tree class declaration
      * @return the element for the given class
      */
-    public static TypeElement elementFromDeclaration(ClassTree tree) {
+    public static @Nullable TypeElement elementFromDeclaration(ClassTree tree) {
         TypeElement result = (TypeElement) TreeInfo.symbolFor((JCTree) tree);
-        if (result == null) {
-            throw new BugInCF("null element for class tree %s", tree);
-        }
         return result;
     }
 
@@ -604,14 +601,13 @@ public final class TreeUtils {
     /**
      * Returns the ExecutableElement for the given method declaration.
      *
+     * <p>The result can be null, when {@code tree} is a method in an anonymous class.
+     *
      * @param tree a method declaration
-     * @return the element for the given method
+     * @return the element for the given method, or null (e.g. for a method in an anonymous class)
      */
-    public static ExecutableElement elementFromDeclaration(MethodTree tree) {
+    public static @Nullable ExecutableElement elementFromDeclaration(MethodTree tree) {
         ExecutableElement result = (ExecutableElement) TreeInfo.symbolFor((JCTree) tree);
-        if (result == null) {
-            throw new BugInCF("null element for method tree %s", tree);
-        }
         return result;
     }
 
@@ -698,11 +694,10 @@ public final class TreeUtils {
      * @param tree the variable
      * @return the element for the given variable
      */
-    public static VariableElement elementFromDeclaration(VariableTree tree) {
+    public static @Nullable VariableElement elementFromDeclaration(VariableTree tree) {
         VariableElement result = (VariableElement) TreeInfo.symbolFor((JCTree) tree);
-        if (result == null) {
-            throw new BugInCF("null element for variable tree %s", tree);
-        }
+        // `result` can be null, for example for this variable declaration:
+        //   PureFunc f1 = TestPure1::myPureMethod;
         return result;
     }
 
@@ -839,6 +834,69 @@ public final class TreeUtils {
         JCExpressionStatement stmt = (JCExpressionStatement) anonConstructor.body.stats.head;
         JCMethodInvocation superInvok = (JCMethodInvocation) stmt.expr;
         return (ExecutableElement) TreeInfo.symbol(superInvok.meth);
+    }
+
+    /**
+     * Determines the type for a method invocation at its call site, which has all type variables
+     * substituted with the type arguments at the call site.
+     *
+     * <p>{@link javax.lang.model.type.TypeVariable} in the returned type should be compared using
+     * {@link TypesUtils#areSame(TypeVariable, TypeVariable)} because the {@code TypeVariable} will
+     * be freshly created by this method and will not be the same using {@link
+     * Object#equals(Object)} or {@link javax.lang.model.util.Types#isSameType(TypeMirror,
+     * TypeMirror)}.
+     *
+     * @param tree the method invocation
+     * @return the {@link ExecutableType} corresponding to the method invocation at its call site
+     */
+    @Pure
+    public static ExecutableType typeFromUse(MethodInvocationTree tree) {
+        TypeMirror type = TreeUtils.typeOf(tree.getMethodSelect());
+        if (!(type instanceof ExecutableType)) {
+            throw new BugInCF(
+                    "TreeUtils.typeFromUse(MethodInvocationTree): type of method select in method"
+                            + " invocation should be ExecutableType. Found: %s",
+                    type);
+        }
+        ExecutableType executableType = (ExecutableType) type;
+        if (((ExecutableType) type).getParameterTypes().isEmpty()
+                && elementFromUse(tree).isVarArgs()) {
+            // Sometimes when the method type is viewpoint-adapted, the vararg parameter disappears,
+            // just return the declared type.
+            // For example,
+            // static void call(MethodHandle methodHandle) throws Throwable {
+            //   methodHandle.invoke();
+            // }
+            ExecutableElement ele = elementFromUse(tree);
+            return (ExecutableType) ele.asType();
+        }
+        return executableType;
+    }
+
+    /**
+     * Determines the type for a constructor at its call site given an invocation via {@code new},
+     * which has all type variables substituted with the type arguments at the call site.
+     *
+     * @param tree the constructor invocation
+     * @return the {@link ExecutableType} corresponding to the constructor call (i.e., the given
+     *     {@code tree}) at its call site
+     */
+    @Pure
+    public static ExecutableType typeFromUse(NewClassTree tree) {
+        if (!(tree instanceof JCTree.JCNewClass)) {
+            throw new BugInCF("TreeUtils.typeFromUse(NewClassTree): not a javac internal tree");
+        }
+
+        JCNewClass newClassTree = (JCNewClass) tree;
+        TypeMirror type = newClassTree.constructorType;
+
+        if (!(type instanceof ExecutableType)) {
+            throw new BugInCF(
+                    "TreeUtils.typeFromUse(NewClassTree): type of constructor in new class tree"
+                            + " should be ExecutableType. Found: %s",
+                    type);
+        }
+        return (ExecutableType) type;
     }
 
     /**
@@ -1000,6 +1058,9 @@ public final class TreeUtils {
      */
     public static boolean hasExplicitConstructor(ClassTree tree) {
         TypeElement elem = TreeUtils.elementFromDeclaration(tree);
+        if (elem == null) {
+            return false;
+        }
         for (ExecutableElement constructorElt :
                 ElementFilter.constructorsIn(elem.getEnclosedElements())) {
             if (!isSynthetic(constructorElt)) {
@@ -1031,7 +1092,7 @@ public final class TreeUtils {
      */
     public static boolean isSynthetic(MethodTree tree) {
         ExecutableElement ee = TreeUtils.elementFromDeclaration(tree);
-        return isSynthetic(ee);
+        return ee != null && isSynthetic(ee);
     }
 
     /**
@@ -1347,8 +1408,8 @@ public final class TreeUtils {
             return methods.get(0);
         }
         throw new BugInCF(
-                "TreeUtils.getMethod(%s, %s, %d): expected 1 match, found %d",
-                typeName, methodName, params, methods.size());
+                "TreeUtils.getMethod(%s, %s, %d): expected 1 match, found %d: %s",
+                typeName, methodName, params, methods.size(), methods);
     }
 
     /**
@@ -1557,13 +1618,12 @@ public final class TreeUtils {
      *   <em>obj</em> . <em>f</em>
      * </pre>
      *
-     * This method currently also returns a non-null value for class literals and qualified this.
+     * This method currently also returns non-null true for class literals and qualified this.
      *
      * @param tree a tree that might be a field access
      * @return the element if tree is a field access expression (implicit or explicit); null
      *     otherwise
      */
-    // TODO: fix value for class literals and qualified this.
     public static @Nullable VariableElement asFieldAccess(Tree tree) {
         if (tree.getKind() == Tree.Kind.MEMBER_SELECT) {
             // explicit member access (or a class literal or a qualified this)
@@ -1801,13 +1861,11 @@ public final class TreeUtils {
      * @return true if the given method is a compact canonical constructor
      */
     public static boolean isCompactCanonicalRecordConstructor(MethodTree method) {
-        Symbol s = (Symbol) elementFromTree(method);
-        if (s == null) {
-            throw new BugInCF(
-                    "TreeUtils.isCompactCanonicalRecordConstructor: null symbol for method tree: "
-                            + method);
+        Element e = elementFromTree(method);
+        if (!(e instanceof Symbol)) {
+            return false;
         }
-        return (s.flags() & Flags_RECORD) != 0;
+        return (((Symbol) e).flags() & Flags_RECORD) != 0;
     }
 
     /**
@@ -1820,11 +1878,7 @@ public final class TreeUtils {
      */
     public static boolean isAutoGeneratedRecordMember(Tree member) {
         Element e = elementFromTree(member);
-        if (e == null) {
-            throw new BugInCF(
-                    "TreeUtils.isAutoGeneratedRecordMember: null symbol for tree: " + member);
-        }
-        return ElementUtils.isAutoGeneratedRecordMember(e);
+        return e != null && ElementUtils.isAutoGeneratedRecordMember(e);
     }
 
     /**
@@ -1902,7 +1956,7 @@ public final class TreeUtils {
     public static boolean isLocalVariable(Tree tree) {
         if (tree.getKind() == Tree.Kind.VARIABLE) {
             VariableElement varElt = elementFromDeclaration((VariableTree) tree);
-            return ElementUtils.isLocalVariable(varElt);
+            return varElt != null && ElementUtils.isLocalVariable(varElt);
         } else if (tree.getKind() == Tree.Kind.IDENTIFIER) {
             ExpressionTree etree = (ExpressionTree) tree;
             assert isUseOfElement(etree) : "@AssumeAssertion(nullness): tree kind";
@@ -1919,51 +1973,6 @@ public final class TreeUtils {
      */
     public static TypeMirror typeOf(Tree tree) {
         return ((JCTree) tree).type;
-    }
-
-    /**
-     * Determines the type for a method invocation at its call site, which has all type variables
-     * substituted with the type arguments at the call site.
-     *
-     * @param tree the method invocation
-     * @return the {@link ExecutableType} corresponding to the method invocation at its call site
-     */
-    @Pure
-    public static ExecutableType typeFromUse(MethodInvocationTree tree) {
-        TypeMirror type = TreeUtils.typeOf(tree.getMethodSelect());
-        if (!(type instanceof ExecutableType)) {
-            throw new BugInCF(
-                    "TreeUtils.typeFromUse(MethodInvocationTree): type of method select in method"
-                            + " invocation should be ExecutableType. Found: %s",
-                    type);
-        }
-        return (ExecutableType) type;
-    }
-
-    /**
-     * Determines the type for a constructor at its call site given an invocation via {@code new},
-     * which has all type variables substituted with the type arguments at the call site.
-     *
-     * @param tree the constructor invocation
-     * @return the {@link ExecutableType} corresponding to the constructor call (i.e., the given
-     *     {@code tree}) at its call site
-     */
-    @Pure
-    public static ExecutableType typeFromUse(NewClassTree tree) {
-        if (!(tree instanceof JCTree.JCNewClass)) {
-            throw new BugInCF("TreeUtils.typeFromUse(NewClassTree): not a javac internal tree");
-        }
-
-        JCNewClass newClassTree = (JCNewClass) tree;
-        TypeMirror type = newClassTree.constructorType;
-
-        if (!(type instanceof ExecutableType)) {
-            throw new BugInCF(
-                    "TreeUtils.typeFromUse(NewClassTree): type of constructor in new class tree"
-                            + " should be ExecutableType. Found: %s",
-                    type);
-        }
-        return (ExecutableType) type;
     }
 
     /**
@@ -2722,10 +2731,12 @@ public final class TreeUtils {
      * @return the kind of the tree, but CLASS if the kind was RECORD
      */
     public static Tree.Kind getKindRecordAsClass(Tree tree) {
-        if (isRecordTree(tree)) {
-            return Tree.Kind.CLASS;
+        Tree.Kind kind = tree.getKind();
+        // Must use String comparison because we may be on an older JDK:
+        if (kind.name().equals("RECORD")) {
+            kind = Tree.Kind.CLASS;
         }
-        return tree.getKind();
+        return kind;
     }
 
     /**

@@ -686,18 +686,18 @@ public class LockVisitor extends BaseTypeVisitor<LockAnnotatedTypeFactory> {
 
         // Combine all of the actual parameters into one list of AnnotationMirrors.
 
+        ArrayList<AnnotatedTypeMirror> passedArgTypes = new ArrayList<>(guardSatisfiedIndex.length);
+        passedArgTypes.add(methodCallReceiver);
+        for (ExpressionTree argTree : methodInvocationTree.getArguments()) {
+            passedArgTypes.add(atypeFactory.getAnnotatedType(argTree));
+        }
         ArrayList<AnnotationMirror> passedArgAnnotations =
                 new ArrayList<>(guardSatisfiedIndex.length);
-        passedArgAnnotations.add(
-                methodCallReceiver == null
-                        ? null
-                        : methodCallReceiver.getAnnotationInHierarchy(
-                                atypeFactory.GUARDEDBYUNKNOWN));
-        for (ExpressionTree argTree : methodInvocationTree.getArguments()) {
+        for (AnnotatedTypeMirror atm : passedArgTypes) {
             passedArgAnnotations.add(
-                    atypeFactory
-                            .getAnnotatedType(argTree)
-                            .getAnnotationInHierarchy(atypeFactory.GUARDEDBYUNKNOWN));
+                    atm == null
+                            ? null
+                            : atm.getAnnotationInHierarchy(atypeFactory.GUARDEDBYUNKNOWN));
         }
 
         // Perform the validity check and issue an error if not valid.
@@ -726,9 +726,14 @@ public class LockVisitor extends BaseTypeVisitor<LockAnnotatedTypeFactory> {
                                 }
                             }
 
+                            TypeMirror arg1TM = passedArgTypes.get(i).getUnderlyingType();
+                            TypeMirror arg2TM = passedArgTypes.get(j).getUnderlyingType();
+
                             if (bothAreGSwithNoIndex
-                                    || !(qualHierarchy.isSubtype(arg1Anno, arg2Anno)
-                                            || qualHierarchy.isSubtype(arg2Anno, arg1Anno))) {
+                                    || !(qualHierarchy.isSubtypeShallow(
+                                                    arg1Anno, arg1TM, arg2Anno, arg2TM)
+                                            || qualHierarchy.isSubtypeShallow(
+                                                    arg2Anno, arg2TM, arg1Anno, arg1TM))) {
 
                                 String formalParam1;
                                 if (i == 0) {
