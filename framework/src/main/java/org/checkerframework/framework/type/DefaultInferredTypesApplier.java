@@ -140,11 +140,19 @@ public class DefaultInferredTypesApplier {
                         typeVariableDecl.getUnderlyingType(),
                         previousAnnotation,
                         annotatedTypeVariable.getUnderlyingType())) {
-            annotatedTypeVariable.removeAnnotationInHierarchy(top);
+            // TODO: clean up this method and whole class.
             AnnotationMirror ub = typeVariableDecl.getUpperBound().getAnnotationInHierarchy(top);
-            apply(annotatedTypeVariable.getUpperBound(), ub, typeVar.getUpperBound(), top);
             AnnotationMirror lb = typeVariableDecl.getLowerBound().getAnnotationInHierarchy(top);
-            apply(annotatedTypeVariable.getLowerBound(), lb, typeVar.getLowerBound(), top);
+            AnnotatedTypeMirror atvUB = annotatedTypeVariable.getUpperBound();
+            AnnotatedTypeMirror atvLB = annotatedTypeVariable.getLowerBound();
+            AnnotationMirror atvUBAnno = atvUB.getAnnotationInHierarchy(top);
+            AnnotationMirror atvLBAnno = atvLB.getAnnotationInHierarchy(top);
+
+            annotatedTypeVariable.removeAnnotationInHierarchy(top);
+            atvUB.addAnnotation(atvUBAnno);
+            atvLB.addAnnotation(atvLBAnno);
+            apply(atvUB, ub, typeVar.getUpperBound(), top);
+            apply(atvLB, lb, typeVar.getLowerBound(), top);
         }
     }
 }
