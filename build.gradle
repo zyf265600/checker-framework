@@ -85,13 +85,13 @@ ext {
 
     versions = [
         autoValue       : '1.10.4',
+        errorprone      : '2.20.0',
+        hashmapUtil     : '0.0.1',
+        junit           : '4.13.2',
         lombok          : '1.18.30',
-        hashmapUtil : '0.0.1',
         // plume-util includes a version of reflection-util. When updating ensure the versions are consistent.
-        reflectionUtil : '1.1.0',
-        plumeUtil : '1.8.1',
-        errorprone : '2.20.0',
-        junit : '4.13.2',
+        plumeUtil       : '1.8.1',
+        reflectionUtil  : '1.1.0',
     ]
 }
 
@@ -192,6 +192,7 @@ allprojects {
         // Exclude checker-qual dependency added by Error Prone to avoid a circular dependency.
         annotationProcessor.exclude group:'org.checkerframework', module:'checker-qual'
     }
+
     dependencies {
         javacJar group: 'com.google.errorprone', name: 'javac', version: "9+181-r4173-1"
 
