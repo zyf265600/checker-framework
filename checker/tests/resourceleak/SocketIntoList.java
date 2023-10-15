@@ -14,7 +14,7 @@ public class SocketIntoList {
         l.add(s);
     }
 
-    // :: error: type.argument
+    // :: error: type.argument.type.incompatible
     public void test2(List<Socket> l) {
         // s is unconnected, so no error is expected when it's stored into the list.
         // But, if the list is unannotated, we do get an error at its declaration site

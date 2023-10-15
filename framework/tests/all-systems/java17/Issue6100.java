@@ -1,9 +1,10 @@
+// @below-java17-jdk-skip-test
+// @infer-jaifs-skip-test The AFU's JAIF reading/writing libraries don't support records.
+
 import org.checkerframework.checker.index.qual.NonNegative;
 
 import java.util.List;
 
-// @infer-jaifs-skip-test The AFU's JAIF reading/writing libraries don't support records.
-// @below-java17-jdk-skip-test
 @SuppressWarnings("signedness")
 public record Issue6100(List<@NonNegative Integer> bar) {
 
