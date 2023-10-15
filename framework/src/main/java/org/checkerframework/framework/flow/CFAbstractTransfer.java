@@ -973,7 +973,6 @@ public abstract class CFAbstractTransfer<
             MethodInvocationNode n, TransferInput<V, S> in) {
 
         S store = in.getRegularStore();
-
         ExecutableElement method = n.getTarget().getMethod();
 
         /* NO-AFU

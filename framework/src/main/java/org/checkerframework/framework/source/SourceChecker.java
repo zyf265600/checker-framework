@@ -1980,6 +1980,10 @@ public abstract class SourceChecker extends AbstractTypeProcessor implements Opt
         return Arrays.asList(value.split(separator));
     }
 
+    /**
+     * Map the Checker Framework version of {@link SupportedOptions} to the standard annotation
+     * provided version {@link javax.annotation.processing.SupportedOptions}.
+     */
     @Override
     public Set<String> getSupportedOptions() {
         Set<String> options = new HashSet<>();

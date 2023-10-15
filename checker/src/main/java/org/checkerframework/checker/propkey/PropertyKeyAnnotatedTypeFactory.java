@@ -150,11 +150,10 @@ public class PropertyKeyAnnotatedTypeFactory extends BaseAnnotatedTypeFactory {
     /**
      * Obtains the keys from all the property files.
      *
-     * @param propfiles an array of property files, separated by {@link File#pathSeparator}
+     * @param propfiles a list of property file names
      * @return a set of all the keys found in all the property files
      */
     private Set<String> keysOfPropertyFiles(List<String> propfiles) {
-
         if (propfiles.isEmpty()) {
             return Collections.emptySet();
         }
@@ -191,7 +190,6 @@ public class PropertyKeyAnnotatedTypeFactory extends BaseAnnotatedTypeFactory {
                 }
 
                 result.addAll(prop.stringPropertyNames());
-
             } catch (Exception e) {
                 // TODO: is there a nicer way to report messages, that are not connected to an AST
                 // node?
@@ -213,7 +211,6 @@ public class PropertyKeyAnnotatedTypeFactory extends BaseAnnotatedTypeFactory {
      * @return the keys for the given resource bundles
      */
     private Set<String> keysOfResourceBundle(List<String> bundleNames) {
-
         if (bundleNames.isEmpty()) {
             return Collections.emptySet();
         }

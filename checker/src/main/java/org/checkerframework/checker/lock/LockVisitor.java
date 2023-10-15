@@ -689,15 +689,18 @@ public class LockVisitor extends BaseTypeVisitor<LockAnnotatedTypeFactory> {
         ArrayList<AnnotatedTypeMirror> passedArgTypes = new ArrayList<>(guardSatisfiedIndex.length);
         passedArgTypes.add(methodCallReceiver);
         for (ExpressionTree argTree : methodInvocationTree.getArguments()) {
-            passedArgTypes.add(atypeFactory.getAnnotatedType(argTree));
+            AnnotatedTypeMirror argType = atypeFactory.getAnnotatedType(argTree);
+            passedArgTypes.add(argType);
         }
         ArrayList<AnnotationMirror> passedArgAnnotations =
                 new ArrayList<>(guardSatisfiedIndex.length);
         for (AnnotatedTypeMirror atm : passedArgTypes) {
-            passedArgAnnotations.add(
-                    atm == null
-                            ? null
-                            : atm.getAnnotationInHierarchy(atypeFactory.GUARDEDBYUNKNOWN));
+            if (atm != null) {
+                passedArgAnnotations.add(
+                        atm.getAnnotationInHierarchy(atypeFactory.GUARDEDBYUNKNOWN));
+            } else {
+                passedArgAnnotations.add(null);
+            }
         }
 
         // Perform the validity check and issue an error if not valid.
