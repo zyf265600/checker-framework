@@ -349,7 +349,7 @@ public class LowerBoundTransfer extends IndexAbstractTransfer {
                 atypeFactory
                         .getQualifierHierarchy()
                         .greatestLowerBoundShallow(
-                                rightAnno, left.getType(), leftAnno, right.getType());
+                                rightAnno, right.getType(), leftAnno, left.getType());
 
         store.insertValue(leftJe, newLBType);
     }
