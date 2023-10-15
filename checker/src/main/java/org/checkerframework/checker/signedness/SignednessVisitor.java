@@ -22,6 +22,7 @@ import org.checkerframework.javacutil.TreeUtils;
 import org.checkerframework.javacutil.TypesUtils;
 import org.plumelib.util.IPair;
 
+import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.type.TypeMirror;
 
@@ -152,17 +153,19 @@ public class SignednessVisitor extends BaseTypeVisitor<SignednessAnnotatedTypeFa
                     // Here, the original types of operands can be something different from string.
                     // For example, "123" + obj is a string concatenation in which the original type
                     // of the right operand is java.lang.Object.
-                    // TODO: the tests for SIGNED or SIGNEDNESS_GLB should just be a subtype test,
-                    // but those oddly don't work.
                     TypeMirror leftOpTM = TreeUtils.typeOf(leftOp);
+                    AnnotationMirror leftAnno =
+                            leftOpType.getEffectiveAnnotationInHierarchy(atypeFactory.SIGNED);
                     TypeMirror rightOpTM = TreeUtils.typeOf(rightOp);
+                    AnnotationMirror rightAnno =
+                            rightOpType.getEffectiveAnnotationInHierarchy(atypeFactory.SIGNED);
                     if (!TypesUtils.isCharType(leftOpTM)
-                            && !leftOpType.hasEffectiveAnnotation(atypeFactory.SIGNED)
-                            && !leftOpType.hasEffectiveAnnotation(atypeFactory.SIGNEDNESS_GLB)) {
+                            && !qualHierarchy.isSubtypeQualifiersOnly(
+                                    leftAnno, atypeFactory.SIGNED)) {
                         checker.reportError(leftOp, "unsigned.concat");
                     } else if (!TypesUtils.isCharType(rightOpTM)
-                            && !rightOpType.hasEffectiveAnnotation(atypeFactory.SIGNED)
-                            && !rightOpType.hasEffectiveAnnotation(atypeFactory.SIGNEDNESS_GLB)) {
+                            && !qualHierarchy.isSubtypeQualifiersOnly(
+                                    rightAnno, atypeFactory.SIGNED)) {
                         checker.reportError(rightOp, "unsigned.concat");
                     }
                     break;
@@ -342,8 +345,9 @@ public class SignednessVisitor extends BaseTypeVisitor<SignednessAnnotatedTypeFa
                     if (TypesUtils.isCharType(TreeUtils.typeOf(expr))) {
                         break;
                     }
-                    if (!exprType.hasEffectiveAnnotation(atypeFactory.SIGNED)
-                            && !exprType.hasEffectiveAnnotation(atypeFactory.SIGNEDNESS_GLB)) {
+                    AnnotationMirror exprAnno =
+                            exprType.getEffectiveAnnotationInHierarchy(atypeFactory.SIGNED);
+                    if (!qualHierarchy.isSubtypeQualifiersOnly(exprAnno, atypeFactory.SIGNED)) {
                         checker.reportError(tree.getExpression(), "unsigned.concat");
                     }
                     break;
