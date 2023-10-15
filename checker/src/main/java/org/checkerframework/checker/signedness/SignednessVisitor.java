@@ -133,12 +133,12 @@ public class SignednessVisitor extends BaseTypeVisitor<SignednessAnnotatedTypeFa
                         || !atypeFactory.maybeIntegral(rightOpType)) {
                     break;
                 }
-                if (leftOpType.hasAnnotation(Unsigned.class)
-                        && rightOpType.hasAnnotation(Signed.class)) {
+                if (leftOpType.hasEffectiveAnnotation(Unsigned.class)
+                        && rightOpType.hasEffectiveAnnotation(Signed.class)) {
                     checker.reportError(
                             tree, "comparison.mixed.unsignedlhs", leftOpType, rightOpType);
-                } else if (leftOpType.hasAnnotation(Signed.class)
-                        && rightOpType.hasAnnotation(Unsigned.class)) {
+                } else if (leftOpType.hasEffectiveAnnotation(Signed.class)
+                        && rightOpType.hasEffectiveAnnotation(Unsigned.class)) {
                     checker.reportError(
                             tree, "comparison.mixed.unsignedrhs", leftOpType, rightOpType);
                 }
@@ -152,15 +152,17 @@ public class SignednessVisitor extends BaseTypeVisitor<SignednessAnnotatedTypeFa
                     // Here, the original types of operands can be something different from string.
                     // For example, "123" + obj is a string concatenation in which the original type
                     // of the right operand is java.lang.Object.
+                    // TODO: the tests for SIGNED or SIGNEDNESS_GLB should just be a subtype test,
+                    // but those oddly don't work.
                     TypeMirror leftOpTM = TreeUtils.typeOf(leftOp);
                     TypeMirror rightOpTM = TreeUtils.typeOf(rightOp);
                     if (!TypesUtils.isCharType(leftOpTM)
-                            && !typeHierarchy.isSubtypeShallowEffective(
-                                    leftOpType, atypeFactory.SIGNED)) {
+                            && !leftOpType.hasEffectiveAnnotation(atypeFactory.SIGNED)
+                            && !leftOpType.hasEffectiveAnnotation(atypeFactory.SIGNEDNESS_GLB)) {
                         checker.reportError(leftOp, "unsigned.concat");
                     } else if (!TypesUtils.isCharType(rightOpTM)
-                            && !typeHierarchy.isSubtypeShallowEffective(
-                                    rightOpType, atypeFactory.SIGNED)) {
+                            && !rightOpType.hasEffectiveAnnotation(atypeFactory.SIGNED)
+                            && !rightOpType.hasEffectiveAnnotation(atypeFactory.SIGNEDNESS_GLB)) {
                         checker.reportError(rightOp, "unsigned.concat");
                     }
                     break;
@@ -168,12 +170,12 @@ public class SignednessVisitor extends BaseTypeVisitor<SignednessAnnotatedTypeFa
                 // Other plus binary trees should be handled in the default case.
                 // fall through
             default:
-                if (leftOpType.hasAnnotation(Unsigned.class)
-                        && rightOpType.hasAnnotation(Signed.class)) {
+                if (leftOpType.hasEffectiveAnnotation(Unsigned.class)
+                        && rightOpType.hasEffectiveAnnotation(Signed.class)) {
                     checker.reportError(
                             tree, "operation.mixed.unsignedlhs", kind, leftOpType, rightOpType);
-                } else if (leftOpType.hasAnnotation(Signed.class)
-                        && rightOpType.hasAnnotation(Unsigned.class)) {
+                } else if (leftOpType.hasEffectiveAnnotation(Signed.class)
+                        && rightOpType.hasEffectiveAnnotation(Unsigned.class)) {
                     checker.reportError(
                             tree, "operation.mixed.unsignedrhs", kind, leftOpType, rightOpType);
                 }
@@ -340,7 +342,8 @@ public class SignednessVisitor extends BaseTypeVisitor<SignednessAnnotatedTypeFa
                     if (TypesUtils.isCharType(TreeUtils.typeOf(expr))) {
                         break;
                     }
-                    if (!typeHierarchy.isSubtypeShallowEffective(exprType, atypeFactory.SIGNED)) {
+                    if (!exprType.hasEffectiveAnnotation(atypeFactory.SIGNED)
+                            && !exprType.hasEffectiveAnnotation(atypeFactory.SIGNEDNESS_GLB)) {
                         checker.reportError(tree.getExpression(), "unsigned.concat");
                     }
                     break;
