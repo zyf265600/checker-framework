@@ -143,7 +143,7 @@ class AtmLubVisitor extends AbstractAtmComboVisitor<Void, AnnotatedTypeMirror> {
             lubSet =
                     qualHierarchy.leastUpperBoundsShallow(
                             type1.getAnnotations(),
-                            type2.getUnderlyingType(),
+                            type1.getUnderlyingType(),
                             type2.getAnnotations(),
                             type2.getUnderlyingType());
         }
