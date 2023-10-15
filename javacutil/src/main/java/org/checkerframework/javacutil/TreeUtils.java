@@ -649,7 +649,7 @@ public final class TreeUtils {
      * Returns the ExecutableElement for the given constructor invocation.
      *
      * @param tree the {@link NewClassTree} node to get the element for
-     * @return the {@link Executableelement} for the given tree, or null if one could not be found
+     * @return the {@link ExecutableElement} for the given tree, or null if one could not be found
      * @throws IllegalArgumentException if {@code tree} is null or is not a valid javac-internal
      *     tree (JCTree)
      * @deprecated use elementFromUse
