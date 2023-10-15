@@ -49,7 +49,7 @@ eisop#297, eisop#376, eisop#400, eisop#519, eisop#532, eisop#533, typetools#1590
 
 
 Version 3.37.0 (August 1, 2023)
------------------------------
+-------------------------------
 
 **User-visible changes:**
 
