@@ -1572,11 +1572,11 @@ public class AnnotatedTypes {
     /**
      * This method identifies wildcard types that are unbound.
      *
-     * @param wildcard the type to check
+     * @param wildcardType the type to check
      * @return true if the given card is an unbounded wildcard
      */
-    public static boolean hasNoExplicitBound(AnnotatedTypeMirror wildcard) {
-        return TypesUtils.hasNoExplicitBound(wildcard.getUnderlyingType());
+    public static boolean hasNoExplicitBound(AnnotatedTypeMirror wildcardType) {
+        return TypesUtils.hasNoExplicitBound(wildcardType.getUnderlyingType());
     }
 
     /**
@@ -1626,21 +1626,21 @@ public class AnnotatedTypes {
     /**
      * Returns true if this type is super bounded or unbounded.
      *
-     * @param wildcard the wildcard type to test
+     * @param wildcardType the wildcard type to test
      * @return true if this type is super bounded or unbounded
      */
-    public static boolean isUnboundedOrSuperBounded(AnnotatedWildcardType wildcard) {
-        return TypesUtils.isUnboundedOrSuperBounded(wildcard.getUnderlyingType());
+    public static boolean isUnboundedOrSuperBounded(AnnotatedWildcardType wildcardType) {
+        return TypesUtils.isUnboundedOrSuperBounded(wildcardType.getUnderlyingType());
     }
 
     /**
      * Returns true if this type is extends bounded or unbounded.
      *
-     * @param wildcard the wildcard type to test
+     * @param wildcardType the wildcard type to test
      * @return true if this type is extends bounded or unbounded
      */
-    public static boolean isUnboundedOrExtendsBounded(AnnotatedWildcardType wildcard) {
-        return TypesUtils.isUnboundedOrExtendsBounded(wildcard.getUnderlyingType());
+    public static boolean isUnboundedOrExtendsBounded(AnnotatedWildcardType wildcardType) {
+        return TypesUtils.isUnboundedOrExtendsBounded(wildcardType.getUnderlyingType());
     }
 
     /**
@@ -1651,16 +1651,16 @@ public class AnnotatedTypes {
      *
      * @param atypeFactory type factory
      * @param returnType return type to copy annotations to
-     * @param constructor the ATM for the constructor
+     * @param constructorType the ATM for the constructor
      */
     public static void copyOnlyExplicitConstructorAnnotations(
             AnnotatedTypeFactory atypeFactory,
             AnnotatedDeclaredType returnType,
-            AnnotatedExecutableType constructor) {
+            AnnotatedExecutableType constructorType) {
 
         // TODO: There will be a nicer way to access this in 308 soon.
         List<Attribute.TypeCompound> decall =
-                ((Symbol) constructor.getElement()).getRawTypeAttributes();
+                ((Symbol) constructorType.getElement()).getRawTypeAttributes();
         AnnotationMirrorSet decret = new AnnotationMirrorSet();
         for (Attribute.TypeCompound da : decall) {
             if (da.position.type == com.sun.tools.javac.code.TargetType.METHOD_RETURN) {
@@ -1678,7 +1678,7 @@ public class AnnotatedTypes {
             }
         }
 
-        for (AnnotationMirror cta : constructor.getReturnType().getAnnotations()) {
+        for (AnnotationMirror cta : constructorType.getReturnType().getAnnotations()) {
             AnnotationMirror ctatop = qualHierarchy.getTopAnnotation(cta);
             if (returnType.hasAnnotationInHierarchy(cta)) {
                 continue;
