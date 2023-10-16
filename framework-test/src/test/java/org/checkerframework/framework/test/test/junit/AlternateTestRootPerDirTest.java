@@ -43,11 +43,15 @@ public class AlternateTestRootPerDirTest extends CheckerFrameworkPerDirectoryTes
                 CoreMatchers.either(
                                 CoreMatchers.hasItem(
                                         TestDiagnosticUtils.fromJavaFileComment(
-                                                "Issue6125A.java", 5, "error: (assignment)")))
+                                                "Issue6125A.java",
+                                                5,
+                                                "error: (assignment.type.incompatible)")))
                         .or(
                                 CoreMatchers.hasItem(
                                         TestDiagnosticUtils.fromJavaFileComment(
-                                                "Issue6125B.java", 5, "error: (assignment)"))));
+                                                "Issue6125B.java",
+                                                5,
+                                                "error: (assignment.type.incompatible)"))));
         MatcherAssert.assertThat(
                 "test check result has exactly zero unexpected diagnostics",
                 typecheckResult.getUnexpectedDiagnostics().size(),

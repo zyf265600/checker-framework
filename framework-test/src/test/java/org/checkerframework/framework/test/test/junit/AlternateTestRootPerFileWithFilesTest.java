@@ -43,7 +43,7 @@ public class AlternateTestRootPerFileWithFilesTest extends CheckerFrameworkPerFi
                 typecheckResult.getExpectedDiagnostics(),
                 CoreMatchers.hasItem(
                         TestDiagnosticUtils.fromJavaFileComment(
-                                "Issue6125A.java", 5, "error: (assignment)")));
+                                "Issue6125A.java", 5, "error: (assignment.type.incompatible)")));
         MatcherAssert.assertThat(
                 "test check result has exactly zero unexpected diagnostics",
                 typecheckResult.getUnexpectedDiagnostics().size(),
