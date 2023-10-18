@@ -60,12 +60,6 @@ fi
 # echo "... done: (cd ${AT} && ./.build-without-test.sh)"
 
 
-## Build stubparser
-"$PLUME_SCRIPTS/git-clone-related" ${DEBUG_FLAG} eisop stubparser
-echo "Running:  (cd ../stubparser/ && ./.build-without-test.sh)"
-(cd ../stubparser/ && ./.build-without-test.sh)
-echo "... done: (cd ../stubparser/ && ./.build-without-test.sh)"
-
 # TODO: NullnessNullMarkedTest depends on JSpecify annotations.
 # Find a way to not run that test, to avoid this dependency and
 # instead only use ./test-jspecify.sh.
@@ -96,7 +90,7 @@ fi
 (TERM=dumb timeout 300 ./gradlew --write-verification-metadata sha256 help --dry-run || \
      (sleep 1m && ./gradlew --write-verification-metadata sha256 help --dry-run))
 
-echo "running \"./gradlew assembleForJavac\" for checker-framework"
-./gradlew assembleForJavac --console=plain --warning-mode=all -s -Dorg.gradle.internal.http.socketTimeout=60000 -Dorg.gradle.internal.http.connectionTimeout=60000
+echo "running \"./gradlew assemble\" for checker-framework"
+./gradlew assemble --console=plain --warning-mode=all -s -Dorg.gradle.internal.http.socketTimeout=60000 -Dorg.gradle.internal.http.connectionTimeout=60000
 
 echo Exiting checker/bin-devel/build.sh in "$(pwd)"
