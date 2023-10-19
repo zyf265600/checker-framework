@@ -18,11 +18,11 @@ public class SimpleCaseGuard {
         @NonNull String z = field;
       }
       case String s -> {
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         @NonNull String z = field;
       }
       default -> {
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         @NonNull String z = field;
       }
     }

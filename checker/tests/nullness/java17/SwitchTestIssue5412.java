@@ -32,7 +32,7 @@ class SwitchTestExhaustive {
                         // good.
                     default -> null;
                 };
-        // :: error: (return)
+        // :: error: (return.type.incompatible)
         return s;
     }
 
