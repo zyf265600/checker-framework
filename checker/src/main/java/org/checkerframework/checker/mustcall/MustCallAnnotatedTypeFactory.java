@@ -265,7 +265,8 @@ public class MustCallAnnotatedTypeFactory extends BaseAnnotatedTypeFactory
     }
 
     /** Support @InheritableMustCall meaning @MustCall on all subtype elements. */
-    class MustCallDefaultQualifierForUseTypeAnnotator extends DefaultQualifierForUseTypeAnnotator {
+    private class MustCallDefaultQualifierForUseTypeAnnotator
+            extends DefaultQualifierForUseTypeAnnotator {
 
         /** Creates a {@code MustCallDefaultQualifierForUseTypeAnnotator}. */
         public MustCallDefaultQualifierForUseTypeAnnotator() {
@@ -297,7 +298,7 @@ public class MustCallAnnotatedTypeFactory extends BaseAnnotatedTypeFactory
     }
 
     /** Support @InheritableMustCall meaning @MustCall on all subtypes. */
-    class MustCallQualifierUpperBounds extends QualifierUpperBounds {
+    private class MustCallQualifierUpperBounds extends QualifierUpperBounds {
 
         /**
          * Creates a {@link QualifierUpperBounds} from the MustCall Checker the annotations that are
@@ -466,7 +467,7 @@ public class MustCallAnnotatedTypeFactory extends BaseAnnotatedTypeFactory
     }
 
     /** Qualifier hierarchy for the Must Call Checker. */
-    class MustCallQualifierHierarchy extends SubtypeIsSubsetQualifierHierarchy {
+    private class MustCallQualifierHierarchy extends SubtypeIsSubsetQualifierHierarchy {
 
         /**
          * Creates a SubtypeIsSubsetQualifierHierarchy from the given classes.
