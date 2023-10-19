@@ -642,10 +642,13 @@ public class CFGTranslationPhaseOne extends TreeScanner<Node, Void> {
             nestedPatterns.add(scan(pattern, p));
         }
 
-        return new DeconstructorPatternNode(
-                TreeUtils.typeOf(deconstructionPatternTree),
-                deconstructionPatternTree,
-                nestedPatterns);
+        DeconstructorPatternNode dpn =
+                new DeconstructorPatternNode(
+                        TreeUtils.typeOf(deconstructionPatternTree),
+                        deconstructionPatternTree,
+                        nestedPatterns);
+        extendWithNode(dpn);
+        return dpn;
     }
 
     /* --------------------------------------------------------- */
@@ -2677,8 +2680,7 @@ public class CFGTranslationPhaseOne extends TreeScanner<Node, Void> {
          */
         private boolean exhaustiveIgnoreDefault() {
             // Switch expressions are always exhaustive, but they might have a default case, which
-            // is why
-            // the above loop is not fused with the below loop.
+            // is why the above loop is not fused with the below loop.
             if (!TreeUtils.isSwitchStatement(switchTree)) {
                 return true;
             }

@@ -24,6 +24,7 @@ import org.checkerframework.dataflow.cfg.node.AssignmentNode;
 import org.checkerframework.dataflow.cfg.node.CaseNode;
 import org.checkerframework.dataflow.cfg.node.ClassNameNode;
 import org.checkerframework.dataflow.cfg.node.ConditionalNotNode;
+import org.checkerframework.dataflow.cfg.node.DeconstructorPatternNode;
 import org.checkerframework.dataflow.cfg.node.EqualToNode;
 import org.checkerframework.dataflow.cfg.node.ExpressionStatementNode;
 import org.checkerframework.dataflow.cfg.node.FieldAccessNode;
@@ -1011,6 +1012,14 @@ public abstract class CFAbstractTransfer<
         } else {
             return new RegularTransferResult<>(finishValue(resValue, store), store);
         }
+    }
+
+    @Override
+    public TransferResult<V, S> visitDeconstructorPattern(
+            DeconstructorPatternNode n, TransferInput<V, S> in) {
+        // TODO: dummy implementation to avoid crash.
+        V value = null;
+        return createTransferResult(value, in);
     }
 
     @Override
