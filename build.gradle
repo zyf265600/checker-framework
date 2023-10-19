@@ -452,8 +452,9 @@ allprojects {
             // -options: To not get a warning about missing bootstrap classpath (when using Java 9 and `-source 8`).
             // -fallthrough: Don't check fallthroughs.  Instead, use Error Prone.  Its
             //   warnings are suppressible with a "// fall through" comment.
-            String lint =     '-Xlint:-options,-fallthrough'
-            if(isJava21plus && !jdk17Compiler) {
+            // -classfile: classgraph jar file and https://bugs.openjdk.org/browse/JDK-8190452
+            String lint = '-Xlint:-options,-fallthrough,-classfile'
+            if (isJava21plus && !jdk17Compiler) {
                 // TODO: Ignore this-escape for now, we may want to review and suppress each one later.
                 lint +=',-this-escape'
             }
@@ -810,7 +811,7 @@ def createCloneTask(taskName, url, directory, extraArgs = []) {
 
 createCloneTask('getPlumeScripts', 'https://github.com/eisop-plume-lib/plume-scripts.git', plumeScriptsHome)
 createCloneTask('getHtmlTools', 'https://github.com/plume-lib/html-tools.git', htmlToolsHome)
-createCloneTask('getDoLikeJavac', 'https://github.com/kelloggm/do-like-javac.git', doLikeJavacHome)
+createCloneTask('getDoLikeJavac', 'https://github.com/opprop/do-like-javac.git', doLikeJavacHome)
 
 
 // No group so it does not show up in the output of `gradlew tasks`
@@ -955,12 +956,16 @@ subprojects {
                     [
                         '-AskipUses=com\\.sun\\.*',
                         // If a file does not contain @AnnotatedFor("nullness"), all its routines are assumed to return @Nullable.
-                        '-AuseConservativeDefaultsForUncheckedCode=source'
+                        '-AuseConservativeDefaultsForUncheckedCode=source',
+                        '-AconservativeArgumentNullnessAfterInvocation=true',
                     ])
         } else {
             createCheckTypeTask(project.name, 'Nullness',
                     'org.checkerframework.checker.nullness.NullnessChecker',
-                    ['-AskipUses=com\\.sun\\.*'])
+                    [
+                        '-AskipUses=com\\.sun\\.*',
+                        '-AconservativeArgumentNullnessAfterInvocation=true'
+                    ])
         }
 
 
@@ -1168,9 +1173,8 @@ subprojects {
             dependsOn('checkResourceLeak', 'checkSignature')
             if (project.name.is('framework') || project.name.is('checker')) {
                 dependsOn('checkCompilerMessages')
-            } else {
-                dependsOn('checkNullness')
             }
+            dependsOn('checkNullness')
         }
 
         // Create an allTests task per project.
