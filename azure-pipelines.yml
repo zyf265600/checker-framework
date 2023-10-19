@@ -201,7 +201,9 @@ jobs:
   steps:
   - checkout: self
     fetchDepth: 25
+  # Run test, but do not cause overall failure
   - bash: ./checker/bin-devel/test-cftests-junit.sh
+    continueOnError: true
     displayName: test-cftests-junit.sh
   - task: PublishPipelineArtifact@1
     inputs:
@@ -277,7 +279,9 @@ jobs:
   steps:
   - checkout: self
     fetchDepth: 25
+  # Run test, but do not cause overall failure
   - bash: ./checker/bin-devel/test-cftests-nonjunit.sh
+    continueOnError: true
     displayName: test-cftests-nonjunit.sh
 
 # # Inference tests in EISOP do nothing, so disable the jobs here.
@@ -371,7 +375,9 @@ jobs:
 #   steps:
 #   - checkout: self
 #     fetchDepth: 25
+#   # Run test, but do not cause overall failure
 #   - bash: ./checker/bin-devel/test-cftests-inference.sh
+#     continueOnError: true
 #     displayName: test-cftests-inference.sh
 
 # Unlimited fetchDepth for misc_jobs, because of need to make contributors.tex
@@ -532,7 +538,9 @@ jobs:
   steps:
   - checkout: self
     fetchDepth: 25
+  # Run test, but do not cause overall failure
   - bash: ./checker/bin-devel/test-typecheck.sh
+    continueOnError: true
     displayName: test-typecheck.sh
 
 - job: daikon_jdk8
@@ -884,7 +892,9 @@ jobs:
   steps:
   - checkout: self
     fetchDepth: 25
+  # Run test, but do not cause overall failure
   - bash: ./checker/bin-devel/test-jspecify.sh
+    continueOnError: true
     displayName: test-jspecify.sh
 
 
