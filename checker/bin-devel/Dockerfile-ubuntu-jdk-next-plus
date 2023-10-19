@@ -80,11 +80,18 @@ RUN export DEBIAN_FRONTEND=noninteractive \
   texlive-latex-extra \
   texlive-latex-recommended
 
-ENV PATH="/root/.local/bin:$PATH"
-RUN pipx install --pip-args="--no-cache-dir" black
-RUN pipx install --pip-args="--no-cache-dir" flake8
-RUN pipx install --pip-args="--no-cache-dir" html5validator
-RUN pipx install --pip-args="--no-cache-dir" lithium-reducer
+# `pipx ensurepath` only adds to the path in newly-started shells.
+# BUT, setting the path for the current user is not enough.
+# Azure creates a new user and runs jobs as it.
+# So, install into /usr/local/bin which is already on every user's path.
+RUN export DEBIAN_FRONTEND=noninteractive \
+&& apt-get -qqy update \
+&& aptitude -y install \
+  pipx \
+&& PIPX_HOME=/opt/pipx PIPX_BIN_DIR=/usr/local/bin pipx install black \
+&& PIPX_HOME=/opt/pipx PIPX_BIN_DIR=/usr/local/bin pipx install flake8 \
+&& PIPX_HOME=/opt/pipx PIPX_BIN_DIR=/usr/local/bin pipx install html5validator \
+&& PIPX_HOME=/opt/pipx PIPX_BIN_DIR=/usr/local/bin pipx install lithium-reducer
 
 RUN mkdir /python-env \
 && python3 -m venv /python-env \
