@@ -2748,12 +2748,7 @@ public abstract class SourceChecker extends AbstractTypeProcessor implements Opt
      */
     private void logBugInCF(BugInCF ce) {
         String checkerVersion;
-        try {
-            checkerVersion = getCheckerVersion();
-        } catch (Exception ex) {
-            // getCheckerVersion() throws an exception when invoked during Junit tests.
-            checkerVersion = null;
-        }
+        checkerVersion = getCheckerVersion();
         String msg = "The Checker Framework crashed.  Please report the crash.  ";
         if (checkerVersion != null) {
             msg += String.format("Version: Checker Framework %s. ", checkerVersion);
@@ -2968,28 +2963,35 @@ public abstract class SourceChecker extends AbstractTypeProcessor implements Opt
     /**
      * Returns the version of the Checker Framework.
      *
-     * @return the Checker Framework version
+     * @return the Checker Framework version, or null if not available
      */
-    private String getCheckerVersion() {
-        Properties gitProperties = getProperties(getClass(), "/git.properties", false);
-        String version = gitProperties.getProperty("git.build.version");
-        if (version == null) {
-            throw new BugInCF("Could not find the version in git.properties");
-        }
-        String branch = gitProperties.getProperty("git.branch");
-        // git.dirty indicates modified tracked files and staged changes.  Untracked content doesn't
-        // count, so not being dirty doesn't mean that exactly the printed commit is being run.
-        String dirty = gitProperties.getProperty("git.dirty");
-        if (version.endsWith("-SNAPSHOT") || !branch.equals("master")) {
-            // Sometimes the branch is HEAD, which is not informative.
-            // How does that happen, and how can I fix it?
-            version += ", branch " + branch;
-            // For brevity, only date but not time of day.
-            version += ", " + gitProperties.getProperty("git.commit.time").substring(0, 10);
-            version += ", commit " + gitProperties.getProperty("git.commit.id.abbrev");
-            if (dirty.equals("true")) {
-                version += ", dirty=true";
+    private @Nullable String getCheckerVersion() {
+        String version;
+        try {
+            Properties gitProperties = getProperties(getClass(), "/git.properties", false);
+            version = gitProperties.getProperty("git.build.version");
+            if (version == null) {
+                throw new BugInCF("Could not find the version in git.properties");
             }
+            String branch = gitProperties.getProperty("git.branch");
+            // git.dirty indicates modified tracked files and staged changes.  Untracked content
+            // doesn't
+            // count, so not being dirty doesn't mean that exactly the printed commit is being run.
+            String dirty = gitProperties.getProperty("git.dirty");
+            if (version.endsWith("-SNAPSHOT") || !branch.equals("master")) {
+                // Sometimes the branch is HEAD, which is not informative.
+                // How does that happen, and how can I fix it?
+                version += ", branch " + branch;
+                // For brevity, only date but not time of day.
+                version += ", " + gitProperties.getProperty("git.commit.time").substring(0, 10);
+                version += ", commit " + gitProperties.getProperty("git.commit.id.abbrev");
+                if (dirty.equals("true")) {
+                    version += ", dirty=true";
+                }
+            }
+        } catch (Exception ex) {
+            // throws an exception when invoked during Junit tests.
+            version = null;
         }
         return version;
     }
