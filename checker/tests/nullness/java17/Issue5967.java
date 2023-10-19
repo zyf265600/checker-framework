@@ -1,8 +1,9 @@
+// @below-java17-jdk-skip-test
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 import java.util.function.Supplier;
 
-// @below-java17-jdk-skip-test
 public final class Issue5967 {
 
     enum TestEnum {
