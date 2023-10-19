@@ -386,9 +386,10 @@ allprojects {
         tasks.withType(JavaCompile) { compilationTask ->
             dependsOn(':installGitHooks')
             boolean jdk17Compiler = project.getProperties().getOrDefault('useJdk17Compiler', false)
-            if (jdk17Compiler) {
+            if (!isJava8 && jdk17Compiler) {
                 // This uses the Java 17 compiler to compile all code.
                 //  https://docs.gradle.org/current/userguide/toolchains.html
+                // This property is final on Java 8, so don't set it then.
                 javaCompiler = javaToolchains.compilerFor {
                     languageVersion = JavaLanguageVersion.of(17)
                 }
