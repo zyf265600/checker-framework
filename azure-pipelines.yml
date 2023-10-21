@@ -206,6 +206,7 @@ jobs:
     continueOnError: true
     displayName: test-cftests-junit.sh
   - task: PublishPipelineArtifact@1
+    continueOnError: true
     inputs:
       targetPath: ./checker/dist
       artifactName: cf_jdk_next
