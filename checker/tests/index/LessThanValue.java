@@ -28,6 +28,7 @@ public class LessThanValue {
     void transitive(int a, int b, int c) {
         if (a < b) {
             if (b < c) {
+                // TODO: False positive
                 // :: error: (assignment.type.incompatible)
                 @LessThan("c") int x = a;
             }
