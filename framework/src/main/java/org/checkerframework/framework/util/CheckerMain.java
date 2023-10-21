@@ -511,7 +511,7 @@ public class CheckerMain {
     private String concatenatePaths(List<String> paths) {
         List<String> elements = new ArrayList<>();
         for (String path : paths) {
-            for (String element : SystemUtil.pathSeparatorSplitter.split(path)) {
+            for (String element : SystemUtil.PATH_SEPARATOR_SPLITTER.split(path)) {
                 elements.addAll(expandWildcards(element));
             }
         }
@@ -912,7 +912,7 @@ public class CheckerMain {
             List<@FullyQualifiedName String> fullyQualifiedCheckerNames,
             boolean allowSubcheckers) {
         StringJoiner result = new StringJoiner(",");
-        for (String processor : SystemUtil.commaSplitter.split(processorsString)) {
+        for (String processor : SystemUtil.COMMA_SPLITTER.split(processorsString)) {
             if (!processor.contains(".")) { // Not already fully qualified
                 processor =
                         unshorthandProcessorName(

@@ -1586,7 +1586,7 @@ public abstract class SourceChecker extends AbstractTypeProcessor implements Opt
             return Collections.singleton("all");
         }
 
-        List<String> lintStrings = SystemUtil.commaSplitter.splitToList(lintString);
+        List<String> lintStrings = SystemUtil.COMMA_SPLITTER.splitToList(lintString);
         Set<String> activeLint = ArraySet.newArraySetOrHashSet(lintStrings.size());
         for (String s : lintStrings) {
             if (!this.getSupportedLintOptions().contains(s)
@@ -2975,8 +2975,8 @@ public abstract class SourceChecker extends AbstractTypeProcessor implements Opt
             }
             String branch = gitProperties.getProperty("git.branch");
             // git.dirty indicates modified tracked files and staged changes.  Untracked content
-            // doesn't
-            // count, so not being dirty doesn't mean that exactly the printed commit is being run.
+            // doesn't count, so not being dirty doesn't mean that exactly the printed commit is
+            // being run.
             String dirty = gitProperties.getProperty("git.dirty");
             if (version.endsWith("-SNAPSHOT") || !branch.equals("master")) {
                 // Sometimes the branch is HEAD, which is not informative.

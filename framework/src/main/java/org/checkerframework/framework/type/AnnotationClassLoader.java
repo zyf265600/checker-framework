@@ -152,7 +152,7 @@ public class AnnotationClassLoader implements Closeable {
         fullyQualifiedPackageNameSegments = new ArrayList<>();
 
         // from the fully qualified package name, split it at every dot then add to the list
-        fullyQualifiedPackageNameSegments.addAll(SystemUtil.dotSplitter.splitToList(packageName));
+        fullyQualifiedPackageNameSegments.addAll(SystemUtil.DOT_SPLITTER.splitToList(packageName));
 
         classLoader = getClassLoader();
 

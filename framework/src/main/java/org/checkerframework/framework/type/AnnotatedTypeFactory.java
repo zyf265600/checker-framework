@@ -902,7 +902,7 @@ public class AnnotatedTypeFactory implements AnnotationProvider {
                 ((JavacProcessingEnvironment) processingEnv).getContext();
         String processorArg = Options.instance(context).get("-processor");
         if (processorArg != null) {
-            return SystemUtil.commaSplitter.splitToList(processorArg);
+            return SystemUtil.COMMA_SPLITTER.splitToList(processorArg);
         }
         try {
             String filename = "META-INF/services/javax.annotation.processing.Processor";

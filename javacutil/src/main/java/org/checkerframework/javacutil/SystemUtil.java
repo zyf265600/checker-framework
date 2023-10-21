@@ -29,18 +29,18 @@ public class SystemUtil {
     }
 
     /** A splitter that splits on periods. The result contains no empty strings. */
-    public static final Splitter dotSplitter = Splitter.on('.').omitEmptyStrings();
+    public static final Splitter DOT_SPLITTER = Splitter.on('.').omitEmptyStrings();
 
     /** A splitter that splits on commas. The result contains no empty strings. */
-    public static final Splitter commaSplitter = Splitter.on(',').omitEmptyStrings();
+    public static final Splitter COMMA_SPLITTER = Splitter.on(',').omitEmptyStrings();
 
     /** A splitter that splits on colons. The result contains no empty strings. */
-    public static final Splitter colonSplitter = Splitter.on(':').omitEmptyStrings();
+    public static final Splitter COLON_SPLITTER = Splitter.on(':').omitEmptyStrings();
 
     /**
      * A splitter that splits on {@code File.pathSeparator}. The result contains no empty strings.
      */
-    public static final Splitter pathSeparatorSplitter =
+    public static final Splitter PATH_SEPARATOR_SPLITTER =
             Splitter.on(File.pathSeparator).omitEmptyStrings();
 
     /**
@@ -54,7 +54,7 @@ public class SystemUtil {
         if (propValue == null) {
             return Collections.emptyList();
         } else {
-            return pathSeparatorSplitter.splitToList(propValue);
+            return PATH_SEPARATOR_SPLITTER.splitToList(propValue);
         }
     }
 
