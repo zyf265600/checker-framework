@@ -2275,39 +2275,11 @@ public final class TreeUtils {
      *
      * @param caseTree a case tree
      * @return true if {@code caseTree} is the default case for a switch statement or expression
+     * @deprecated use {@link CaseUtils#isDefaultCaseTree(CaseTree)}
      */
+    @Deprecated // 2023-09-26
     public static boolean isDefaultCaseTree(CaseTree caseTree) {
         return CaseUtils.isDefaultCaseTree(caseTree);
-    }
-
-    /**
-     * Returns true if {@code tree} is a {@code DefaultCaseLabelTree}.
-     *
-     * @param tree a tree to check
-     * @return true if {@code tree} is a {@code DefaultCaseLabelTree}
-     */
-    public static boolean isDefaultCaseLabelTree(Tree tree) {
-        return tree.getKind().name().contentEquals("DEFAULT_CASE_LABEL");
-    }
-
-    /**
-     * Returns true if {@code tree} is a {@code ConstantCaseLabelTree}.
-     *
-     * @param tree a tree to check
-     * @return true if {@code tree} is a {@code ConstantCaseLabelTree}
-     */
-    public static boolean isConstantCaseLabelTree(Tree tree) {
-        return tree.getKind().name().contentEquals("CONSTANT_CASE_LABEL");
-    }
-
-    /**
-     * Returns whether {@code tree} is a {@code PatternCaseLabelTree}.
-     *
-     * @param tree a tree to check
-     * @return true if {@code tree} is a {@code PatternCaseLabelTree}
-     */
-    public static boolean isPatternCaseLabelTree(Tree tree) {
-        return tree.getKind().name().contentEquals("PATTERN_CASE_LABEL");
     }
 
     /**
@@ -2317,7 +2289,7 @@ public final class TreeUtils {
      * @return true if {@code caseTree} is a case rule
      * @deprecated use {@link CaseUtils#isCaseRule(CaseTree)}
      */
-    @Deprecated // 2023-26-09
+    @Deprecated // 2023-09-26
     public static boolean isCaseRule(CaseTree caseTree) {
         return CaseUtils.isCaseRule(caseTree);
     }
@@ -2331,7 +2303,7 @@ public final class TreeUtils {
      * @return the list of expressions in the case
      * @deprecated use {@link CaseUtils#getExpressions(CaseTree)}
      */
-    @Deprecated // 2023-26-09
+    @Deprecated // 2023-09-26
     public static List<? extends ExpressionTree> caseTreeGetExpressions(CaseTree caseTree) {
         return CaseUtils.getExpressions(caseTree);
     }
@@ -2345,7 +2317,7 @@ public final class TreeUtils {
      * @return the body of the case tree
      * @deprecated use {@link CaseUtils#getBody(CaseTree)}
      */
-    @Deprecated // 2023-26-09
+    @Deprecated // 2023-09-26
     public static @Nullable Tree caseTreeGetBody(CaseTree caseTree) {
         return CaseUtils.getBody(caseTree);
     }
@@ -2367,7 +2339,7 @@ public final class TreeUtils {
      * @return the binding variable of {@code bindingPatternTree}
      * @deprecated use {@link BindingPatternUtils#getVariable(Tree)}
      */
-    @Deprecated // 2023-26-09
+    @Deprecated // 2023-09-26
     public static VariableTree bindingPatternTreeGetVariable(Tree bindingPatternTree) {
         return BindingPatternUtils.getVariable(bindingPatternTree);
     }
@@ -2390,7 +2362,7 @@ public final class TreeUtils {
      * @return the {@code PatternTree} of {@code instanceOfTree} or null if it doesn't exist
      * @deprecated use {@link InstanceOfUtils#getPattern(InstanceOfTree)}
      */
-    @Deprecated // 2023-26-09
+    @Deprecated // 2023-09-26
     public static @Nullable Tree instanceOfTreeGetPattern(InstanceOfTree instanceOfTree) {
         return InstanceOfUtils.getPattern(instanceOfTree);
     }
@@ -2406,7 +2378,7 @@ public final class TreeUtils {
      * @return the selector expression of {@code switchExpressionTree}
      * @deprecated use {@link SwitchExpressionUtils#getExpression(Tree)}
      */
-    @Deprecated // 2023-26-09
+    @Deprecated // 2023-09-26
     public static ExpressionTree switchExpressionTreeGetExpression(Tree switchExpressionTree) {
         return SwitchExpressionUtils.getExpression(switchExpressionTree);
     }
@@ -2424,7 +2396,7 @@ public final class TreeUtils {
      * @return the cases of {@code switchExpressionTree}
      * @deprecated use {@link SwitchExpressionUtils#getCases(Tree)}
      */
-    @Deprecated // 2023-26-09
+    @Deprecated // 2023-09-26
     public static List<? extends CaseTree> switchExpressionTreeGetCases(Tree switchExpressionTree) {
         return SwitchExpressionUtils.getCases(switchExpressionTree);
     }
@@ -2446,7 +2418,7 @@ public final class TreeUtils {
      * @return the value (expression) for {@code yieldTree}
      * @deprecated use {@link YieldUtils#getValue(Tree)}
      */
-    @Deprecated // 2023-26-09
+    @Deprecated // 2023-09-26
     public static ExpressionTree yieldTreeGetValue(Tree yieldTree) {
         return YieldUtils.getValue(yieldTree);
     }

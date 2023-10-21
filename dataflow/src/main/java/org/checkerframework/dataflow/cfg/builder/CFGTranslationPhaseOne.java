@@ -2452,7 +2452,7 @@ public class CFGTranslationPhaseOne extends TreeScanner<Node, Void> {
             int defaultIndex = -1;
             for (int i = 0; i < numCases; ++i) {
                 CaseTree caseTree = caseTrees.get(i);
-                if (TreeUtils.isDefaultCaseTree(caseTree)) {
+                if (CaseUtils.isDefaultCaseTree(caseTree)) {
                     // Per the Java Language Specification, the checks of all cases must happen
                     // before the default case, no matter where `default:` is written.  Therefore,
                     // build the default case last.
@@ -2571,7 +2571,7 @@ public class CFGTranslationPhaseOne extends TreeScanner<Node, Void> {
          *     necessary.
          */
         private void buildCase(CaseTree caseTree, int index, boolean isLastCaseOfExhaustive) {
-            boolean isDefaultCase = TreeUtils.isDefaultCaseTree(caseTree);
+            boolean isDefaultCase = CaseUtils.isDefaultCaseTree(caseTree);
             // If true, no test of labels is necessary.
             // Unfortunately, if isLastCaseOfExhaustive==TRUE, no flow-sensitive refinement occurs
             // within the body of the CaseNode.  In the future, that can be performed, but it
