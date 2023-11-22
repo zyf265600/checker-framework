@@ -54,6 +54,12 @@ public class ResourceLeakVisitor extends CalledMethodsVisitor {
     private final boolean noLightweightOwnership;
 
     /**
+     * True if -AenableWpiForRlc was passed on the command line. See {@link
+     * ResourceLeakChecker#ENABLE_WPI_FOR_RLC}.
+     */
+    private final boolean enableWpiForRlc;
+
+    /**
      * Create the visitor.
      *
      * @param checker the type-checker associated with this visitor
@@ -63,6 +69,7 @@ public class ResourceLeakVisitor extends CalledMethodsVisitor {
         rlTypeFactory = (ResourceLeakAnnotatedTypeFactory) atypeFactory;
         permitStaticOwning = checker.hasOption("permitStaticOwning");
         noLightweightOwnership = checker.hasOption("noLightweightOwnership");
+        enableWpiForRlc = checker.hasOption(ResourceLeakChecker.ENABLE_WPI_FOR_RLC);
     }
 
     @Override
@@ -192,6 +199,13 @@ public class ResourceLeakVisitor extends CalledMethodsVisitor {
             }
         }
     }
+
+    /* NO-AFU
+    @Override
+    protected boolean shouldPerformContractInference() {
+      return atypeFactory.getWholeProgramInference() != null && isWpiEnabledForRLC();
+    }
+    */
 
     // Overwritten to check that destructors (i.e. methods responsible for resolving
     // the must-call obligations of owning fields) enforce a stronger version of
@@ -391,7 +405,7 @@ public class ResourceLeakVisitor extends CalledMethodsVisitor {
 
         // This value is side-effected.
         List<String> unsatisfiedMustCallObligationsOfOwningField =
-                rlTypeFactory.getMustCallValue(field);
+                rlTypeFactory.getMustCallValues(field);
 
         if (unsatisfiedMustCallObligationsOfOwningField.isEmpty()) {
             return;
@@ -399,7 +413,7 @@ public class ResourceLeakVisitor extends CalledMethodsVisitor {
 
         String error;
         Element enclosingElement = field.getEnclosingElement();
-        List<String> enclosingMustCallValues = rlTypeFactory.getMustCallValue(enclosingElement);
+        List<String> enclosingMustCallValues = rlTypeFactory.getMustCallValues(enclosingElement);
 
         if (enclosingMustCallValues == null) {
             error =
@@ -466,5 +480,15 @@ public class ResourceLeakVisitor extends CalledMethodsVisitor {
                     field.asType().toString(),
                     error);
         }
+    }
+
+    /**
+     * Checks if WPI is enabled for the Resource Leak Checker inference. See {@link
+     * ResourceLeakChecker#ENABLE_WPI_FOR_RLC}.
+     *
+     * @return returns true if WPI is enabled for the Resource Leak Checker
+     */
+    protected boolean isWpiEnabledForRLC() {
+        return enableWpiForRlc;
     }
 }

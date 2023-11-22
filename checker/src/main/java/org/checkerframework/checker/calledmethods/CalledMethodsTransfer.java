@@ -2,6 +2,7 @@ package org.checkerframework.checker.calledmethods;
 
 import org.checkerframework.checker.calledmethods.qual.EnsuresCalledMethodsVarArgs;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.checkerframework.checker.resourceleak.ResourceLeakChecker;
 import org.checkerframework.common.accumulation.AccumulationStore;
 import org.checkerframework.common.accumulation.AccumulationTransfer;
 import org.checkerframework.common.accumulation.AccumulationValue;
@@ -53,6 +54,12 @@ public class CalledMethodsTransfer extends AccumulationTransfer {
     private final ExecutableElement calledMethodsValueElement;
 
     /**
+     * True if -AenableWpiForRlc was passed on the command line. See {@link
+     * ResourceLeakChecker#ENABLE_WPI_FOR_RLC}.
+     */
+    private final boolean enableWpiForRlc;
+
+    /**
      * Create a new CalledMethodsTransfer.
      *
      * @param analysis the analysis
@@ -61,7 +68,46 @@ public class CalledMethodsTransfer extends AccumulationTransfer {
         super(analysis);
         calledMethodsValueElement =
                 ((CalledMethodsAnnotatedTypeFactory) atypeFactory).calledMethodsValueElement;
+        enableWpiForRlc =
+                atypeFactory.getChecker().hasOption(ResourceLeakChecker.ENABLE_WPI_FOR_RLC);
     }
+
+    /* NO-AFU
+     * @param tree a tree
+     * @return false if Resource Leak Checker is running as one of the upstream checkers and the
+     *     -AenableWpiForRlc flag (see {@link ResourceLeakChecker#ENABLE_WPI_FOR_RLC}) is not passed
+     *     as a command line argument, otherwise returns the result of the super call
+     */
+    /* NO-AFU
+    @Override
+    protected boolean shouldPerformWholeProgramInference(Tree tree) {
+      if (!isWpiEnabledForRLC()
+          && atypeFactory.getCheckerNames().contains(ResourceLeakChecker.class.getCanonicalName())) {
+        return false;
+      }
+      return super.shouldPerformWholeProgramInference(tree);
+    }
+    */
+
+    /* NO-AFU
+     * See {@link ResourceLeakChecker#ENABLE_WPI_FOR_RLC}.
+     *
+     * @param expressionTree a tree
+     * @param lhsTree its element
+     * @return false if Resource Leak Checker is running as one of the upstream checkers and the
+     *     -AenableWpiForRlc flag is not passed as a command line argument, otherwise returns the
+     *     result of the super call
+     */
+    /* NO-AFU
+    @Override
+    protected boolean shouldPerformWholeProgramInference(Tree expressionTree, Tree lhsTree) {
+      if (!isWpiEnabledForRLC()
+          && atypeFactory.getCheckerNames().contains(ResourceLeakChecker.class.getCanonicalName())) {
+        return false;
+      }
+      return super.shouldPerformWholeProgramInference(expressionTree, lhsTree);
+    }
+    */
 
     @Override
     public TransferResult<AccumulationValue, AccumulationStore> visitMethodInvocation(
@@ -120,7 +166,12 @@ public class CalledMethodsTransfer extends AccumulationTransfer {
                 }
             }
             AnnotationMirror newAnno = atypeFactory.createAccumulatorAnnotation(valuesAsList);
-            exceptionalStores.forEach((tm, s) -> s.insertValue(target, newAnno));
+            exceptionalStores.forEach(
+                    (tm, s) ->
+                            s.replaceValue(
+                                    target,
+                                    analysis.createSingleAnnotationValue(
+                                            newAnno, target.getType())));
         }
     }
 
@@ -233,5 +284,15 @@ public class CalledMethodsTransfer extends AccumulationTransfer {
         List<String> newList = CollectionsPlume.concatenate(currentMethods, methodNames);
 
         return atypeFactory.createAccumulatorAnnotation(newList);
+    }
+
+    /**
+     * Checks if WPI is enabled for the Resource Leak Checker inference. See {@link
+     * ResourceLeakChecker#ENABLE_WPI_FOR_RLC}.
+     *
+     * @return returns true if WPI is enabled for the Resource Leak Checker
+     */
+    protected boolean isWpiEnabledForRLC() {
+        return enableWpiForRlc;
     }
 }

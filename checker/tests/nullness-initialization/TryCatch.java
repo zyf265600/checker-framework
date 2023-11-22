@@ -24,7 +24,6 @@ public class TryCatch {
         try {
         } catch (Throwable e) {
             // Note that this code is dead.
-            // :: error: (dereference.of.nullable) :: error: (method.invocation.invalid)
             t.toString();
         }
     }
