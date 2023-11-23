@@ -13,7 +13,7 @@ public class RequiresPresentTest {
     void method1() {
         field1.get().length(); // OK, field1 is known to be present (non-empty)
         this.field1.get().length(); // OK, field1 is known to be present (non-empty)
-        // :: error: (method.invocation)
+        // :: error: (method.invocation.invalid)
         field2.get().length(); // error, might throw NoSuchElementException
     }
 
@@ -27,7 +27,7 @@ public class RequiresPresentTest {
         field1 = Optional.of("abc");
         method1(); // OK, satisfied method precondition.
         field1 = Optional.empty();
-        // :: error: (contracts.precondition)
+        // :: error: (contracts.precondition.not.satisfied)
         method1(); // error, does not satisfy method precondition.
     }
 
@@ -38,7 +38,7 @@ public class RequiresPresentTest {
     public void requiresPresentField() {}
 
     public void clientFail(RequiresPresentTest arg1) {
-        // :: error: (contracts.precondition)
+        // :: error: (contracts.precondition.not.satisfied)
         arg1.requiresPresentField();
     }
 
@@ -67,7 +67,7 @@ public class RequiresPresentTest {
         method4(); // OK, both preconditions now hold at this point.
 
         field1 = Optional.empty();
-        // :: error: (contracts.precondition)
+        // :: error: (contracts.precondition.not.satisfied)
         method4(); // error, field1 is no longer present.
     }
 }

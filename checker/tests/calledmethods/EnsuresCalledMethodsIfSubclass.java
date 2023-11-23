@@ -1,6 +1,7 @@
 import org.checkerframework.checker.calledmethods.qual.EnsuresCalledMethodsIf;
 
-import java.io.*;
+import java.io.Closeable;
+import java.io.IOException;
 
 public class EnsuresCalledMethodsIfSubclass {
 
@@ -15,7 +16,7 @@ public class EnsuresCalledMethodsIfSubclass {
     public static class SubclassWrong extends Parent {
         @Override
         public boolean method(Closeable x) throws IOException {
-            // ::error: (contracts.conditional.postcondition)
+            // ::error: (contracts.conditional.postcondition.not.satisfied)
             return true;
         }
     }

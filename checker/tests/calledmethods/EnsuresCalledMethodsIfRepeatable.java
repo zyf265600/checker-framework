@@ -1,6 +1,7 @@
 import org.checkerframework.checker.calledmethods.qual.EnsuresCalledMethodsIf;
 
-import java.io.*;
+import java.io.Closeable;
+import java.io.IOException;
 
 public class EnsuresCalledMethodsIfRepeatable {
 
@@ -8,7 +9,7 @@ public class EnsuresCalledMethodsIfRepeatable {
     @EnsuresCalledMethodsIf(expression = "#2", result = true, methods = "close")
     public boolean close2MissingFirst(Closeable r1, Closeable r2) throws IOException {
         r1.close();
-        // ::error: (contracts.conditional.postcondition)
+        // ::error: (contracts.conditional.postcondition.not.satisfied)
         return true;
     }
 
@@ -16,7 +17,7 @@ public class EnsuresCalledMethodsIfRepeatable {
     @EnsuresCalledMethodsIf(expression = "#2", result = true, methods = "close")
     public boolean close2MissingSecond(Closeable r1, Closeable r2) throws IOException {
         r2.close();
-        // ::error: (contracts.conditional.postcondition)
+        // ::error: (contracts.conditional.postcondition.not.satisfied)
         return true;
     }
 
@@ -40,7 +41,7 @@ public class EnsuresCalledMethodsIfRepeatable {
     public static class SubclassWrong extends EnsuresCalledMethodsIfRepeatable {
         @Override
         public boolean close2Correct(Closeable r1, Closeable r2) throws IOException {
-            // ::error: (contracts.conditional.postcondition)
+            // ::error: (contracts.conditional.postcondition.not.satisfied)
             return true;
         }
     }

@@ -80,7 +80,7 @@ public class EnsuresPresentIfTest {
         if (hasPresentId8()) {
             optId.get();
         }
-        // :: error: (method.invocation)
+        // :: error: (method.invocation.invalid)
         optId.get();
     }
 }

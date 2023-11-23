@@ -84,10 +84,10 @@ abstract class OwnershipWithExceptions {
     void noExceptionHandling() throws IOException {
         // ::error: (required.method.not.called)
         Closeable resource = alloc();
-        // ::error: (assignment)
+        // ::error: (assignment.type.incompatible)
         @CalledMethods("close") Closeable a = resource;
         transfer(resource);
-        // ::error: (assignment)
+        // ::error: (assignment.type.incompatible)
         @CalledMethods("close") Closeable b = resource;
     }
 

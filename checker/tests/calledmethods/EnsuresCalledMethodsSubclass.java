@@ -1,6 +1,7 @@
 import org.checkerframework.checker.calledmethods.qual.EnsuresCalledMethods;
 
-import java.io.*;
+import java.io.Closeable;
+import java.io.IOException;
 
 public class EnsuresCalledMethodsSubclass {
 
@@ -13,7 +14,7 @@ public class EnsuresCalledMethodsSubclass {
 
     public static class Subclass extends Parent {
         @Override
-        // ::error: (contracts.postcondition)
+        // ::error: (contracts.postcondition.not.satisfied)
         public void method(Closeable x) throws IOException {}
     }
 }

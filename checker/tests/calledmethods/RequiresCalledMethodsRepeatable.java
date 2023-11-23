@@ -1,6 +1,6 @@
 import org.checkerframework.checker.calledmethods.qual.*;
 
-import java.io.*;
+import java.io.Closeable;
 
 public class RequiresCalledMethodsRepeatable {
 
@@ -12,7 +12,7 @@ public class RequiresCalledMethodsRepeatable {
     }
 
     public void requires2Wrong(Closeable r1, Closeable r2) {
-        // ::error: (contracts.precondition)
+        // ::error: (contracts.precondition.not.satisfied)
         requires2(r1, r2);
     }
 

@@ -31,7 +31,7 @@ class ExceptionalPath2 {
             // threw an IOException.  We no longer know whether `r.a()`
             // has been called, since `r.b()` might have overwritten `r`
             // before throwing.
-            // ::error: (assignment)
+            // ::error: (assignment.type.incompatible)
             @CalledMethods({"a"}) Resource x = r;
         }
     }
