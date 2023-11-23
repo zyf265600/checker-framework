@@ -9,7 +9,6 @@ import com.sun.source.util.TreePath;
 import org.checkerframework.checker.mustcall.qual.MustCall;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.checkerframework.checker.resourceleak.ResourceLeakChecker;
 import org.checkerframework.dataflow.analysis.TransferInput;
 import org.checkerframework.dataflow.analysis.TransferResult;
 import org.checkerframework.dataflow.cfg.node.AssignmentNode;
@@ -62,11 +61,12 @@ public class MustCallTransfer extends CFTransfer {
     /** True if -AnoCreatesMustCallFor was passed on the command line. */
     private final boolean noCreatesMustCallFor;
 
-    /**
+    /* NO-AFU
      * True if -AenableWpiForRlc was passed on the command line. See {@link
      * ResourceLeakChecker#ENABLE_WPI_FOR_RLC}.
-     */
+     *
     private final boolean enableWpiForRlc;
+    */
 
     /**
      * Create a MustCallTransfer.
@@ -78,8 +78,8 @@ public class MustCallTransfer extends CFTransfer {
         atypeFactory = (MustCallAnnotatedTypeFactory) analysis.getTypeFactory();
         noCreatesMustCallFor =
                 atypeFactory.getChecker().hasOption(MustCallChecker.NO_CREATES_MUSTCALLFOR);
-        enableWpiForRlc =
-                atypeFactory.getChecker().hasOption(ResourceLeakChecker.ENABLE_WPI_FOR_RLC);
+        // enableWpiForRlc =
+        //         atypeFactory.getChecker().hasOption(ResourceLeakChecker.ENABLE_WPI_FOR_RLC);
         ProcessingEnvironment env = atypeFactory.getChecker().getProcessingEnvironment();
         treeBuilder = new TreeBuilder(env);
     }
@@ -353,13 +353,14 @@ public class MustCallTransfer extends CFTransfer {
         return prefix + "-" + uid.getAndIncrement();
     }
 
-    /**
+    /* NO-AFU
      * Checks if WPI is enabled for the Resource Leak Checker inference. See {@link
      * ResourceLeakChecker#ENABLE_WPI_FOR_RLC}.
      *
      * @return returns true if WPI is enabled for the Resource Leak Checker
-     */
+     *
     protected boolean isWpiEnabledForRLC() {
         return enableWpiForRlc;
     }
+    */
 }

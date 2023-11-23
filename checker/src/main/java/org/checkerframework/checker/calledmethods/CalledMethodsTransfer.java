@@ -2,7 +2,6 @@ package org.checkerframework.checker.calledmethods;
 
 import org.checkerframework.checker.calledmethods.qual.EnsuresCalledMethodsVarArgs;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.checkerframework.checker.resourceleak.ResourceLeakChecker;
 import org.checkerframework.common.accumulation.AccumulationStore;
 import org.checkerframework.common.accumulation.AccumulationTransfer;
 import org.checkerframework.common.accumulation.AccumulationValue;
@@ -53,11 +52,12 @@ public class CalledMethodsTransfer extends AccumulationTransfer {
      */
     private final ExecutableElement calledMethodsValueElement;
 
-    /**
+    /* NO-AFU
      * True if -AenableWpiForRlc was passed on the command line. See {@link
      * ResourceLeakChecker#ENABLE_WPI_FOR_RLC}.
-     */
+     *
     private final boolean enableWpiForRlc;
+    */
 
     /**
      * Create a new CalledMethodsTransfer.
@@ -68,8 +68,8 @@ public class CalledMethodsTransfer extends AccumulationTransfer {
         super(analysis);
         calledMethodsValueElement =
                 ((CalledMethodsAnnotatedTypeFactory) atypeFactory).calledMethodsValueElement;
-        enableWpiForRlc =
-                atypeFactory.getChecker().hasOption(ResourceLeakChecker.ENABLE_WPI_FOR_RLC);
+        // enableWpiForRlc =
+        //        atypeFactory.getChecker().hasOption(ResourceLeakChecker.ENABLE_WPI_FOR_RLC);
     }
 
     /* NO-AFU
@@ -286,13 +286,14 @@ public class CalledMethodsTransfer extends AccumulationTransfer {
         return atypeFactory.createAccumulatorAnnotation(newList);
     }
 
-    /**
+    /* NO-AFU
      * Checks if WPI is enabled for the Resource Leak Checker inference. See {@link
      * ResourceLeakChecker#ENABLE_WPI_FOR_RLC}.
      *
      * @return returns true if WPI is enabled for the Resource Leak Checker
-     */
+     *
     protected boolean isWpiEnabledForRLC() {
         return enableWpiForRlc;
     }
+    */
 }

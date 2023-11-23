@@ -16,7 +16,6 @@ import org.checkerframework.checker.mustcall.qual.MustCallUnknown;
 import org.checkerframework.checker.mustcall.qual.Owning;
 import org.checkerframework.checker.mustcall.qual.PolyMustCall;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.checkerframework.checker.resourceleak.ResourceLeakChecker;
 import org.checkerframework.common.basetype.BaseAnnotatedTypeFactory;
 import org.checkerframework.common.basetype.BaseTypeChecker;
 import org.checkerframework.dataflow.cfg.block.Block;
@@ -127,11 +126,12 @@ public class MustCallAnnotatedTypeFactory extends BaseAnnotatedTypeFactory
     /** True if -AnoLightweightOwnership was passed on the command line. */
     private final boolean noLightweightOwnership;
 
-    /**
+    /* NO-AFU
      * True if -AenableWpiForRlc (see {@link ResourceLeakChecker#ENABLE_WPI_FOR_RLC}) was passed on
      * the command line.
-     */
+     *
     private final boolean enableWpiForRlc;
+    */
 
     /**
      * Creates a MustCallAnnotatedTypeFactory.
@@ -149,7 +149,7 @@ public class MustCallAnnotatedTypeFactory extends BaseAnnotatedTypeFactory
             addAliasedTypeAnnotation(MustCallAlias.class, POLY);
         }
         noLightweightOwnership = checker.hasOption(MustCallChecker.NO_LIGHTWEIGHT_OWNERSHIP);
-        enableWpiForRlc = checker.hasOption(ResourceLeakChecker.ENABLE_WPI_FOR_RLC);
+        // enableWpiForRlc = checker.hasOption(ResourceLeakChecker.ENABLE_WPI_FOR_RLC);
         this.postInit();
     }
 
@@ -548,15 +548,16 @@ public class MustCallAnnotatedTypeFactory extends BaseAnnotatedTypeFactory
         return tempVars.get(node.getTree());
     }
 
-    /**
+    /* NO-AFU
      * Checks if WPI is enabled for the Resource Leak Checker inference. See {@link
      * ResourceLeakChecker#ENABLE_WPI_FOR_RLC}.
      *
      * @return returns true if WPI is enabled for the Resource Leak Checker
-     */
+     *
     protected boolean isWpiEnabledForRLC() {
         return enableWpiForRlc;
     }
+    */
 
     /**
      * Returns true if the given type should never have a must-call obligation.
