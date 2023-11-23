@@ -352,8 +352,7 @@ class MustCallConsistencyAnalyzer {
                 }
                 List<String> annoVals = rlAtf.getMustCallValues(mcAnno);
                 // Really, annoVals should never be empty here; we should not have created the
-                // obligation in
-                // the first place
+                // obligation in the first place.
                 // TODO: add an assertion that annoVals is non-empty and address any failures
                 result.put(alias, annoVals);
             }
@@ -554,9 +553,8 @@ class MustCallConsistencyAnalyzer {
          */
         public String stringForErrorMessage() {
             String referenceStr = reference.toString();
-            // we assume that any temporary variable name will not be a syntactically-valid
-            // identifier
-            // or keyword
+            // We assume that any temporary variable name will not be a syntactically-valid
+            // identifier or keyword.
             return !SourceVersion.isIdentifier(referenceStr) ? tree.toString() : referenceStr;
         }
     }
@@ -1248,9 +1246,8 @@ class MustCallConsistencyAnalyzer {
                 }
 
                 // Finally, if any obligations containing this var remain, then closing the field
-                // will
-                // satisfy them.  Here we are overly cautious and only track final fields.  In the
-                // future we could perhaps relax this guard with careful handling for field
+                // will satisfy them.  Here we are overly cautious and only track final fields.  In
+                // the future we could perhaps relax this guard with careful handling for field
                 // reassignments.
                 if (ElementUtils.isFinal(lhsElement)) {
                     addAliasToObligationsContainingVar(
@@ -2393,8 +2390,7 @@ class MustCallConsistencyAnalyzer {
                 obligation.getMustCallMethods(typeFactory, mcStore);
 
         // optimization: if mustCallValues is null, always issue a warning (there is no way to
-        // satisfy
-        // the check). A null mustCallValue occurs when the type is top (@MustCallUnknown).
+        // satisfy the check). A null mustCallValue occurs when the type is top (@MustCallUnknown).
         if (mustCallValues == null) {
             // Report the error at the first alias' definition. This choice is arbitrary but
             // consistent.

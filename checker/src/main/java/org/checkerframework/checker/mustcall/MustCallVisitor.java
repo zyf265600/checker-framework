@@ -259,15 +259,12 @@ public class MustCallVisitor extends BaseTypeVisitor<MustCallAnnotatedTypeFactor
             }
             // Need to check the type mirror for ajava-derived annotations and the element itself
             // for human-written annotations from the source code. Getting to the ajava file
-            // directly
-            // at this point is impossible, so we approximate "the ajava file has an @MustCallAlias
-            // annotation" with "there is an @PolyMustCall annotation on the use type, but not in
-            // the
-            // source code". This only works because none of our inference techniques infer
-            // @PolyMustCall,
-            // so if @PolyMustCall is present but wasn't in the source, it must have been derived
-            // from
-            // an @MustCallAlias annotation (which we do infer).
+            // directly at this point is impossible, so we approximate "the ajava file has an
+            // @MustCallAlias annotation" with "there is an @PolyMustCall annotation on the use
+            // type, but not in the source code". This only works because none of our inference
+            // techniques infer @PolyMustCall, so if @PolyMustCall is present but wasn't in the
+            // source, it must have been derived from an @MustCallAlias annotation (which we do
+            // infer).
             boolean ajavaFileHasMustCallAlias =
                     useType.hasAnnotation(PolyMustCall.class)
                             && !AnnotationUtils.containsSameByClass(
