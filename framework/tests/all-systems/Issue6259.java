@@ -1,3 +1,5 @@
+// @below-java10-jdk-skip-test
+
 @SuppressWarnings("unchecked")
 public class Issue6259 {
     public interface A {
