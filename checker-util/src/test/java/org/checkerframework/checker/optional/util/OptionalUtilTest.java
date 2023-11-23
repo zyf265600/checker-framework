@@ -14,11 +14,11 @@ public final class OptionalUtilTest {
         Optional<String> nonEmptyOpt = Optional.of("non-empty");
         Optional<String> emptyOpt = Optional.empty();
 
-        Assert.assertFalse(nonEmptyOpt.isEmpty());
+        Assert.assertTrue(nonEmptyOpt.isPresent());
         @Present Optional<String> foo = OptionalUtil.castPresent(nonEmptyOpt);
         Assert.assertEquals(foo.get(), "non-empty");
 
-        Assert.assertTrue(emptyOpt.isEmpty());
+        Assert.assertFalse(emptyOpt.isPresent());
         Assert.assertThrows(Error.class, () -> OptionalUtil.castPresent(emptyOpt));
     }
 }
