@@ -29,9 +29,9 @@ import java.lang.annotation.Target;
 @Repeatable(EnsuresMinLenIf.List.class)
 public @interface EnsuresMinLenIf {
     /**
-     * Returns the return value of the method under which the postcondition to hold.
+     * Returns the return value of the method under which the postcondition holds.
      *
-     * @return the return value of the method under which the postcondition to hold
+     * @return the return value of the method under which the postcondition holds
      */
     boolean result();
 
