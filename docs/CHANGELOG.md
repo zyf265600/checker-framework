@@ -112,7 +112,7 @@ advised against using.
 
 **Implementation details:**
 
-Renamed `SourceChecker.processArg()' to `processErrorMessageArg()`.
+Renamed `SourceChecker.processArg()` to `processErrorMessageArg()`.
 
 **Closed issues:**
 
@@ -137,7 +137,7 @@ to be written on a non-integral type.
     * `isSubtype()` has been renamed to `isSubypeQualifiers()` and made protected.
       Clients that are not in a qualifier hierarchy should call `isSubtypeShallow()`
       or, rarely, new method `isSubtypeQualifiersOnly()`.
-    * New public method `isSubtypeShallow()' that takes two more arguments than
+    * New public method `isSubtypeShallow()` that takes two more arguments than
       `isSubypeQualifiers()`.
  * Similar changes to `greatestLowerBound()` and `leastUpperBound()`.
 
