@@ -7,7 +7,7 @@ Version 3.40.0-eisop3 (November ??, 2023)
 
 **Closed issues:**
 
-eisop#635.
+eisop#635, eisop#640, eisop#641.
 
 
 Version 3.40.0-eisop2 (November 24, 2023)
