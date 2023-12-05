@@ -1801,7 +1801,6 @@ public class CFGTranslationPhaseOne extends TreeScanner<Node, Void> {
      */
     protected void treatMethodAsAssert(
             MethodInvocationTree tree, AssertMethodTuple assertMethodTuple, Node condition) {
-
         // all necessary labels
         Label thenLabel = new Label();
         Label elseLabel = new Label();
@@ -3860,15 +3859,13 @@ public class CFGTranslationPhaseOne extends TreeScanner<Node, Void> {
             TryTree tryTree, Void p, List<? extends Tree> resources) {
         if (resources.isEmpty()) {
             // Either `tryTree` was not a try-with-resources, or this method was called recursively
-            // and
-            // all the resources have been handled.  Just scan the main try block.
+            // and all the resources have been handled.  Just scan the main try block.
             scan(tryTree.getBlock(), p);
             return;
         }
 
         // Handle the first resource declaration in the list.  The rest will be handled by a
-        // recursive
-        // call.
+        // recursive call.
         Tree resourceDeclarationTree = resources.get(0);
 
         extendWithNode(
@@ -3888,12 +3885,10 @@ public class CFGTranslationPhaseOne extends TreeScanner<Node, Void> {
         Map<Name, Label> oldContinueLabels = continueLabels;
 
         // Add nodes for the resource declaration to the CFG.  NOTE: it is critical to add these
-        // nodes
-        // *before* pushing a TryFinallyFrame for the finally block that will close the resource.
-        // If
-        // any exception occurs due to code within the resource declaration, the corresponding
-        // variable
-        // or field is *not* automatically closed (as it was never assigned a value).
+        // nodes *before* pushing a TryFinallyFrame for the finally block that will close the
+        // resource.
+        // If any exception occurs due to code within the resource declaration, the corresponding
+        // variable or field is *not* automatically closed (as it was never assigned a value).
         Node resourceCloseNode = scan(resourceDeclarationTree, p);
 
         // Now, set things up for our synthetic finally block that closes the resource.

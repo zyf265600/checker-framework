@@ -761,13 +761,10 @@ public class WholeProgramInferenceJavaParserStorage
                         TypeElement classElt = TreeUtils.elementFromDeclaration(tree);
                         if (classElt == null) {
                             // If such an element does not exist, compute the name of the class,
-                            // instead. This
-                            // method of computing the name is not 100% guaranteed to be reliable,
-                            // but it should
-                            // be sufficient for WPI's purposes here: if the wrong name is computed,
-                            // the worst
-                            // outcome is a false positive because WPI inferred an untrue
-                            // annotation.
+                            // instead. This method of computing the name is not 100% guaranteed to
+                            // be reliable, but it should be sufficient for WPI's purposes here: if
+                            // the wrong name is computed, the worst outcome is a false positive
+                            // because WPI inferred an untrue annotation.
                             Optional<String> ofqn = javaParserClass.getFullyQualifiedName();
                             if (ofqn.isEmpty()) {
                                 throw new BugInCF(

@@ -10,7 +10,6 @@ public class Issue6282 {
     }
 
     public static void setAccessible(final AccessibleObject accessibleObject) {
-
         try {
             boolean newFlag = (boolean) setAccessible0_Method.invokeExact(accessibleObject, true);
             assert newFlag;
