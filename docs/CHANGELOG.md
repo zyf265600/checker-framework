@@ -19,7 +19,7 @@ Version 3.41.0 (December 4, 2023)
 **User-visible changes:**
 
 New command-line options:
-  -AassumePureGetters Unsoundly assume that every getter method is pure
+* `-AassumePureGetters`: Unsoundly assume that every getter method is pure.
 
 **Implementation details:**
 
