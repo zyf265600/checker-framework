@@ -3006,7 +3006,7 @@ public abstract class SourceChecker extends AbstractTypeProcessor implements Opt
                 }
             }
         } catch (Exception ex) {
-            // throws an exception when invoked during Junit tests.
+            // throws an exception when invoked during JUnit tests.
             version = null;
         }
         return version;

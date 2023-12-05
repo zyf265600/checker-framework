@@ -1147,7 +1147,7 @@ subprojects {
 
         // Create a nonJunitTests task per project
         tasks.create(name: 'nonJunitTests', group: 'Verification') {
-            description 'Run all Checker Framework tests except for the Junit tests and inference tests.'
+            description 'Run all Checker Framework tests except for the JUnit tests and inference tests.'
             if (project.name.is('framework') || project.name.is('checker')) {
                 dependsOn('jtregTests')
             }

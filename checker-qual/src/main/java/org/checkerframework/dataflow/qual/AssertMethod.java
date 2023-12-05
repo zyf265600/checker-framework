@@ -55,7 +55,7 @@ public @interface AssertMethod {
     /**
      * Returns whether this method asserts that the boolean expression is false.
      *
-     * <p>For example, Junit's <a
+     * <p>For example, JUnit's <a
      * href="https://junit.org/junit5/docs/5.0.1/api/org/junit/jupiter/api/Assertions.html#assertFalse-boolean-">Assertions.assertFalse(...)</a>
      * throws an exception if the first argument is false. So it is annotated as follows:
      *
