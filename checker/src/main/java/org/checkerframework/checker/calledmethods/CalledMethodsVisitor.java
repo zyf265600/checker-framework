@@ -116,7 +116,7 @@ public class CalledMethodsVisitor extends AccumulationVisitor {
         if (!checkContract(e, requiredAnno, inferredAnno, exitStore)) {
             checker.reportError(
                     tree,
-                    "contracts.exceptional.postcondition",
+                    "contracts.exceptional.postcondition.not.satisfied",
                     tree.getName(),
                     contractExpressionAndType(postcond.getExpression(), inferredAnno),
                     contractExpressionAndType(postcond.getExpression(), requiredAnno));
