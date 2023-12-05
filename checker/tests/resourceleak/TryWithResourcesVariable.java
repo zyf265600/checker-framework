@@ -1,5 +1,7 @@
 // Test for try-with-resources where the resource declaration uses an existing variable
 
+// @below-java9-jdk-skip-test
+
 import org.checkerframework.checker.calledmethods.qual.*;
 import org.checkerframework.checker.mustcall.qual.*;
 
