@@ -854,7 +854,7 @@ public class AnnotationFileParser {
                             && !hasNoAnnotationFileParserWarning(packageAnnos))) {
                 String packageName = pDecl.getName().toString();
                 if (elements.getPackageElement(packageName) == null) {
-                    stubWarnNotFound(pDecl, "Package not found: " + packageName);
+                    stubWarnNotFound(pDecl, "package not found: " + packageName);
                 }
             }
             processPackage(pDecl);
@@ -3316,7 +3316,9 @@ public class AnnotationFileParser {
             }
 
             if (callListener) {
-                fileElementTypes.preProcessTopLevelType(typeDeclName.get());
+                @SuppressWarnings("optional:method.invocation.invalid") // from callListener
+                String typeDeclNameString = typeDeclName.get();
+                fileElementTypes.preProcessTopLevelType(typeDeclNameString);
             }
             try {
                 if (shouldProcessTypeDecl) {
@@ -3329,7 +3331,9 @@ public class AnnotationFileParser {
                     typeParameters.removeAll(typeDeclTypeParameters);
                 }
                 if (callListener) {
-                    fileElementTypes.postProcessTopLevelType(typeDeclName.get());
+                    @SuppressWarnings("optional:method.invocation.invalid") // from callListener
+                    String typeDeclNameString = typeDeclName.get();
+                    fileElementTypes.postProcessTopLevelType(typeDeclNameString);
                 }
             }
 
@@ -3338,17 +3342,15 @@ public class AnnotationFileParser {
 
         @Override
         public Void visitVariable(VariableTree javacTree, Node javaParserNode) {
-            if (TreeUtils.elementFromDeclaration(javacTree) != null) {
-                VariableElement elt = TreeUtils.elementFromDeclaration(javacTree);
-                if (elt != null) {
-                    if (elt.getKind() == ElementKind.FIELD) {
-                        VariableDeclarator varDecl = (VariableDeclarator) javaParserNode;
-                        processField((FieldDeclaration) varDecl.getParentNode().get(), elt);
-                    }
+            VariableElement elt = TreeUtils.elementFromDeclaration(javacTree);
+            if (elt != null) {
+                if (elt.getKind() == ElementKind.FIELD) {
+                    VariableDeclarator varDecl = (VariableDeclarator) javaParserNode;
+                    processField((FieldDeclaration) varDecl.getParentNode().get(), elt);
+                }
 
-                    if (elt.getKind() == ElementKind.ENUM_CONSTANT) {
-                        processEnumConstant((EnumConstantDeclaration) javaParserNode, elt);
-                    }
+                if (elt.getKind() == ElementKind.ENUM_CONSTANT) {
+                    processEnumConstant((EnumConstantDeclaration) javaParserNode, elt);
                 }
             }
 
