@@ -22,7 +22,7 @@ class PureGetterTest {
         }
         if (field.isPresent()) {
             sideEffect();
-            // :: error: method.invocation
+            // :: error: (method.invocation.invalid)
             field.get();
         }
         if (field.isPresent()) {
@@ -31,7 +31,7 @@ class PureGetterTest {
         }
         if (field.isPresent()) {
             otherOptional();
-            // :: error: method.invocation
+            // :: error: (method.invocation.invalid)
             field.get();
         }
 
@@ -40,7 +40,7 @@ class PureGetterTest {
         }
         if (getOptional().isPresent()) {
             sideEffect();
-            // :: error: method.invocation
+            // :: error: (method.invocation.invalid)
             getOptional().get();
         }
         if (getOptional().isPresent()) {
@@ -49,29 +49,29 @@ class PureGetterTest {
         }
         if (getOptional().isPresent()) {
             otherOptional();
-            // :: error: method.invocation
+            // :: error: (method.invocation.invalid)
             getOptional().get();
         }
 
         if (otherOptional().isPresent()) {
             // BUG: https://github.com/typetools/checker-framework/issues/6291 error:
-            // method.invocation
+            // (method.invocation.invalid)
             otherOptional().get();
         }
         if (otherOptional().isPresent()) {
             sideEffect();
-            // :: error: method.invocation
+            // :: error: (method.invocation.invalid)
             otherOptional().get();
         }
         if (otherOptional().isPresent()) {
             getOptional();
             // BUG: https://github.com/typetools/checker-framework/issues/6291 error:
-            // method.invocation
+            // (method.invocation.invalid)
             otherOptional().get();
         }
         if (otherOptional().isPresent()) {
             otherOptional();
-            // :: error: method.invocation
+            // :: error: (method.invocation.invalid)
             otherOptional().get();
         }
     }
