@@ -29,6 +29,10 @@ Added method `isDeterministic()` to the `AnnotationProvider` interface.
 final.  Subclasses should override method `CFAbstractValue#upperBound(V,
 TypeMirror, boolean)` instead.
 
+(EISOP note: typetools added the new method annotation `org.checkerframework.dataflow.qual.AssertMethod`
+to treat such methods like assert statements. EISOP might change the implementation of this feature
+in a future release.)
+
 **Closed issues:**
 
 #1497, #3345, #6037, #6204, #6276, #6282, #6290, #6296, #6319, #6327.
