@@ -29,6 +29,14 @@ import javax.lang.model.type.TypeKind;
 /** Apply annotations to the use of a type parameter declaration. */
 public class TypeVarUseApplier {
 
+    /**
+     * Apply annotations from {@code element} to {@code type}.
+     *
+     * @param type the type to annotate
+     * @param element the corresponding element
+     * @param atypeFactory the type factory
+     * @throws UnexpectedAnnotationLocationException if there is trouble
+     */
     public static void apply(
             final AnnotatedTypeMirror type, Element element, AnnotatedTypeFactory atypeFactory)
             throws UnexpectedAnnotationLocationException {
@@ -93,7 +101,7 @@ public class TypeVarUseApplier {
      * @param element the element for the variable use
      * @param atypeFactory the type factory
      */
-    TypeVarUseApplier(
+    /*package-private*/ TypeVarUseApplier(
             AnnotatedTypeMirror type, Element element, AnnotatedTypeFactory atypeFactory) {
         if (!accepts(type, element)) {
             throw new BugInCF(
@@ -112,7 +120,6 @@ public class TypeVarUseApplier {
                     (TypeParameterElement) typeVariable.getUnderlyingType().asElement();
             this.useElem = element;
             this.atypeFactory = atypeFactory;
-
         } else {
             this.arrayType = null;
             this.typeVariable = (AnnotatedTypeVariable) type;
