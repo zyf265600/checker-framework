@@ -1,5 +1,5 @@
-Version 3.41.0-eisop2 (December ?, 2023)
-----------------------------------------
+Version 3.42.0-eisop1 (January ?, 2024)
+---------------------------------------
 
 **User-visible changes:**
 
@@ -8,6 +8,20 @@ Version 3.41.0-eisop2 (December ?, 2023)
 **Closed issues:**
 
 typetools#6373, typetools#6374.
+
+
+Version 3.42.0 (December 15, 2023)
+----------------------------------
+
+**User-visible changes:**
+
+Method annotation `@AssertMethod` indicates that a method checks a value and
+possibly throws an assertion.  Using it can make flow-sensitive type refinement
+more effective.
+
+In `org.checkerframework.common.util.debug`, renamed `EmptyProcessor` to `DoNothingProcessor`.
+Removed `org.checkerframework.common.util.report.DoNothingChecker`.
+Moved `ReportChecker` from `org.checkerframework.common.util.report` to `org.checkerframework.common.util.count.report`.
 
 
 Version 3.41.0-eisop1 (December 5, 2023)

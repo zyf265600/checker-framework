@@ -480,6 +480,23 @@ public final class TreeUtils {
     }
 
     /**
+     * Returns the ExecutableElement for the method reference.
+     *
+     * @param tree a method reference
+     * @return the ExecutableElement for the method reference
+     */
+    @Pure
+    public static ExecutableElement elementFromUse(MemberReferenceTree tree) {
+        Element result = elementFromUse((ExpressionTree) tree);
+        if (!(result instanceof ExecutableElement)) {
+            throw new BugInCF(
+                    "Method reference elements should be ExecutableElement. Found: %s [%s]",
+                    result, result.getClass());
+        }
+        return (ExecutableElement) result;
+    }
+
+    /**
      * Returns the ExecutableElement for the given method declaration.
      *
      * <p>The result can be null, when {@code tree} is a method in an anonymous class and that class
@@ -1188,8 +1205,13 @@ public final class TreeUtils {
         if (!(tree instanceof MethodInvocationTree)) {
             return false;
         }
-        for (ExecutableElement Method : methods) {
-            if (isMethodInvocation(tree, Method, processingEnv)) {
+        MethodInvocationTree methInvok = (MethodInvocationTree) tree;
+        ExecutableElement invoked = TreeUtils.elementFromUse(methInvok);
+        if (invoked == null) {
+            return false;
+        }
+        for (ExecutableElement method : methods) {
+            if (ElementUtils.isMethod(invoked, method, processingEnv)) {
                 return true;
             }
         }
@@ -1944,6 +1966,15 @@ public final class TreeUtils {
          */
         public boolean isUnbound() {
             return unbound;
+        }
+
+        /**
+         * Returns whether this kind is a constructor reference.
+         *
+         * @return whether this kind is a constructor reference
+         */
+        public boolean isConstructorReference() {
+            return mode == ReferenceMode.NEW;
         }
 
         /**

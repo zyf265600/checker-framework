@@ -21,9 +21,12 @@ import org.plumelib.util.ImmutableTypes;
 import org.plumelib.util.StringsPlume;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 import java.util.StringJoiner;
 
 import javax.annotation.processing.ProcessingEnvironment;
@@ -356,8 +359,9 @@ public final class TypesUtils {
     /**
      * Returns true iff the type represents a declared type of the given qualified name.
      *
-     * @param type the type to check
-     * @return type iff type represents a declared type of the qualified name
+     * @param type the type
+     * @param qualifiedName the name to check {@code type} against
+     * @return true iff type represents a declared type of the qualified name
      */
     public static boolean isDeclaredOfName(TypeMirror type, CharSequence qualifiedName) {
         return type.getKind() == TypeKind.DECLARED
@@ -365,13 +369,40 @@ public final class TypesUtils {
     }
 
     /**
-     * Returns true iff the {@code type} represents a boxed primitive type.
+     * Check if the type represents a declared type whose fully-qualified name is any of the given
+     * names.
+     *
+     * @param type the type
+     * @param qualifiedNames fully-qualified type names to check for
+     * @return type iff type represents a declared type whose fully-qualified name is one of the
+     *     given names
+     */
+    public static boolean isDeclaredOfName(TypeMirror type, Collection<String> qualifiedNames) {
+        return type.getKind() == TypeKind.DECLARED
+                && qualifiedNames.contains(getQualifiedName((DeclaredType) type));
+    }
+
+    /** The fully-qualified names of the boxed types. */
+    private static Set<String> fqBoxedTypes =
+            new HashSet<>(
+                    Arrays.asList(
+                            "java.lang.Boolean",
+                            "java.lang.Byte",
+                            "java.lang.Character",
+                            "java.lang.Short",
+                            "java.lang.Integer",
+                            "java.lang.Long",
+                            "java.lang.Double",
+                            "java.lang.Float"));
+
+    /**
+     * Check if the {@code type} represents a boxed primitive type.
      *
      * @param type the type to check
      * @return true iff type represents a boxed primitive type
      */
     public static boolean isBoxedPrimitive(TypeMirror type) {
-        return TypeKindUtils.boxedToTypeKind(type) != null;
+        return isDeclaredOfName(type, fqBoxedTypes);
     }
 
     /**

@@ -1,4 +1,4 @@
-package org.checkerframework.common.util.report.qual;
+package org.checkerframework.common.util.count.report.qual;
 
 import org.checkerframework.framework.qual.DefaultQualifierInHierarchy;
 import org.checkerframework.framework.qual.InvisibleQualifier;
@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 
 /**
  * An annotation intended solely for representing an unqualified type in the qualifier hierarchy for
- * the Report Checker.
+ * the Report Checker. This is the only type qualifier in the type hierarchy.
  */
 @Documented
 @Retention(RetentionPolicy.SOURCE) // do not store in class file
