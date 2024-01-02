@@ -1,9 +1,5 @@
-Version 3.42.0-eisop1 (January ?, 2024)
+Version 3.42.0-eisop1 (January 2, 2024)
 ---------------------------------------
-
-**User-visible changes:**
-
-**Implementation details:**
 
 **Closed issues:**
 
