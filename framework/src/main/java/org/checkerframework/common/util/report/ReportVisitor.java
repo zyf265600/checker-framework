@@ -44,6 +44,7 @@ import javax.lang.model.element.Modifier;
 import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 
+/** The visitor for the Report Checker. */
 public class ReportVisitor extends BaseTypeVisitor<BaseAnnotatedTypeFactory> {
 
     /** The tree kinds that should be reported; may be null. */
