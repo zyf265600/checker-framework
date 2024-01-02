@@ -21,12 +21,9 @@ import org.plumelib.util.ImmutableTypes;
 import org.plumelib.util.StringsPlume;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 import java.util.StringJoiner;
 
 import javax.annotation.processing.ProcessingEnvironment;
@@ -382,19 +379,6 @@ public final class TypesUtils {
                 && qualifiedNames.contains(getQualifiedName((DeclaredType) type));
     }
 
-    /** The fully-qualified names of the boxed types. */
-    private static Set<String> fqBoxedTypes =
-            new HashSet<>(
-                    Arrays.asList(
-                            "java.lang.Boolean",
-                            "java.lang.Byte",
-                            "java.lang.Character",
-                            "java.lang.Short",
-                            "java.lang.Integer",
-                            "java.lang.Long",
-                            "java.lang.Double",
-                            "java.lang.Float"));
-
     /**
      * Check if the {@code type} represents a boxed primitive type.
      *
@@ -402,7 +386,7 @@ public final class TypesUtils {
      * @return true iff type represents a boxed primitive type
      */
     public static boolean isBoxedPrimitive(TypeMirror type) {
-        return isDeclaredOfName(type, fqBoxedTypes);
+        return TypeKindUtils.boxedToTypeKind(type) != null;
     }
 
     /**
