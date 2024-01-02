@@ -1,3 +1,5 @@
+// @below-java10-jdk-skip-test
+
 import java.util.Collections;
 import java.util.Optional;
 
