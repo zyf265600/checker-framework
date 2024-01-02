@@ -366,8 +366,8 @@ public final class TypesUtils {
     }
 
     /**
-     * Check if the type represents a declared type whose fully-qualified name is any of the given
-     * names.
+     * Returns true iff the type represents a declared type whose fully-qualified name is any of the
+     * given names.
      *
      * @param type the type
      * @param qualifiedNames fully-qualified type names to check for
@@ -380,7 +380,7 @@ public final class TypesUtils {
     }
 
     /**
-     * Check if the {@code type} represents a boxed primitive type.
+     * Returns true iff the {@code type} represents a boxed primitive type.
      *
      * @param type the type to check
      * @return true iff type represents a boxed primitive type
