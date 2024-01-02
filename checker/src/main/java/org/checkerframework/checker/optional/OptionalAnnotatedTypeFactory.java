@@ -40,8 +40,8 @@ public class OptionalAnnotatedTypeFactory extends BaseAnnotatedTypeFactory {
      */
     public OptionalAnnotatedTypeFactory(BaseTypeChecker checker) {
         super(checker);
-        postInit();
         optionalMap = TreeUtils.getMethodOrNull("java.util.Optional", "map", 1, getProcessingEnv());
+        postInit();
     }
 
     @Override
@@ -80,8 +80,8 @@ public class OptionalAnnotatedTypeFactory extends BaseAnnotatedTypeFactory {
             if (!returnHasNullable(memberReferenceTree)) {
                 // The method still could have a @PolyNull on the return and might return null.
                 // If @PolyNull is the primary annotation on the parameter and not on any type
-                // arguments or
-                // array elements, then it is still safe to mark the optional type as present.
+                // arguments or array elements, then it is still safe to mark the optional type as
+                // present.
                 // TODO: Add the check for poly null on arguments.
                 type.replaceAnnotation(PRESENT);
             }
