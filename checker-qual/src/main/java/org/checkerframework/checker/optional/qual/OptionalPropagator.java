@@ -8,7 +8,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/** Methods whose receiver is an {@link java.util.Optional} and return an {@code Optional}. */
+/**
+ * Method annotation for methods whose receiver is an {@link java.util.Optional} and return an
+ * {@code Optional}.
+ */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)

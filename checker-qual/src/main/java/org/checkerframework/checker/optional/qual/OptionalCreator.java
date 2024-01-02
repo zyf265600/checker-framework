@@ -8,7 +8,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/** An method annotation for methods that create an {@link java.util.Optional} */
+/** Method annotation for methods that create an {@link java.util.Optional}. */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
