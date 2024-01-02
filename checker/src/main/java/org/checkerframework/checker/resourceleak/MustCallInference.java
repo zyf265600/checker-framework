@@ -250,17 +250,14 @@ public class MustCallInference {
             for (Node node : current.block.getNodes()) {
                 // The obligation set calculated for RLC differs from the Inference process. In the
                 // Inference process, it exclusively tracks parameters with non-empty must-call
-                // types,
-                // whether they have the @Owning annotation or not. However, there are some shared
-                // computations, such as updateObligationsWithInvocationResult, which is used during
-                // inference and could potentially affect the RLC result if it were called before
-                // the
-                // checking phase. However, calling updateObligationsWithInvocationResult() will not
-                // have
-                // any side effects on the outcome of the Resource Leak Checker. This is because the
-                // inference occurs within the postAnalyze method of the
-                // ResourceLeakAnnotatedTypeFactory,
-                // once the consistency analyzer has completed its process.
+                // types, whether they have the @Owning annotation or not. However, there are some
+                // shared computations, such as updateObligationsWithInvocationResult, which is used
+                // during inference and could potentially affect the RLC result if it were called
+                // before the checking phase. However, calling
+                // updateObligationsWithInvocationResult() will not have any side effects on the
+                // outcome of the Resource Leak Checker. This is because the inference occurs within
+                // the postAnalyze method of the ResourceLeakAnnotatedTypeFactory, once the
+                // consistency analyzer has completed its process.
                 if (node instanceof MethodInvocationNode || node instanceof ObjectCreationNode) {
                     mcca.updateObligationsWithInvocationResult(obligations, node);
                     inferOwningFromInvocation(obligations, node);
@@ -468,14 +465,11 @@ public class MustCallInference {
             }
 
             // If the owning field is present in the disposedFields map and there is an assignment
-            // to the
-            // field, it must be removed from the set. This is essential since the disposedFields
-            // map is
-            // used for adding @EnsuresCalledMethods annotations to the current method later. Note
-            // that
-            // this removal doesn't affect the owning annotation we inferred for the field, as the
-            // owningField set is updated with the inferred owning field in the 'inferOwningField'
-            // method.
+            // to the field, it must be removed from the set. This is essential since the
+            // disposedFields map is used for adding @EnsuresCalledMethods annotations to the
+            // current method later. Note that this removal doesn't affect the owning annotation we
+            // inferred for the field, as the owningField set is updated with the inferred owning
+            // field in the 'inferOwningField' method.
             if (!TreeUtils.isConstructor(methodTree)) {
                 disposedFields.remove((VariableElement) lhsElement);
             }
@@ -483,10 +477,8 @@ public class MustCallInference {
             int paramIndex = getIndexOfParam(rhsObligation);
             if (paramIndex == -1) {
                 // We are only tracking formal parameter aliases. If the rhsObligation is not an
-                // alias of
-                // any of the formal parameters, it won't be present in the obligations set. Thus,
-                // skipping
-                // the rest of this method is fine.
+                // alias of any of the formal parameters, it won't be present in the obligations
+                // set. Thus, skipping the rest of this method is fine.
                 return;
             }
 
@@ -554,10 +546,8 @@ public class MustCallInference {
      */
     private void addEnsuresCalledMethodsForDisposedFields() {
         // The keys are the must-call method names, and the values are the set of fields on which
-        // those
-        // methods are called. This map is used to create a @EnsuresCalledMethods annotation for
-        // each
-        // set of fields that share the same must-call obligation.
+        // those methods are called. This map is used to create a @EnsuresCalledMethods annotation
+        // for each set of fields that share the same must-call obligation.
         Map<String, Set<String>> methodToFields = new LinkedHashMap<>();
         for (VariableElement disposedField : disposedFields.keySet()) {
             String mustCallValue = disposedFields.get(disposedField);
@@ -627,9 +617,8 @@ public class MustCallInference {
         // method.
         if (!methodTree.getModifiers().getFlags().contains(Modifier.PRIVATE)) {
             // Since the result of getOwningFields() is a superset of the key set in disposedFields
-            // map,
-            // it is sufficient to check the equality of their sizes to determine if both sets are
-            // equal.
+            // map, it is sufficient to check the equality of their sizes to determine if both sets
+            // are equal.
             if (!disposedFields.isEmpty() && disposedFields.size() == getOwningFields().size()) {
                 AnnotationMirror am =
                         createInheritableMustCall(new String[] {methodTree.getName().toString()});
@@ -718,10 +707,8 @@ public class MustCallInference {
         for (Node argument : mcca.getArgumentsOfInvocation(invocation)) {
             Node arg = mcca.removeCastsAndGetTmpVarIfPresent(argument);
             // In the CFG, explicit passing of multiple arguments in the varargs position is
-            // represented
-            // via an ArrayCreationNode. In this case, it checks the called methods set of each
-            // argument
-            // passed in this position.
+            // represented via an ArrayCreationNode. In this case, it checks the called methods set
+            // of each argument passed in this position.
             if (arg instanceof ArrayCreationNode) {
                 ArrayCreationNode varArgsNode = (ArrayCreationNode) arg;
                 for (Node varArgNode : varArgsNode.getInitializers()) {
