@@ -317,9 +317,9 @@ configurations.all {
   <pre>
 val checkerFrameworkVersion = "3.41.1-SNAPSHOT"
 dependencies {
-   compileOnly("org.checkerframework:checker-qual:${checkerFrameworkVersion}")
-   testCompileOnly("org.checkerframework:checker-qual:${checkerFrameworkVersion}")
-   checkerFramework("org.checkerframework:checker:${checkerFrameworkVersion}")
+   compileOnly("io.github.eisop:checker-qual:${checkerFrameworkVersion}")
+   testCompileOnly("io.github.eisop:checker-qual:${checkerFrameworkVersion}")
+   checkerFramework("io.github.eisop:checker:${checkerFrameworkVersion}")
 }
 configurations.all({
    resolutionStrategy.cacheChangingModulesFor(0, "seconds")
