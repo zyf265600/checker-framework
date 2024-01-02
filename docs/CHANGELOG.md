@@ -22,6 +22,8 @@ more effective.
 In `org.checkerframework.common.util.debug`, renamed `EmptyProcessor` to `DoNothingProcessor`.
 Removed `org.checkerframework.common.util.report.DoNothingChecker`.
 Moved `ReportChecker` from `org.checkerframework.common.util.report` to `org.checkerframework.common.util.count.report`.
+(EISOP note: we did not follow this renaming - if anything, `counting` could be a special case of `reporting`, not
+the other way around.)
 
 
 Version 3.41.0-eisop1 (December 5, 2023)

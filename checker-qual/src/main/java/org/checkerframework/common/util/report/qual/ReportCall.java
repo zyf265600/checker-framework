@@ -1,4 +1,4 @@
-package org.checkerframework.common.util.count.report.qual;
+package org.checkerframework.common.util.report.qual;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

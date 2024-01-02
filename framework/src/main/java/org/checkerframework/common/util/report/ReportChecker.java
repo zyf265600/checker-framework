@@ -1,4 +1,4 @@
-package org.checkerframework.common.util.count.report;
+package org.checkerframework.common.util.report;
 
 import org.checkerframework.common.basetype.BaseTypeChecker;
 
@@ -12,8 +12,8 @@ import javax.annotation.processing.SupportedOptions;
  * <p>The search is specified in two different ways.
  *
  * <p>The first way is to write a stub specification file using the annotations in {@code
- * org.checkerframework.common.util.count.report.qual.*}. You can see examples in the Checker
- * Framework repository at {@code framework/tests/report/reporttest.astub} and {@code
+ * org.checkerframework.common.util.report.qual.*}. You can see examples in the Checker Framework
+ * repository at {@code framework/tests/report/reporttest.astub} and {@code
  * framework/jtreg/StubParserEnum/AnnotationFileParserEnum.astub}.
  *
  * <p>The second way is the {@code -AreportTreeKinds} and {@code -AreportModifiers} options, which

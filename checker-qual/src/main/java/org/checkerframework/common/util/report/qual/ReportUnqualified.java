@@ -1,4 +1,4 @@
-package org.checkerframework.common.util.count.report.qual;
+package org.checkerframework.common.util.report.qual;
 
 import org.checkerframework.framework.qual.DefaultQualifierInHierarchy;
 import org.checkerframework.framework.qual.InvisibleQualifier;

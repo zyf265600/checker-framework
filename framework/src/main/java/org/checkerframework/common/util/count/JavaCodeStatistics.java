@@ -42,7 +42,7 @@ import javax.lang.model.element.ExecutableElement;
  * </pre>
  *
  * @see AnnotationStatistics
- * @see org.checkerframework.common.util.count.report.ReportChecker
+ * @see org.checkerframework.common.util.report.ReportChecker
  */
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 public class JavaCodeStatistics extends SourceChecker {
