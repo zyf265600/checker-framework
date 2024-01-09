@@ -5,6 +5,9 @@ Version 3.42.0-eisop2 (January ?, 2024)
 
 **Implementation details:**
 
+Moved `ErrorTypeKindException` from `org.checkerframework.framework.util.element.ElementAnnotationUtil` to
+`org.checkerframework.framework.type.AnnotatedTypeMirror`. Properly raise these errors in more cases.
+
 Deprecated `AnnotationUtils#isDeclarationAnnotation` and added the clearer `AnnotationUtils#isTypeUseAnnotation`.
 
 Removed the dependency on the classgraph library, which added over 500kB to `checker.jar`.
@@ -12,7 +15,7 @@ It is easy to add the dependency for debugging.
 
 **Closed issues:**
 
-eisop#673.
+eisop#666, eisop#673.
 
 
 Version 3.42.0-eisop1 (January 2, 2024)
