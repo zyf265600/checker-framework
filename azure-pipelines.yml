@@ -38,8 +38,7 @@ jobs:
   pool:
     vmImage: 'ubuntu-latest'
   steps:
-  - bash: true
-    displayName: canary_jobs
+   - checkout: none
 
 - job: framework_jobs
   dependsOn:
@@ -67,8 +66,7 @@ jobs:
   pool:
     vmImage: 'ubuntu-latest'
   steps:
-  - bash: true
-    displayName: framework_jobs
+   - checkout: none
 
 - job: required_jobs
   dependsOn:
@@ -94,8 +92,7 @@ jobs:
   pool:
     vmImage: 'ubuntu-latest'
   steps:
-  - bash: true
-    displayName: required_jobs
+   - checkout: none
 
 - job: junit_jdk8
   dependsOn:
@@ -504,12 +501,8 @@ jobs:
    - typecheck_part2_jdk21
   pool:
     vmImage: 'ubuntu-latest'
-  container: wmdietl/cf-ubuntu-jdk21-plus:latest
   steps:
-  - checkout: self
-    fetchDepth: 25
-  - bash: true
-    displayName: typecheck_jdk21
+   - checkout: none
 # Disable until JDK 22 is stable
 # - job: typecheck_jdk_latest
 #   dependsOn:
@@ -611,12 +604,8 @@ jobs:
    - daikon_part2_jdk21
   pool:
     vmImage: 'ubuntu-latest'
-  container: wmdietl/cf-ubuntu-jdk21-plus:latest
   steps:
-  - checkout: self
-    fetchDepth: 25
-  - bash: true
-    displayName: daikon_jdk21
+   - checkout: none
 # Disable until JDK 22 is stable
 # - job: daikon_jdk_latest
 #   dependsOn:
