@@ -1,7 +1,9 @@
-Version 3.42.0-eisop3 (February ?, 2024)
-----------------------------------------
+Version 3.42.0-eisop3 (March 1, 2024)
+-------------------------------------
 
 **User-visible changes:**
+
+Performance improvements in the Nullness Checker.
 
 **Implementation details:**
 
