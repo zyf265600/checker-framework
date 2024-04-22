@@ -65,8 +65,18 @@ public class TestDiagnostic {
             this.errorkey = message;
             this.errorkeyparens = false;
         } else {
-            String[] msgSplit = this.message.split(System.lineSeparator(), 2);
-            String firstline = msgSplit[0];
+            String firstline;
+            // There might be a mismatch between the System.lineSeparator() and the error message,
+            // so manually check both options.
+            int lineSepPos = this.message.indexOf("\r\n");
+            if (lineSepPos == -1) {
+                lineSepPos = this.message.indexOf("\n");
+            }
+            if (lineSepPos != -1) {
+                firstline = this.message.substring(0, lineSepPos).trim();
+            } else {
+                firstline = this.message;
+            }
             int open = firstline.indexOf("(");
             int close = firstline.indexOf(")");
             if (open == 0 && close > open) {

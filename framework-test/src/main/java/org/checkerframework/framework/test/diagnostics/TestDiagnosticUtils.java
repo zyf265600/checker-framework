@@ -31,7 +31,7 @@ public class TestDiagnosticUtils {
 
     /** How the diagnostic warnings appear in Java source files. */
     public static final String DIAGNOSTIC_WARNING_IN_JAVA_REGEX =
-            "\\s*warning:\\s*(.*\\s*.*)[\\s\\S]*";
+            "\\s*warning:\\s*(?<message>[\\s\\S]*)";
 
     /** Pattern compiled from {@link #DIAGNOSTIC_WARNING_IN_JAVA_REGEX}. */
     public static final Pattern DIAGNOSTIC_WARNING_IN_JAVA_PATTERN =
@@ -167,7 +167,7 @@ public class TestDiagnosticUtils {
             if (warningMatcher.matches()) {
                 kind = DiagnosticKind.Warning;
                 isFixable = false;
-                message = warningMatcher.group("message");
+                message = warningMatcher.group("message").trim();
                 if (lineNumber == null && diagnosticMatcher.group("linenogroup") != null) {
                     lineNo = Long.parseLong(diagnosticMatcher.group("lineno"));
                 }
@@ -205,6 +205,9 @@ public class TestDiagnosticUtils {
      */
     public static IPair<String, Path> formatJavaxToolString(String original) {
         String firstline;
+        // In TestDiagnostic we manually check for "\r\n" and "\n". Here, we only use
+        // `firstline` to find the file name. Using the system line separator is not
+        // problem here, it seems.
         int lineSepPos = original.indexOf(System.lineSeparator());
         if (lineSepPos != -1) {
             firstline = original.substring(0, lineSepPos);
