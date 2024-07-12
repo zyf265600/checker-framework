@@ -1,25 +1,25 @@
-Version 3.42.0-eisop4 (April ?, 2024)
+Version 3.42.0-eisop4 (July 12, 2024)
 -------------------------------------
-
-**User-visible changes:**
 
 **Implementation details:**
 
-New method `GenericAnnotatedTypeFactory#addComputedTypeAnnotationsWithoutFlow(Tree, AnnotatedTypeMirror)` that sets
-`useFlow` to `false` before calling `addComputedTypeAnnotations`. Subclasses should override method
-`GenericAnnotatedTypeFactory#addComputedTypeAnnotations(Tree, AnnotatedTypeMirror)` instead.
-Deprecated the `GenericAnnotatedTypeFactory#addComputedTypeAnnotations(Tree, AnnotatedTypeMirror, boolean)` overload.
+New method `GenericAnnotatedTypeFactory#addComputedTypeAnnotationsWithoutFlow(Tree, AnnotatedTypeMirror)`
+that sets `useFlow` to `false` before calling `addComputedTypeAnnotations`. Subclasses should override
+method `GenericAnnotatedTypeFactory#addComputedTypeAnnotations(Tree, AnnotatedTypeMirror)` instead.
+Deprecated the `GenericAnnotatedTypeFactory#addComputedTypeAnnotations(Tree, AnnotatedTypeMirror, boolean)`
+overload.
 
-Improvements in `framework-test` to more consistently handle tests that do not use
-`-Anomsgtext`.
+Changed the return type of `AnnotatedTypeFactory#getEnumConstructorQualifiers` from `Set<AnnotationMirror>`
+to `AnnotationMirrorSet`.
 
-Changed the return type of `AnnotatedTypeFactory#getEnumConstructorQualifiers` from `Set<AnnotationMirror>` to
-`AnnotationMirrorSet`.
-
-framework-test: Added new class `DetailedTestDiagnostic` to directly represent test diagnostics when
-`-Adetailedmsgtext` is used.
+framework-test:
+- Improvements to more consistently handle tests that do not use `-Anomsgtext`.
+- Added new class `DetailedTestDiagnostic` to directly represent test diagnostics when
+  `-Adetailedmsgtext` is used.
 
 **Closed issues:**
+
+eisop#742, eisop#777, eisop#795.
 
 
 Version 3.42.0-eisop3 (March 1, 2024)
