@@ -19,7 +19,7 @@ framework-test:
 
 **Closed issues:**
 
-eisop#742, eisop#777, eisop#795.
+eisop#742, eisop#777, eisop#795, typetools#6704.
 
 
 Version 3.42.0-eisop3 (March 1, 2024)
