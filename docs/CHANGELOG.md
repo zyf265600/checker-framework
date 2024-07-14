@@ -22,6 +22,8 @@ overload.
 Changed the return type of `AnnotatedTypeFactory#getEnumConstructorQualifiers` from `Set<AnnotationMirror>`
 to `AnnotationMirrorSet`.
 
+Field `AnnotatedTypeFactory#root` is now private and can only be accessed through `getRoot`/`setRoot`.
+
 framework-test:
 - Improvements to more consistently handle tests that do not use `-Anomsgtext`.
 - Added new class `DetailedTestDiagnostic` to directly represent test diagnostics when
