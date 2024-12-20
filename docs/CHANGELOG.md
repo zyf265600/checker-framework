@@ -1,4 +1,4 @@
-Version 3.42.0-eisop5 (November ??, 2024)
+Version 3.42.0-eisop5 (December 20, 2024)
 -----------------------------------------
 
 **User-visible changes:**
@@ -19,7 +19,8 @@ Make `SourceChecker#suppressWarningsString` protected to allow adaptation in sub
 
 **Closed issues:**
 
-eisop#413, eisop#777, eisop#782, eisop#927, eisop#982, eisop#1012.
+eisop#413, eisop#782, eisop#815, eisop#860, eisop#873, eisop#875, eisop#927, eisop#982,
+eisop#1012.
 
 
 Version 3.42.0-eisop4 (July 12, 2024)
