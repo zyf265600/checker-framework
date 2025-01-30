@@ -57,6 +57,7 @@ import java.lang.management.MemoryPoolMXBean;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -76,6 +77,7 @@ import java.util.StringJoiner;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
+import java.util.stream.Collectors;
 
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Messager;
@@ -121,12 +123,15 @@ import javax.tools.Diagnostic;
     // org.checkerframework.framework.source.SourceChecker.createSuppressWarnings
     "suppressWarnings",
 
-    // Set inclusion/exclusion of type uses or definitions
+    // Set inclusion/exclusion of type uses, definitions, or files.
     // org.checkerframework.framework.source.SourceChecker.shouldSkipUses and similar
     "skipUses",
     "onlyUses",
     "skipDefs",
     "onlyDefs",
+    "skipFiles",
+    "onlyFiles",
+    "skipDirs", // Obsolete as of 2024-03-15, replaced by "skipFiles".
 
     // Unsoundly assume all methods have no side effects, are deterministic, or both.
     "assumeSideEffectFree",
@@ -192,10 +197,6 @@ import javax.tools.Diagnostic;
     // simplified sequential semantics
     // org.checkerframework.framework.flow.CFAbstractTransfer.sequentialSemantics
     "concurrentSemantics",
-
-    // Whether to use a conservative value for type arguments that could not be inferred.
-    // See Issue 979.
-    "conservativeUninferredTypeArguments",
 
     // Issues a "redundant.anno" warning if the annotation explicitly written on the type is
     // the same as the default annotation for this type and location.
@@ -329,9 +330,8 @@ import javax.tools.Diagnostic;
 
     // Whether to print [] around a set of type parameters in order to clearly see where they end
     // e.g.  <E extends F, F extends Object>
-    // without this option the E is printed: E extends F extends Object
-    // with this option:                     E [ extends F [ extends Object super Void ] super Void
-    // ]
+    // without this option E is printed: E extends F extends Object
+    // with this option:                 E [ extends F [ extends Object super Void ] super Void ]
     // when multiple type variables are used this becomes useful very quickly
     "printVerboseGenerics",
 
@@ -384,10 +384,6 @@ import javax.tools.Diagnostic;
     // Output all subtyping checks
     // org.checkerframework.common.basetype.BaseTypeVisitor
     "showchecks",
-
-    // Output information about intermediate steps in method type argument inference
-    // org.checkerframework.framework.util.typeinference.DefaultTypeArgumentInference
-    "showInferenceSteps",
 
     // Output a stack trace when reporting errors or warnings
     // org.checkerframework.common.basetype.SourceChecker.printStackTrace()
@@ -452,6 +448,11 @@ import javax.tools.Diagnostic;
     // Also checks that annotations can be inserted. For each Java file, clears all annotations and
     // reinserts them, then checks if the original and modified ASTs are equivalent.
     "ajavaChecks",
+
+    // Converts type argument inference crashes into errors. By default, this option is true.
+    // Use "-AconvertTypeArgInferenceCrashToWarning=false" to turn this option off and allow type
+    // argument inference crashes to crash the type checker.
+    "convertTypeArgInferenceCrashToWarning"
 })
 public abstract class SourceChecker extends AbstractTypeProcessor implements OptionConfiguration {
 
@@ -562,6 +563,22 @@ public abstract class SourceChecker extends AbstractTypeProcessor implements Opt
      */
     private @MonotonicNonNull Pattern onlyDefsPattern;
 
+    /**
+     * Regular expression pattern to specify files or directories that should not be checked.
+     *
+     * <p>It contains the pattern specified by the user, through the option {@code
+     * checkers.skipFiles}; otherwise it contains a pattern that can match no directory.
+     */
+    private @MonotonicNonNull Pattern skipFilesPattern;
+
+    /**
+     * Regular expression pattern to specify files or directories that should be checked.
+     *
+     * <p>It contains the pattern specified by the user, through the option {@code
+     * checkers.onlyFiles}; otherwise it contains a pattern that can match no directory.
+     */
+    private @MonotonicNonNull Pattern onlyFilesPattern;
+
     /** The supported lint options. */
     private @MonotonicNonNull Set<String> supportedLints;
 
@@ -605,9 +622,6 @@ public abstract class SourceChecker extends AbstractTypeProcessor implements Opt
      */
     protected TreePathCacher treePathCacher = null;
 
-    /** Default constructor. */
-    protected SourceChecker() {}
-
     /** True if the -Afilenames command-line argument was passed. */
     private boolean printFilenames;
 
@@ -625,6 +639,9 @@ public abstract class SourceChecker extends AbstractTypeProcessor implements Opt
 
     /** True if the -AwarnUnneededSuppressions command-line argument was passed. */
     private boolean warnUnneededSuppressions;
+
+    /** Creates a source checker. */
+    protected SourceChecker() {}
 
     // Also see initChecker().
     @Override
@@ -909,14 +926,6 @@ public abstract class SourceChecker extends AbstractTypeProcessor implements Opt
             }
         }
 
-        if (pattern.indexOf("/") != -1) {
-            throw new UserError(
-                    "The "
-                            + patternName
-                            + " property contains \"/\", which will never match a class name: "
-                            + pattern);
-        }
-
         if (pattern.isEmpty()) {
             pattern = defaultPattern;
         }
@@ -943,6 +952,39 @@ public abstract class SourceChecker extends AbstractTypeProcessor implements Opt
 
     private Pattern getOnlyDefsPattern(Map<String, String> options) {
         return getOnlyPattern("onlyDefs", options);
+    }
+
+    /**
+     * Extract the value of the {@code skipFiles} option given the value of the options passed to
+     * the checker.
+     *
+     * @param options the map of options and their values passed to the checker
+     * @return the value of the {@code skipFiles} option
+     */
+    private Pattern getSkipFilesPattern(Map<String, String> options) {
+        boolean hasSkipFiles = options.containsKey("skipFiles");
+        boolean hasSkipDirs = options.containsKey("skipDirs");
+        if (hasSkipFiles && hasSkipDirs) {
+            throw new UserError(
+                    "Do not supply both -AskipFiles and -AskipDirs command-line options.");
+        }
+        // This logic isn't quite right because the checker.skipDirs property might exist.
+        if (hasSkipDirs) {
+            return getSkipPattern("skipDirs", options);
+        } else {
+            return getSkipPattern("skipFiles", options);
+        }
+    }
+
+    /**
+     * Extract the value of the {@code onlyFiles} option given the value of the options passed to
+     * the checker.
+     *
+     * @param options the map of options and their values passed to the checker
+     * @return the value of the {@code onlyFiles} option
+     */
+    private Pattern getOnlyFilesPattern(Map<String, String> options) {
+        return getOnlyPattern("onlyFiles", options);
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -1196,7 +1238,7 @@ public abstract class SourceChecker extends AbstractTypeProcessor implements Opt
      * Reports a diagnostic message. By default, it prints it to the screen via the compiler's
      * internal messager; however, it might also store it for later output.
      *
-     * @param source the source position information; may be an Element, a Tree, or null
+     * @param source the source position information; may be an Element or a Tree
      * @param kind the type of message
      * @param messageKey the message key
      * @param args arguments for interpolation in the string corresponding to the given message key
@@ -1206,7 +1248,7 @@ public abstract class SourceChecker extends AbstractTypeProcessor implements Opt
     // @FormatMethod
     @SuppressWarnings("formatter:format.string.invalid") // arg is a format string or a property key
     private void report(
-            @Nullable Object source,
+            Object source,
             Diagnostic.Kind kind,
             @CompilerMessageKey String messageKey,
             Object... args) {
@@ -1265,7 +1307,11 @@ public abstract class SourceChecker extends AbstractTypeProcessor implements Opt
         } else if (preciseSource instanceof Tree) {
             printOrStoreMessage(kind, messageText, (Tree) preciseSource, currentRoot);
         } else {
-            throw new BugInCF("invalid position source, class=" + preciseSource.getClass());
+            throw new BugInCF(
+                    "invalid position source of class "
+                            + preciseSource.getClass()
+                            + ": "
+                            + preciseSource);
         }
     }
 
@@ -2089,7 +2135,7 @@ public abstract class SourceChecker extends AbstractTypeProcessor implements Opt
     private String @Nullable [] getSuppressWarningsStringsFromOption() {
         if (!computedSuppressWarningsStringsFromOption) {
             computedSuppressWarningsStringsFromOption = true;
-            Map<String, String> options = getOptions();
+            Map<String, String> options = getAllOptions();
             if (options.containsKey("suppressWarnings")) {
                 String swStrings = options.get("suppressWarnings");
                 if (swStrings != null) {
@@ -2099,6 +2145,49 @@ public abstract class SourceChecker extends AbstractTypeProcessor implements Opt
         }
 
         return this.suppressWarningsStringsFromOption;
+    }
+
+    /**
+     * Returns the options passed to this checker and its immediate parent checker.
+     *
+     * @return the options passed to this checker and its immediate parent checker
+     */
+    private Map<String, String> getAllOptions() {
+        if (parentChecker == null) {
+            return getOptions();
+        }
+        Map<String, String> allOptions = new HashMap<>(this.getOptions());
+        parentChecker
+                .getOptions()
+                .forEach(
+                        (parentOptKey, parentOptVal) -> {
+                            if (parentOptVal != null) {
+                                allOptions.merge(
+                                        parentOptKey, parentOptVal, this::combineOptionValues);
+                            }
+                        });
+        return Collections.unmodifiableMap(allOptions);
+    }
+
+    /**
+     * Combines two comma-delimited strings into a single comma-delimited string that does not
+     * contain duplicates.
+     *
+     * <p>Checker option values are comma-delimited. This method combines two option values while
+     * discarding possible duplicates.
+     *
+     * @param optionValueA the first comma-delimited string
+     * @param optionValueB the second comma-delimited string
+     * @return a comma-delimited string containing values from the first and second string, with no
+     *     duplicates
+     */
+    private String combineOptionValues(String optionValueA, String optionValueB) {
+        Set<String> optionValueASet =
+                Arrays.stream(optionValueA.split(",")).collect(Collectors.toSet());
+        Set<String> optionValueBSet =
+                Arrays.stream(optionValueB.split(",")).collect(Collectors.toSet());
+        optionValueASet.addAll(optionValueBSet);
+        return String.join(",", optionValueASet);
     }
 
     /**
@@ -2225,7 +2314,7 @@ public abstract class SourceChecker extends AbstractTypeProcessor implements Opt
         } else if (src == null) {
             return false;
         } else {
-            throw new BugInCF("Unexpected source " + src);
+            throw new BugInCF("Unexpected source [" + src.getClass() + "] " + src);
         }
     }
 
@@ -2512,8 +2601,10 @@ public abstract class SourceChecker extends AbstractTypeProcessor implements Opt
      * Does the given messageKey match a messageKey that appears in a SuppressWarnings? Subclasses
      * should override this method if they need additional logic to compare message keys.
      *
-     * @param messageKey the message key
-     * @param messageKeyInSuppressWarningsString the message key in a SuppressWarnings
+     * @param messageKey the message key of the error that is being emitted, without any "checker:"
+     *     prefix
+     * @param messageKeyInSuppressWarningsString the message key in a {@code @SuppressWarnings}
+     *     annotation
      * @return true if the arguments match
      */
     protected boolean messageKeyMatches(
@@ -2733,6 +2824,47 @@ public abstract class SourceChecker extends AbstractTypeProcessor implements Opt
      */
     public boolean shouldSkipDefs(ClassTree cls, MethodTree meth) {
         return shouldSkipDefs(cls);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    /// Skipping files
+    ///
+
+    /**
+     * Tests whether the enclosing file path of the passed tree matches the pattern specified in the
+     * {@code checker.skipFiles} property.
+     *
+     * @param tree a tree
+     * @return true iff the enclosing directory of the tree should be skipped
+     */
+    public final boolean shouldSkipFiles(ClassTree tree) {
+        if (tree == null) {
+            return false;
+        }
+        TypeElement typeElement = TreeUtils.elementFromDeclaration(tree);
+        if (typeElement == null) {
+            throw new BugInCF("elementFromDeclaration(%s [%s]) => null%n", tree, tree.getClass());
+        }
+        String sourceFilePathForElement = ElementUtils.getSourceFilePath(typeElement);
+        return shouldSkipFiles(sourceFilePathForElement);
+    }
+
+    /**
+     * Tests whether the file at the file path should be not be checked because it matches the
+     * {@code checker.skipFiles} property.
+     *
+     * @param path the path to the file to potentially skip
+     * @return true iff the checker should not check the file at {@code path}
+     */
+    private boolean shouldSkipFiles(String path) {
+        if (skipFilesPattern == null) {
+            skipFilesPattern = getSkipFilesPattern(getOptions());
+        }
+        if (onlyFilesPattern == null) {
+            onlyFilesPattern = getOnlyFilesPattern(getOptions());
+        }
+
+        return skipFilesPattern.matcher(path).find() || !onlyFilesPattern.matcher(path).find();
     }
 
     ///////////////////////////////////////////////////////////////////////////
@@ -2971,7 +3103,8 @@ public abstract class SourceChecker extends AbstractTypeProcessor implements Opt
         gitPropertiesPrinted = true;
 
         try (InputStream in = getClass().getResourceAsStream("/git.properties");
-                BufferedReader reader = new BufferedReader(new InputStreamReader(in)); ) {
+                BufferedReader reader =
+                        new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8)); ) {
             String line;
             while ((line = reader.readLine()) != null) {
                 System.out.println(line);

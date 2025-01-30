@@ -33,6 +33,11 @@ import org.checkerframework.javacutil.UserError;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
@@ -98,7 +103,8 @@ public class DOTCFGVisualizer<
         }
         String dotFileName = dotOutputFileName(cfg.underlyingAST);
 
-        try (BufferedWriter out = new BufferedWriter(new FileWriter(dotFileName))) {
+        try (BufferedWriter out =
+                new BufferedWriter(new FileWriter(dotFileName, StandardCharsets.UTF_8))) {
             out.write(dotGraph);
         } catch (IOException e) {
             throw new UserError("Error creating dot file (is the path valid?): " + dotFileName, e);
@@ -157,7 +163,7 @@ public class DOTCFGVisualizer<
 
     @Override
     public String visualizeBlock(Block bb, @Nullable Analysis<V, S, T> analysis) {
-        return super.visualizeBlockHelper(bb, analysis, getSeparator());
+        return super.visualizeBlockWithSeparator(bb, analysis, getSeparator());
     }
 
     @Override
@@ -347,7 +353,12 @@ public class DOTCFGVisualizer<
     @Override
     public void shutdown() {
         // Open for append, in case of multiple sub-checkers.
-        try (FileWriter fstream = new FileWriter(outDir + "/methods.txt", true);
+        try (Writer fstream =
+                        Files.newBufferedWriter(
+                                Paths.get(outDir + "/methods.txt"),
+                                StandardCharsets.UTF_8,
+                                StandardOpenOption.CREATE,
+                                StandardOpenOption.APPEND);
                 BufferedWriter out = new BufferedWriter(fstream)) {
             for (Map.Entry<String, String> kv : generated.entrySet()) {
                 out.write(kv.getKey());

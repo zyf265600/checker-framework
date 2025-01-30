@@ -699,6 +699,7 @@ public class QualifierDefaults {
 
         DefaultSet qualifiers = defaultsAtDirect(elt);
         DefaultSet parentDefaults;
+
         if (elt.getKind() == ElementKind.PACKAGE) {
             Element parent = ElementUtils.parentPackage((PackageElement) elt, elements);
             DefaultSet origParentDefaults = defaultsAt(parent);

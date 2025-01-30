@@ -42,7 +42,9 @@ def majorVersionToInt(majorVersionString) {
 }
 
 ext {
-    release = false
+    // Whether to use EISOP formatting.
+    // Can also be achieved by having a project property with the same name.
+    eisopFormatting = true
 
     // On a Java 8 JVM, use error-prone javac and source/target 8.
     // On a Java 9+ JVM, use the host javac, default source/target, and required module flags.
@@ -76,11 +78,12 @@ ext {
     versions = [
         autoValue       : '1.11.0',
         errorprone      : '2.36.0',
+        googleJavaFormat : '1.25.2',
         hashmapUtil     : '0.0.1',
         junit           : '4.13.2',
         lombok          : '1.18.36',
         // plume-util includes a version of reflection-util. When updating ensure the versions are consistent.
-        plumeUtil       : '1.9.0',
+        plumeUtil       : '1.9.3',
         reflectionUtil  : '1.1.3',
     ]
 }
@@ -145,7 +148,7 @@ if (currentRuntimeJavaVersion >= 11) {
         //     > Could not create task ':spotlessJava'.
         //        > Add a step with [com.google.googlejavaformat:google-java-format:1.15.0] into the `spotlessPredeclare` block in the root project.
         java {
-            googleJavaFormat()
+            googleJavaFormat(versions.googleJavaFormat)
         }
         groovyGradle {
             greclipse()
@@ -153,13 +156,13 @@ if (currentRuntimeJavaVersion >= 11) {
     }
 }
 
-allprojects {
+allprojects { currentProj ->
     // Increment the minor version (second number) rather than just the patch
     // level (third number) if:
     //   * any new checkers have been added, or
     //   * backward-incompatible changes have been made to APIs or elsewhere.
     // To make a snapshot release: ./gradlew publish
-    version = '3.42.0-eisop6-SNAPSHOT'
+    version = '3.43.0'
 
     tasks.withType(JavaCompile).configureEach {
         options.fork = true
@@ -245,31 +248,42 @@ allprojects {
 
     if (currentRuntimeJavaVersion >= 11) {
         apply plugin: 'com.diffplug.spotless'
+        // patterns of files to skip for individual sub-projects
+        def perProjectDoNotFormat = [
+            'checker': [
+                'bin-devel/.git-scripts/**',
+                'bin-devel/.plume-scripts/**',
+                'dist/**',
+                'tests/ainfer-*/annotated/*',
+                'tests/build/**',
+                'tests/calledmethods-delomboked/*',
+                'tests/nullness-javac-errors/*',
+            ],
+            'dataflow': ['manual/examples/'],
+            'framework': [
+                'tests/build/**',
+                'tests/returnsreceiverdelomboked/*',
+            ],
+        ]
         spotless {
             // If you add any formatters to this block that require dependencies, then you must also
             // add them to spotlessPredeclare block.
-            def doNotFormat = [
-                'checker/bin-devel/.git-scripts/**',
-                'checker/bin-devel/.plume-scripts/**',
-                'checker/tests/ainfer-*/annotated/*',
-                'dataflow/manual/examples/',
-                '**/nullness-javac-errors/*',
-                '**/calledmethods-delomboked/*',
-                '**/returnsreceiverdelomboked/*',
-                '**/build/**',
-                '*/dist/**',
-            ]
-            if (currentRuntimeJavaVersion < 14) {
-                doNotFormat += ['**/*record*/']
-            }
-            if (currentRuntimeJavaVersion < 16) {
-                // TODO: directories should be renamed `-switchexpr` or some such,
-                // as they  only contain examples for switch expressions, which were
-                // added in Java 14, not Java 17.
-                doNotFormat += ['**/java17/']
-            }
-            if (currentRuntimeJavaVersion < 21) {
-                doNotFormat += ['**/java21/']
+
+            // Always skip formatting of files under build directory
+            def doNotFormat = ['build/**']
+            if (currentProj != project.rootProject) {
+                if (perProjectDoNotFormat.containsKey(currentProj.name)) {
+                    doNotFormat += perProjectDoNotFormat[currentProj.name]
+                }
+                if (currentRuntimeJavaVersion < 16) {
+                    doNotFormat += [
+                        'tests/**/java17/',
+                        'tests/*record*/'
+                    ]
+                }
+                if (currentRuntimeJavaVersion < 21) {
+                    doNotFormat += ['tests/**/java21/']
+                }
             }
 
             format 'misc', {
@@ -283,40 +297,64 @@ allprojects {
             }
 
             java {
-                def targets = [
-                    // add target folders here
-                    'checker',
-                    'checker-qual',
-                    'checker-util',
-                    'dataflow',
-                    'docs/examples',
-                    'docs/tutorial',
-                    'framework',
-                    'framework-test',
-                    'javacutil',
-                ]
-                targets = targets.collectMany {
-                    [
-                        // must call toString() to convert GString to String
-                        "${it}/**/*.java".toString(),
-                        "${it}/**/*.ajava".toString()
+                if (currentProj == currentProj.rootProject) {
+                    // format .java files outside of Gradle sub-projects
+                    def targets = [
+                        'docs/examples',
+                        'docs/tutorial',
                     ]
+                    targets = targets.collectMany {
+                        [
+                            // must call toString() to convert GString to String
+                            "${it}/**/*.java".toString(),
+                            // Not .ajava files because formatting would remove import statements.
+                        ]
+                    }
+                    target targets
+                } else {
+                    // not the root project; format all .java files in the sub-project
+                    target '**/*.java', '**/*.ajava'
                 }
-                target targets
                 targetExclude doNotFormat
 
-                googleJavaFormat().aosp()
-                importOrder('com', 'jdk', 'lib', 'lombok', 'org', 'java', 'javax')
+                if (eisopFormatting || project.hasProperty('eisopFormatting')) {
+                    googleJavaFormat(versions.googleJavaFormat).aosp()
+                    importOrder('com', 'jdk', 'lib', 'lombok', 'org', 'java', 'javax')
+                } else {
+                    googleJavaFormat(versions.googleJavaFormat) // the formatter to apply to Java files
+                }
                 formatAnnotations().addTypeAnnotation("PolyInitialized").addTypeAnnotation("PolyVP").addTypeAnnotation("ReceiverDependentQual")
             }
 
-            groovyGradle {
-                target '**/*.gradle'
-                targetExclude doNotFormat
-                greclipse()  // which formatter Spotless should use to format .gradle files.
-                leadingTabsToSpaces(4)
-                trimTrailingWhitespace()
-                // endWithNewline() // Don't want to end empty files with a newline
+            // Only define a groovyGradle task on the root project, for simplicity in setting the target pattern
+            if (currentProj == currentProj.rootProject) {
+                groovyGradle {
+                    target '**/*.gradle'
+                    targetExclude doNotFormat
+                    greclipse()  // which formatter Spotless should use to format .gradle files.
+                    if (eisopFormatting || project.hasProperty('eisopFormatting')) {
+                        indentWithSpaces(4)
+                    } else {
+                        indentWithSpaces(2)
+                    }
+                    trimTrailingWhitespace()
+                    // endWithNewline() // Don't want to end empty files with a newline
+                }
+            }
+
+            // a useful task for debugging; prints exactly which files are getting formatted by spotless
+            tasks.register('printSpotlessTaskInputs') {
+                doLast {
+                    project.tasks.forEach { task ->
+                        if (task.name.contains('spotless')) {
+                            println "Inputs for task '${task.name}':"
+
+                            task.inputs.files.each { inputFile ->
+                                println "  Input: $inputFile"
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -510,8 +548,6 @@ allprojects {
                 options.errorprone.errorproneArgs = [
                     // Many compiler classes are interned.
                     '-Xep:ReferenceEquality:OFF',
-                    // These might be worth fixing.
-                    '-Xep:DefaultCharset:OFF',
                     // Not useful to suggest Splitter; maybe clean up.
                     '-Xep:StringSplitter:OFF',
                     // Too broad, rejects seemingly-correct code.
@@ -530,6 +566,10 @@ allprojects {
                     // Should be turned off when using the Checker Framework.
                     '-Xep:ExtendsObject:OFF',
                     // For Visitors it is convenient to just pass a Void parameter.
+                    '-Xep:VoidUsed:OFF',
+                    // The Checker Framework is the only nullness tool we care about.
+                    '-Xep:NullableWildcard:OFF',
+                    // In the visitor pattern, it is natural to forward a Void reference.
                     '-Xep:VoidUsed:OFF',
                     // -Werror halts the build if Error Prone issues a warning, which ensures that
                     // the errors get fixed.  On the downside, Error Prone (or maybe the compiler?)
@@ -676,9 +716,14 @@ task allJavadoc(type: Javadoc, group: 'Documentation') {
     }
 
     classpath = configurations.allProjects
+
     if (isJava8) {
         classpath += configurations.javacJar
     }
+
+    // disable interpreting module-info.java files until all sub-modules support them
+    modularity.inferModulePath = false
+
     doLast {
         copy {
             from 'docs/logo/Checkmark/CFCheckmark_favicon.png'
@@ -736,6 +781,8 @@ def createJavadocTask(taskName, taskDescription, memberLevel) {
         }
 
         classpath = configurations.allProjects
+        // disable interpreting module-info.java files until all sub-modules support them
+        modularity.inferModulePath = false
 
         destinationDir.deleteDir()
         options.memberLevel = memberLevel
@@ -931,6 +978,7 @@ subprojects {
         // For an example work-around see NullnessAnnotatedTypeFactory#NONNULL_ALIASES.
 
         // Relocate packages that might conflict with user's classpath.
+        relocate 'com.github.javaparser', 'org.checkerframework.com.github.javaparser'
         relocate 'org.apache', 'org.checkerframework.org.apache'
         relocate 'org.relaxng', 'org.checkerframework.org.relaxng'
         relocate 'org.plumelib', 'org.checkerframework.org.plumelib'
@@ -943,13 +991,6 @@ subprojects {
         relocate 'com.google', 'org.checkerframework.com.google'
 
         exclude '**/module-info.class'
-
-        doFirst {
-            if (release) {
-                // Only relocate JavaParser during a release:
-                relocate 'com.github.javaparser', 'org.checkerframework.com.github.javaparser'
-            }
-        }
 
         minimize()
     }
@@ -984,7 +1025,7 @@ subprojects {
             manifest {
                 attributes('Implementation-Version': "${project.version}")
                 attributes('Implementation-URL': 'https://eisop.github.io/')
-                if (! archiveFileName.get().endsWith('source.jar')) {
+                if (! archiveFileName.get().endsWith('source.jar') && ! archiveFileName.get().startsWith('checker-qual')) {
                     attributes('Automatic-Module-Name': 'org.checkerframework.' + project.name.replaceAll('-', '.'))
                 }
                 if (archiveFileName.get().startsWith('checker-qual') || archiveFileName.get().startsWith('checker-util')) {
@@ -1150,7 +1191,25 @@ subprojects {
                 jvmArgs += compilerArgsForRunningCF
             }
 
-            maxParallelForks = Integer.MAX_VALUE
+            // Run tests in parallel, except on CI where it seems to lead to flaky failures.
+            // The TF_BUILD environment variable is set to 'True' for jobs running on Azure Pipelines.
+            if (!System.getenv('TF_BUILD')?.equals('True')) {
+                // Not running under Azure Pipelines CI.
+
+                // This uses Gradle's recommended value for `maxParallelForks`:
+                // https://docs.gradle.org/current/userguide/performance.html#optimize_java_projects
+                maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
+            } else {
+                // Running under Azure Pipelines CI.
+
+                // Azure seems to time out when a task doesn't produce periodic output.
+                if (project.name.is('checker')) {
+                    testLogging {
+                        events "started", "skipped", "failed"
+                        displayGranularity 3
+                    }
+                }
+            }
 
             if (project.name.is('checker')) {
                 dependsOn('assembleForJavac')
@@ -1290,17 +1349,13 @@ task buildAll(group: 'Build') {
         dependsOn("${subproject.name}:sourcesJar")
     }
     dependsOn('framework:allJavadocJar', 'framework:allSourcesJar', 'checker:allJavadocJar', 'checker:allSourcesJar', 'checker-qual:jar', 'checker-util:jar')
+    dependsOn('checker:assembleForJavac')
 }
 
 task releaseBuild(group: 'Build') {
-    description = 'Build everything required for a release'
+    description = 'Cleans, then builds everything required for a release'
     dependsOn(clean)
-    doFirst {
-        release = true
-    }
-    // Use finalizedBy rather than dependsOn so that release is set to true before any of the tasks are run.
-    finalizedBy(buildAll)
-    finalizedBy('checker:assembleForJavac')
+    dependsOn(buildAll)
 }
 
 // No group so it does not show up in the output of `gradlew tasks`

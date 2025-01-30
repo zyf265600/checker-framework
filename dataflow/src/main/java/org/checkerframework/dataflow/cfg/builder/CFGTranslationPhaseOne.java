@@ -750,7 +750,7 @@ public class CFGTranslationPhaseOne extends TreeScanner<Node, Void> {
      * exceptions in {@code causes}.
      *
      * @param node the node to add
-     * @param causes set of exceptions that the node might throw
+     * @param causes the set of exceptions that the node might throw
      * @return the node holder
      */
     protected NodeWithExceptionsHolder extendWithNodeWithExceptions(
@@ -811,7 +811,7 @@ public class CFGTranslationPhaseOne extends TreeScanner<Node, Void> {
      * the list of extended nodes, or append to the list if {@code pred} is not present.
      *
      * @param node the node to add
-     * @param causes set of exceptions that the node might throw
+     * @param causes the set of exceptions that the node might throw
      * @param pred the desired predecessor of node
      * @return the node holder
      */
@@ -1733,7 +1733,7 @@ public class CFGTranslationPhaseOne extends TreeScanner<Node, Void> {
     protected VariableTree getAssertionsEnabledVariable() {
         if (ea == null) {
             String name = uniqueName("assertionsEnabled");
-            Element owner = findOwner();
+            Element owner = TreePathUtil.findNearestEnclosingElement(getCurrentPath());
             ExpressionTree initializer = null;
             ea =
                     treeBuilder.buildVariableDecl(
@@ -1741,21 +1741,6 @@ public class CFGTranslationPhaseOne extends TreeScanner<Node, Void> {
             handleArtificialTree(ea);
         }
         return ea;
-    }
-
-    /**
-     * Find nearest owner element (Method or Class) which holds current tree.
-     *
-     * @return nearest owner element of current tree
-     */
-    private Element findOwner() {
-        MethodTree enclosingMethod = TreePathUtil.enclosingMethod(getCurrentPath());
-        if (enclosingMethod != null) {
-            return TreeUtils.elementFromDeclaration(enclosingMethod);
-        } else {
-            ClassTree enclosingClass = TreePathUtil.enclosingClass(getCurrentPath());
-            return TreeUtils.elementFromDeclaration(enclosingClass);
-        }
     }
 
     /**
@@ -2576,7 +2561,7 @@ public class CFGTranslationPhaseOne extends TreeScanner<Node, Void> {
                                 env.getTypeUtils()));
             }
 
-            // JSL 14.11.2
+            // JLS 14.11.2
             // https://docs.oracle.com/javase/specs/jls/se21/html/jls-14.html#jls-14.11.2
             // states "For compatibility reasons, switch statements that are not enhanced switch
             // statements are not required to be exhaustive".
@@ -2651,7 +2636,10 @@ public class CFGTranslationPhaseOne extends TreeScanner<Node, Void> {
             TypeMirror selectorExprType = TreeUtils.typeOf(selectorExprTree);
             VariableTree selectorVarTree =
                     treeBuilder.buildVariableDecl(
-                            selectorExprType, uniqueName("switch"), findOwner(), null);
+                            selectorExprType,
+                            uniqueName("switch"),
+                            TreePathUtil.findNearestEnclosingElement(getCurrentPath()),
+                            null);
             handleArtificialTree(selectorVarTree);
 
             VariableDeclarationNode selectorVarNode = new VariableDeclarationNode(selectorVarTree);
@@ -2689,7 +2677,10 @@ public class CFGTranslationPhaseOne extends TreeScanner<Node, Void> {
             TypeMirror switchExprType = TreeUtils.typeOf(switchTree);
             switchExprVarTree =
                     treeBuilder.buildVariableDecl(
-                            switchExprType, uniqueName("switchExpr"), findOwner(), null);
+                            switchExprType,
+                            uniqueName("switchExpr"),
+                            TreePathUtil.findNearestEnclosingElement(getCurrentPath()),
+                            null);
             handleArtificialTree(switchExprVarTree);
 
             VariableDeclarationNode switchExprVarNode =
@@ -2845,7 +2836,11 @@ public class CFGTranslationPhaseOne extends TreeScanner<Node, Void> {
 
         // create a synthetic variable for the value of the conditional expression
         VariableTree condExprVarTree =
-                treeBuilder.buildVariableDecl(exprType, uniqueName("condExpr"), findOwner(), null);
+                treeBuilder.buildVariableDecl(
+                        exprType,
+                        uniqueName("condExpr"),
+                        TreePathUtil.findNearestEnclosingElement(getCurrentPath()),
+                        null);
         handleArtificialTree(condExprVarTree);
         VariableDeclarationNode condExprVarNode = new VariableDeclarationNode(condExprVarTree);
         condExprVarNode.setInSource(false);
@@ -3858,8 +3853,8 @@ public class CFGTranslationPhaseOne extends TreeScanner<Node, Void> {
     private void handleTryResourcesAndBlock(
             TryTree tryTree, Void p, List<? extends Tree> resources) {
         if (resources.isEmpty()) {
-            // Either `tryTree` was not a try-with-resources, or this method was called recursively
-            // and all the resources have been handled.  Just scan the main try block.
+            // Either `tryTree` was not a try-with-resources, or this method was called
+            // recursively and all the resources have been handled.  Just scan the main try block.
             scan(tryTree.getBlock(), p);
             return;
         }
@@ -3886,9 +3881,9 @@ public class CFGTranslationPhaseOne extends TreeScanner<Node, Void> {
 
         // Add nodes for the resource declaration to the CFG.  NOTE: it is critical to add these
         // nodes *before* pushing a TryFinallyFrame for the finally block that will close the
-        // resource.
-        // If any exception occurs due to code within the resource declaration, the corresponding
-        // variable or field is *not* automatically closed (as it was never assigned a value).
+        // resource.  If any exception occurs due to code within the resource declaration, the
+        // corresponding variable or field is *not* automatically closed (as it was never
+        // assigned a value).
         Node resourceCloseNode = scan(resourceDeclarationTree, p);
 
         // Now, set things up for our synthetic finally block that closes the resource.
@@ -4324,7 +4319,7 @@ public class CFGTranslationPhaseOne extends TreeScanner<Node, Void> {
                                 treeBuilder.buildVariableDecl(
                                         exprType,
                                         uniqueName("tempPostfix"),
-                                        findOwner(),
+                                        TreePathUtil.findNearestEnclosingElement(getCurrentPath()),
                                         tree.getExpression());
                         handleArtificialTree(tempVarDecl);
                         VariableDeclarationNode tempVarDeclNode =

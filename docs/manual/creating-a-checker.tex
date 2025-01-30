@@ -1109,6 +1109,10 @@ determine the types of variables.  Obtain the \<AnnotatedTypeFactory> by
 calling
 \refmethodterse{common/basetype}{BaseTypeChecker}{getTypeFactoryOfSubcheckerOrNull}{(java.lang.Class)}.
 
+An example of a compound checker is
+\refclass{checker/signedness}{SignednessChecker}
+(see \chapterpageref{signedness-checker}) for which \refclass{common/value}{ValueChecker}
+is a subchecker.
 \end{enumerate}
 
 
@@ -1169,6 +1173,26 @@ To pass an option on the command line, call javac as follows:
 The value is returned as a single string and you have to perform the
 required parsing of the option.
 
+\subsubsectionAndLabel{Default Options}{creating-providing-command-line-options-default-options}
+
+The default options passed to a custom checker may be customized by overriding the
+\refmethodterse{framework/source}{BaseTypeChecker}{getOptions}{()} method in the
+custom checker class.
+
+For example, to ignore the \<introduce.eliminate> warnings raised by the
+Optional Checker (Chapter~\ref{optional-checker}), override
+\refmethodterse{framework/source}{BaseTypeChecker}{getOptions}{()} as follows:
+
+\begin{Verbatim}
+  @Override
+  public Map<String, String> getOptions() {
+    Map<String, String> options = new HashMap<>(super.getOptions());
+    options.put("suppressWarnings", "optional:introduce.eliminate");
+    return options;
+  }
+\end{Verbatim}
+
+in the \refclass{checker/optional}{OptionalChecker} class.
 
 % TODO: describe -ANullnessChecker_option=value mechanism.
 % For the implementation, see SourceChecker#OPTION_SEPARATOR.
@@ -1316,9 +1340,16 @@ which is the Checker Framework's representation of an annotated type.
   \refclass{framework/type/treeannotator}{TreeAnnotator},
   typically as a private inner class of your \<AnnotatedTypeFactory>.
   There is a method of \<TreeAnnotator> for every AST node, and the visitor
-  has access to both the tree (the AST node) and its type.  In your
-  subclass of \<AnnotatedTypeFactory>, override \<createTreeAnnotator> to
-  return a \<ListTreeAnnotator> containing that annotator, as in
+  has access to both the tree (the AST node) and its type.
+
+  A \<TreeAnnotator> is best suited to changing the type of an expression.
+  Don't try to use a \<TreeAnnotator> to change the type of a variable or
+  method declaration, because that change will not generally be seen at
+  uses of the variable or method.
+
+  After defining your \<TreeAnnotator>, override \<createTreeAnnotator> (in
+  your subclass of \<AnnotatedTypeFactory>) to return a
+  \<ListTreeAnnotator> containing your new \<TreeAnnotator>, as in:
 
 \begin{Verbatim}
   @Override
@@ -1328,10 +1359,11 @@ which is the Checker Framework's representation of an annotated type.
 \end{Verbatim}
 
   \noindent
-  (or put your TreeAnnotator first; several tree annotators are run by
+  In code like the above, you might choose to put your TreeAnnotator first.
+  Several tree annotators are run by
   default, and among them, \<PropagationTreeAnnotator>
   adds annotations to \<AnnotatedTypeMirror>s that do not have an annotation,
-  but has no effect on those that have an annotation).
+  but has no effect on those that have an annotation.
 
 \item
   Define a subclass of a
@@ -2045,10 +2077,6 @@ pseudo-assignment check (\<commonAssignmentCheck>) performed by
 \refclass{common/basetype}{BaseTypeVisitor}; see
 Section~\ref{creating-extending-visitor}.
 
-\item \code{-AshowInferenceSteps}: print debugging information
-about intermediate steps in method type argument inference
-(as performed by \refclass{framework/util/typeinference}{DefaultTypeArgumentInference}).
-
 \item \code{-AshowWpiFailedInferences}: print debugging information
 about failed inference steps during whole-program inference. Must
 be used with \code{-Ainfer}; see Section~\ref{whole-program-inference}.
@@ -2158,10 +2186,15 @@ command-line options. \\
   The graph also contains information about flow-sensitively refined
   types of various expressions at many program points.
 
-  The argument is a comma-separated sequence of keys or key--value pairs.
-  The first argument is the fully-qualified name of the
+  The argument is a comma-separated sequence.
+  The first element is the fully-qualified name of the
   \<org.checkerframework.dataflow.cfg.CFGVisualizer> implementation
-  that should be used. The remaining keys or key--value pairs are
+  that should be used. Currently, the possibilities are:
+  \begin{itemize}
+  \item \<org.checkerframework.dataflow.cfg.visualize.>\refclass{org/checkerframework/dataflow/cfg/visualize}{DOTCFGVisualizer}
+  \item \<org.checkerframework.dataflow.cfg.visualize.>\refclass{org/checkerframework/dataflow/cfg/visualize}{StringCFGVisualizer}
+  \end{itemize}
+  The remaining keys or key--value pairs are
   passed to \<CFGVisualizer.init>.  Supported keys include
   \begin{itemize}
   \item \<verbose>
