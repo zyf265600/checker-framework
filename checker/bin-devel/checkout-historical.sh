@@ -89,7 +89,7 @@ git checkout -B __merge_eval__
 echo "git-scripts"
 GIT_SCRIPTS="checker/bin-devel/.git-scripts"
 if [ ! -d "$GIT_SCRIPTS" ] ; then
-  git clone -q https://github.com/plume-lib/git-scripts.git "${GIT_SCRIPTS}"
+  git clone -q https://github.com/eisop-plume-lib/git-scripts.git "${GIT_SCRIPTS}"
 fi
 COMMIT="$(cd "${GIT_SCRIPTS}" && git rev-list -n 1 --first-parent --before="${commit_date}" master)"
 if [ -n "${COMMIT}" ] ; then
