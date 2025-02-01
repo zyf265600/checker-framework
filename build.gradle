@@ -6,7 +6,7 @@ buildscript {
             // Code formatting; defines targets "spotlessApply" and "spotlessCheck".
             // https://github.com/diffplug/spotless/tags ; see tags starting "gradle/"
             // Only works on JDK 11+.
-            classpath 'com.diffplug.spotless:spotless-plugin-gradle:7.0.2'
+            classpath 'com.diffplug.spotless:spotless-plugin-gradle:7.0.1'
         }
     }
 }
@@ -333,9 +333,9 @@ allprojects { currentProj ->
                     targetExclude doNotFormat
                     greclipse()  // which formatter Spotless should use to format .gradle files.
                     if (eisopFormatting || project.hasProperty('eisopFormatting')) {
-                        indentWithSpaces(4)
+                        leadingTabsToSpaces(4)
                     } else {
-                        indentWithSpaces(2)
+                        leadingTabsToSpaces(2)
                     }
                     trimTrailingWhitespace()
                     // endWithNewline() // Don't want to end empty files with a newline
