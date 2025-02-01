@@ -2073,7 +2073,7 @@ public class BaseTypeVisitor<Factory extends GenericAnnotatedTypeFactory<?, ?, ?
 
     /**
      * Reports a "type.arguments.not.inferred" error if type argument inference fails and returns
-     * false if inference fails.
+     * true if inference did not fail.
      *
      * @param tree a tree that requires type argument inference
      * @param methodType the type of the method before type argument substitution
@@ -3223,9 +3223,15 @@ public class BaseTypeVisitor<Factory extends GenericAnnotatedTypeFactory<?, ?, ?
         if (valueExpTree.getKind() == Kind.CONDITIONAL_EXPRESSION) {
             ConditionalExpressionTree condExprTree = (ConditionalExpressionTree) valueExpTree;
             boolean trueResult =
-                    commonAssignmentCheck(varTree, condExprTree.getTrueExpression(), "assignment");
+                    commonAssignmentCheck(
+                            varTree,
+                            condExprTree.getTrueExpression(),
+                            "assignment.type.incompatible");
             boolean falseResult =
-                    commonAssignmentCheck(varTree, condExprTree.getFalseExpression(), "assignment");
+                    commonAssignmentCheck(
+                            varTree,
+                            condExprTree.getFalseExpression(),
+                            "assignment.type.incompatible");
             return trueResult && falseResult;
         }
 
