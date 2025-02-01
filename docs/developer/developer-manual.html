@@ -461,7 +461,7 @@ If a CI job fails, examine the CI logs.
 <p>
 You can also run the same test locally.  Each CI job runs a different command.
 You can see the commands in
-file <a href="https://github.com/typetools/checker-framework/blob/master/azure-pipelines.yml"><code>azure-pipelines.yml</code></a>,
+file <a href="https://github.com/eisop/checker-framework/blob/master/.github/workflows/ci.yml"><code>ci.yml</code></a>,
 usually on lines starting with <code>bash:</code>.  The scripts that are run
 generally just invoke gradle to run particular tasks.
 </p>
@@ -471,7 +471,7 @@ Sometimes, CI tests for your pull request may fail even though the same command
 passed locally.  First, ensure you are using the same JDK.  Second, all CI tests
 are run in a Docker container, and you can use that container if necessary.  The
 container names are in top-level
-file <a href="https://github.com/typetools/checker-framework/blob/master/azure-pipelines.yml"><code>azure-pipelines.yml</code></a>,
+file <a href="https://github.com/eisop/checker-framework/blob/master/.github/workflows/ci.yml"><code>ci.yml</code></a>,
 on lines starting with <code>container:</code>.
 </p>
 
