@@ -43,7 +43,7 @@ public class MustCallAliasReturnAndParamSimple {
     // :: warning: (mustcallalias.method.return.and.param)
     public static MustCallAliasReturnAndParamSimple mcaneFactory2(@MustCallAlias InputStream is)
             throws Exception {
-        // :: error: (return)
+        // :: error: (return.type.incompatible)
         return new MustCallAliasReturnAndParamSimple(is, false);
     }
 

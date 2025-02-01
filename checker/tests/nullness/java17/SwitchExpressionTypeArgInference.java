@@ -9,7 +9,7 @@ public class SwitchExpressionTypeArgInference {
 
     void test1(int i, @Nullable String nullable) {
         @NonNull String s =
-                // :: error: (assignment)
+                // :: error: (assignment.type.incompatible)
                 // :: error: (type.arguments.not.inferred)
                 method(
                         switch (i) {

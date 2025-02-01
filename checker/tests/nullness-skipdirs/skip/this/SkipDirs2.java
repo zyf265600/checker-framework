@@ -1,4 +1,4 @@
-import org.checkerframework.checker.nullness.qual.*;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 public class SkipDirs2 {
     static class SkipMe {
@@ -6,7 +6,7 @@ public class SkipDirs2 {
         Object f;
 
         // If this test is NOT skipped, it should issue an "unexpected error" since
-        // There is a type error between f2 (Nullable) and f (NonNull).
+        // there is a type error between f2 (Nullable) and f (NonNull).
         void foo(@Nullable Object f2) {
             f = f2;
         }

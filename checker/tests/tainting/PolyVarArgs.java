@@ -9,7 +9,7 @@ class PolyVarArgs {
     }
 
     void testVarArgsNoFormalsInvalid() {
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         @Untainted String tainted = varArgsNoFormals();
     }
 
@@ -20,7 +20,7 @@ class PolyVarArgs {
     }
 
     void testVarArgsWithFormalsInvalid() {
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         @Untainted String tainted = varArgsWithFormals(1);
     }
 
@@ -33,7 +33,7 @@ class PolyVarArgs {
     }
 
     void testVarArgsWithPolyFormalsInvalid() {
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         @Untainted String tainted = varArgsWithPolyFormals(1);
     }
 
