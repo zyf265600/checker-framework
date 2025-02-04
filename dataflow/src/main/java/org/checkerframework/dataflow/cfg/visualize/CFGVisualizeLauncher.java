@@ -17,11 +17,13 @@ import org.checkerframework.dataflow.cfg.CFGProcessor.CFGProcessResult;
 import org.checkerframework.dataflow.cfg.ControlFlowGraph;
 import org.plumelib.util.ArrayMap;
 
-import java.io.FileWriter;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Map;
 
@@ -297,7 +299,8 @@ public final class CFGVisualizeLauncher {
             String outputFile,
             Analysis<?, ?, ?> analysis) {
         Map<String, Object> res = generateStringOfCFG(inputFile, method, clas, true, analysis);
-        try (FileWriter out = new FileWriter(outputFile, StandardCharsets.UTF_8)) {
+        try (BufferedWriter out =
+                Files.newBufferedWriter(Paths.get(outputFile), StandardCharsets.UTF_8)) {
             if (res != null && res.get("stringGraph") != null) {
                 out.write(res.get("stringGraph").toString());
             }

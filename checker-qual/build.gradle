@@ -37,7 +37,9 @@ task compileJava9(type: JavaCompile) {
 }
 
 compileJava {
-    dependsOn compileJava9
+    if (JavaVersion.current() >= JavaVersion.VERSION_1_9) {
+        dependsOn compileJava9
+    }
 }
 
 javadoc {

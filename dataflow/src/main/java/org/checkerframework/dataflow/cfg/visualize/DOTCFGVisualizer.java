@@ -31,7 +31,6 @@ import org.checkerframework.javacutil.TreeUtils;
 import org.checkerframework.javacutil.UserError;
 
 import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
@@ -104,7 +103,7 @@ public class DOTCFGVisualizer<
         String dotFileName = dotOutputFileName(cfg.underlyingAST);
 
         try (BufferedWriter out =
-                new BufferedWriter(new FileWriter(dotFileName, StandardCharsets.UTF_8))) {
+                Files.newBufferedWriter(Paths.get(dotFileName), StandardCharsets.UTF_8)) {
             out.write(dotGraph);
         } catch (IOException e) {
             throw new UserError("Error creating dot file (is the path valid?): " + dotFileName, e);
