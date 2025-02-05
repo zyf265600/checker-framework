@@ -474,7 +474,7 @@ public class CalledMethodsAnnotatedTypeFactory extends AccumulationAnnotatedType
         AnnotationBuilder builder =
                 new AnnotationBuilder(processingEnv, EnsuresCalledMethods.class);
         builder.setValue("value", expressions);
-        builder.setValue("methods", calledMethods.toArray(new String[calledMethods.size()]));
+        builder.setValue("methods", calledMethods.toArray(new String[0]));
         AnnotationMirror am = builder.build();
         return am;
     }

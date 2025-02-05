@@ -1,7 +1,6 @@
 plugins {
     id 'java-library'
     id 'base'
-
     // https://github.com/n0mer/gradle-git-properties
     // Generates file build/resources/main/git.properties when the `classes` task runs.
     id 'com.gorylenko.gradle-git-properties' version '2.4.2'
@@ -90,6 +89,9 @@ dependencies {
     testImplementation 'org.apiguardian:apiguardian-api:1.1.2'
     // For tests that use JSpecify annotations
     testImplementation 'org.jspecify:jspecify:1.0.0'
+    // To test for an obscure crash in CFG construction for try-with-resources;
+    // see https://github.com/typetools/checker-framework/issues/6396
+    testImplementation 'org.apache.spark:spark-sql_2.12:3.3.2'
 
     // Required for checker/tests/index-initializedfields/RequireJavadoc.java
     if (JavaVersion.current() == JavaVersion.VERSION_1_8) {
@@ -199,6 +201,9 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 task checkerJar(type: ShadowJar, dependsOn: compileJava, group: 'Build') {
     description = "Builds checker-${project.version}.jar with all dependencies except checker-qual and checker-util."
     includeEmptyDirs = false
+    base {
+        archivesName = 'checker'
+    }
 
     from shadowJar.source
     configurations = shadowJar.configurations

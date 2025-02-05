@@ -7,7 +7,6 @@ import com.sun.source.tree.ClassTree;
 import com.sun.source.tree.CompilationUnitTree;
 import com.sun.source.tree.ExpressionTree;
 import com.sun.source.tree.LambdaExpressionTree;
-import com.sun.source.tree.MemberReferenceTree;
 import com.sun.source.tree.MethodInvocationTree;
 import com.sun.source.tree.MethodTree;
 import com.sun.source.tree.NewClassTree;
@@ -76,7 +75,6 @@ import org.checkerframework.framework.type.typeannotator.IrrelevantTypeAnnotator
 import org.checkerframework.framework.type.typeannotator.ListTypeAnnotator;
 import org.checkerframework.framework.type.typeannotator.PropagationTypeAnnotator;
 import org.checkerframework.framework.type.typeannotator.TypeAnnotator;
-import org.checkerframework.framework.util.AnnotatedTypes;
 import org.checkerframework.framework.util.Contract;
 import org.checkerframework.framework.util.ContractsFromMethod;
 import org.checkerframework.framework.util.DefaultContractsFromMethod;
@@ -86,7 +84,6 @@ import org.checkerframework.framework.util.StringToJavaExpression;
 import org.checkerframework.framework.util.defaults.QualifierDefaults;
 import org.checkerframework.framework.util.dependenttypes.DependentTypesHelper;
 import org.checkerframework.framework.util.dependenttypes.DependentTypesTreeAnnotator;
-import org.checkerframework.framework.util.typeinference.TypeArgInferenceUtil;
 import org.checkerframework.javacutil.AnnotationBuilder;
 import org.checkerframework.javacutil.AnnotationMirrorSet;
 import org.checkerframework.javacutil.AnnotationUtils;
@@ -927,35 +924,6 @@ public abstract class GenericAnnotatedTypeFactory<
     }
 
     /**
-     * Gets the type of the resulting constructor call of a MemberReferenceTree.
-     *
-     * @param memberReferenceTree MemberReferenceTree where the member is a constructor
-     * @param constructorType AnnotatedExecutableType of the declaration of the constructor
-     * @return AnnotatedTypeMirror of the resulting type of the constructor
-     */
-    public AnnotatedTypeMirror getResultingTypeOfConstructorMemberReference(
-            MemberReferenceTree memberReferenceTree, AnnotatedExecutableType constructorType) {
-        assert memberReferenceTree.getMode() == MemberReferenceTree.ReferenceMode.NEW;
-
-        // The return type for constructors should only have explicit annotations from the
-        // constructor.  Recreate some of the logic from TypeFromTree.visitNewClass here.
-
-        // The return type of the constructor will be the type of the expression of the member
-        // reference tree.
-        AnnotatedDeclaredType constructorReturnType =
-                (AnnotatedDeclaredType) fromTypeTree(memberReferenceTree.getQualifierExpression());
-
-        // Keep only explicit annotations and those from @Poly
-        AnnotatedTypes.copyOnlyExplicitConstructorAnnotations(
-                this, constructorReturnType, constructorType);
-
-        // Now add back defaulting.
-        addComputedTypeAnnotations(
-                memberReferenceTree.getQualifierExpression(), constructorReturnType);
-        return constructorReturnType;
-    }
-
-    /**
      * Returns the primary annotation on expression if it were evaluated at path.
      *
      * @param expression a Java expression
@@ -1745,8 +1713,9 @@ public abstract class GenericAnnotatedTypeFactory<
      * this default is too conservative. So this method is used instead of {@link
      * GenericAnnotatedTypeFactory#getAnnotatedTypeLhs(Tree)}.
      *
-     * <p>{@link TypeArgInferenceUtil#assignedToVariable(AnnotatedTypeFactory, VariableTree)}
-     * explains why a different type is used.
+     * <p>{@link
+     * org.checkerframework.framework.util.typeinference8.types.InferenceFactory#assignedToVariable(AnnotatedTypeFactory,
+     * Tree)} explains why a different type is used.
      *
      * @param lhsTree left-hand side of an assignment
      * @return AnnotatedTypeMirror of {@code lhsTree}
@@ -1963,8 +1932,9 @@ public abstract class GenericAnnotatedTypeFactory<
     }
 
     @Override
-    public ParameterizedExecutableType constructorFromUse(NewClassTree tree) {
-        ParameterizedExecutableType mType = super.constructorFromUse(tree);
+    protected ParameterizedExecutableType constructorFromUse(
+            NewClassTree tree, boolean inferTypeArgs) {
+        ParameterizedExecutableType mType = super.constructorFromUse(tree, inferTypeArgs);
         AnnotatedExecutableType method = mType.executableType;
         dependentTypesHelper.atConstructorInvocation(method, tree);
         return mType;
@@ -1972,8 +1942,10 @@ public abstract class GenericAnnotatedTypeFactory<
 
     @Override
     protected void constructorFromUsePreSubstitution(
-            NewClassTree tree, AnnotatedExecutableType type) {
-        poly.resolve(tree, type);
+            NewClassTree tree, AnnotatedExecutableType type, boolean resolvePolyQuals) {
+        if (resolvePolyQuals) {
+            poly.resolve(tree, type);
+        }
     }
 
     @Override
@@ -2328,17 +2300,19 @@ public abstract class GenericAnnotatedTypeFactory<
     }
 
     @Override
-    public ParameterizedExecutableType methodFromUse(MethodInvocationTree tree) {
-        ParameterizedExecutableType mType = super.methodFromUse(tree);
+    protected ParameterizedExecutableType methodFromUse(
+            MethodInvocationTree tree, boolean inferTypeArg) {
+        ParameterizedExecutableType mType = super.methodFromUse(tree, inferTypeArg);
         AnnotatedExecutableType method = mType.executableType;
         dependentTypesHelper.atMethodInvocation(method, tree);
         return mType;
     }
 
     @Override
-    public void methodFromUsePreSubstitution(ExpressionTree tree, AnnotatedExecutableType type) {
-        super.methodFromUsePreSubstitution(tree, type);
-        if (tree instanceof MethodInvocationTree) {
+    public void methodFromUsePreSubstitution(
+            ExpressionTree tree, AnnotatedExecutableType type, boolean resolvePolyQuals) {
+        super.methodFromUsePreSubstitution(tree, type, resolvePolyQuals);
+        if (tree instanceof MethodInvocationTree && resolvePolyQuals) {
             poly.resolve((MethodInvocationTree) tree, type);
         }
     }

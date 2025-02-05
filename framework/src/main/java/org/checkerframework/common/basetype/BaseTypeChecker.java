@@ -347,8 +347,8 @@ public abstract class BaseTypeChecker extends SourceChecker {
                 }
             } else if (t instanceof NoSuchMethodException) {
                 // Note: it's possible that NoSuchMethodException was caused by
-                // `ctor.newInstance(args)`, if
-                // the constructor itself uses reflection.  But this case is unlikely.
+                // `ctor.newInstance(args)`, if the constructor itself uses reflection.
+                // But this case is unlikely.
                 throw new TypeSystemError(
                         "Could not find constructor %s(%s)",
                         name, StringsPlume.join(", ", paramTypes));
@@ -827,8 +827,7 @@ public abstract class BaseTypeChecker extends SourceChecker {
 
             options.addAll(
                     expandCFOptions(
-                            Arrays.asList(this.getClass()),
-                            options.toArray(new String[options.size()])));
+                            Arrays.asList(this.getClass()), options.toArray(new String[0])));
 
             supportedOptions = Collections.unmodifiableSet(options);
         }

@@ -785,9 +785,9 @@ public abstract class JointJavacJavaParserVisitor extends SimpleTreeVisitor<Void
                             .getExpression()
                             .accept(this, initializer);
                 } else {
-                    // This is likely to lead to a crash, if it ever happens: javacInitializer
-                    // is a StatementTree of some kind, but initializer is a raw expression (not
-                    // wrapped in a statement).
+                    // This is likely to lead to a crash, if it ever happens: javacInitializer is a
+                    // StatementTree of some kind, but initializer is a raw expression (not wrapped
+                    // in a statement).
                     javacInitializer.accept(this, initializer);
                 }
             }
@@ -935,10 +935,11 @@ public abstract class JointJavacJavaParserVisitor extends SimpleTreeVisitor<Void
     public Void visitMemberReference(MemberReferenceTree javacTree, Node javaParserNode) {
         MethodReferenceExpr node = castNode(MethodReferenceExpr.class, javaParserNode, javacTree);
         processMemberReference(javacTree, node);
+        Tree preColonTree = javacTree.getQualifierExpression();
         if (node.getScope().isTypeExpr()) {
-            javacTree.getQualifierExpression().accept(this, node.getScope().asTypeExpr().getType());
+            preColonTree.accept(this, node.getScope().asTypeExpr().getType());
         } else {
-            javacTree.getQualifierExpression().accept(this, node.getScope());
+            preColonTree.accept(this, node.getScope());
         }
 
         assert (javacTree.getTypeArguments() != null) == node.getTypeArguments().isPresent();
@@ -1152,9 +1153,9 @@ public abstract class JointJavacJavaParserVisitor extends SimpleTreeVisitor<Void
         // TODO: Implement this.
         //
         // Some notes:
-        // - javacTree.getAnnotations() seems to always return empty, any annotations on the
-        // base type seem to go on the type itself in javacTree.getType(). The JavaParser version
-        // doesn't even have a corresponding getAnnotations method.
+        // - javacTree.getAnnotations() seems to always return empty, any annotations on
+        // the base type seem to go on the type itself in javacTree.getType(). The JavaParser
+        // version doesn't even have a corresponding getAnnotations method.
         // - When there are no initializers, both systems use similar representations. The
         // dimensions line up.
         // - When there is an initializer, they differ greatly for multi-dimensional arrays. Javac
@@ -2355,8 +2356,8 @@ public abstract class JointJavacJavaParserVisitor extends SimpleTreeVisitor<Void
     }
 
     /**
-     * Given a javac tree and JavaPaser node which were visited but didn't correspond to each other,
-     * throws an exception indicating that the visiting process failed for those nodes.
+     * Given a javac tree and JavaParser node which were visited but didn't correspond to each
+     * other, throws an exception indicating that the visiting process failed for those nodes.
      *
      * @param javacTree a tree that was visited
      * @param javaParserNode a node that was visited at the same time as {@code javacTree}, but
@@ -2376,9 +2377,9 @@ public abstract class JointJavacJavaParserVisitor extends SimpleTreeVisitor<Void
     }
 
     /**
-     * Given a javac tree and JavaPaser node which were visited but didn't correspond to each other,
-     * throws an exception indicating that the visiting process failed for those nodes because
-     * {@code javaParserNode} was expected to be of type {@code expectedType}.
+     * Given a javac tree and JavaParser node which were visited but didn't correspond to each
+     * other, throws an exception indicating that the visiting process failed for those nodes
+     * because {@code javaParserNode} was expected to be of type {@code expectedType}.
      *
      * @param javacTree a tree that was visited
      * @param javaParserNode a node that was visited at the same time as {@code javacTree}, but

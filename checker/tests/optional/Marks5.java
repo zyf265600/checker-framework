@@ -38,6 +38,7 @@ public class Marks5 {
     // there.
     Optional<BigDecimal> moreClever(Optional<BigDecimal> first, Optional<BigDecimal> second) {
         Optional<BigDecimal> result =
+                // :: error: (argument.type.incompatible)
                 first.map(b -> second.map(b::add).orElse(b)).map(Optional::of).orElse(second);
         return result;
     }
