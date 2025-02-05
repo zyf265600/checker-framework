@@ -1,3 +1,6 @@
+// Uses var keyword... might impact the inference test.
+// @below-java10-jdk-skip-test
+
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -89,5 +92,6 @@ public class Issue6346 {
 
     void f() {
         var x = E.f(H.j(), H::h, I::n, H.Builder::i).g(I::k, I.Builder::l);
+        Object y = E.f(H.j(), H::h, I::n, H.Builder::i).g(I::k, I.Builder::l);
     }
 }
