@@ -133,6 +133,12 @@ public class TypecheckResult {
                 summaryBuilder.add("  " + missing.toString());
             }
         }
+
+        // This used to call `TestUtilities.summarizeSourceFiles`. It may be nicer to move the logic
+        // there.
+        summaryBuilder.add(
+                "While type-checking " + configuration.getTestSourceFiles().size() + " files.");
+
         return summaryBuilder.toString();
     }
 
