@@ -2642,17 +2642,18 @@ public class AnnotatedTypeFactory implements AnnotationProvider {
         Map<TypeVariable, AnnotatedTypeMirror> typeParamToTypeArg = pair.first;
         if (!typeParamToTypeArg.isEmpty()) {
             for (AnnotatedTypeVariable tv : methodType.getTypeVariables()) {
-                if (typeParamToTypeArg.get(tv.getUnderlyingType()) == null) {
-                    //          throw new BugInCF(
-                    //              "AnnotatedTypeFactory.methodFromUse:mismatch between"
-                    //                  + " declared method type variables and the inferred method
-                    // type arguments."
-                    //                  + " Method type variables: "
-                    //                  + methodType.getTypeVariables()
-                    //                  + "; "
-                    //                  + "Inferred method type arguments: "
-                    //                  + typeParamToTypeArg);
-                }
+                /* TODO: property is violated.
+                              if (typeParamToTypeArg.get(tv.getUnderlyingType()) == null) {
+                                  throw new BugInCF(
+                                          "AnnotatedTypeFactory.methodFromUse:mismatch between"
+                                                  + " declared method type variables and the inferred method type arguments."
+                                                  + " Method type variables: "
+                                                  + methodType.getTypeVariables()
+                                                  + "; "
+                                                  + "Inferred method type arguments: "
+                                                  + typeParamToTypeArg);
+                              }
+                */
                 typeargs.add(typeParamToTypeArg.get(tv.getUnderlyingType()));
             }
             methodType =
