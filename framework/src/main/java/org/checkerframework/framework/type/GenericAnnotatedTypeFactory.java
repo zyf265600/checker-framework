@@ -276,6 +276,10 @@ public abstract class GenericAnnotatedTypeFactory<
     // Set in postInit only
     protected Store emptyStore;
 
+    /**
+     * {@code analysis.getResult()} is the result of the most recent analysis. Compare to {@link
+     * #flowResult}.
+     */
     // Set in postInit only
     protected FlowAnalysis analysis;
 
@@ -296,6 +300,8 @@ public abstract class GenericAnnotatedTypeFactory<
      * @see AnalysisResult#runAnalysisFor(Node, Analysis.BeforeOrAfter, TransferInput,
      *     IdentityHashMap, Map)
      */
+    // This is only used in `getStoreBefore()` and `getStoreAfter()`.
+    // We do not understand its relationship to the `analysisCaches` field of each result.
     protected final Map<
                     TransferInput<Value, Store>,
                     IdentityHashMap<Node, TransferResult<Value, Store>>>
@@ -1101,7 +1107,7 @@ public abstract class GenericAnnotatedTypeFactory<
     // private final Set<Tree> reachableNodes = new HashSet<>();
 
     /**
-     * The result of the flow analysis. Invariant:
+     * The merged result of all the analyses performed in the current compilation unit. Invariant:
      *
      * <pre>
      *  scannedClasses.get(c) == FINISHED for some class c &rArr; flowResult != null
@@ -2454,6 +2460,9 @@ public abstract class GenericAnnotatedTypeFactory<
 
             CFGVisualizer<Value, Store, TransferFunction> res =
                     BaseTypeChecker.invokeConstructorFor(vizClassName, null, null);
+            if (res == null) {
+                throw new UserError("Can't load " + vizClassName);
+            }
             res.init(args);
             return res;
         }

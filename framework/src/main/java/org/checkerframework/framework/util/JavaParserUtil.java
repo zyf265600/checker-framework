@@ -64,6 +64,7 @@ public class JavaParserUtil {
     public static CompilationUnit parseCompilationUnit(InputStream inputStream) {
         ParserConfiguration parserConfiguration = new ParserConfiguration();
         parserConfiguration.setLanguageLevel(DEFAULT_LANGUAGE_LEVEL);
+        parserConfiguration.setPreprocessUnicodeEscapes(true);
         JavaParser javaParser = new JavaParser(parserConfiguration);
         ParseResult<CompilationUnit> parseResult = javaParser.parse(inputStream);
         if (parseResult.isSuccessful() && parseResult.getResult().isPresent()) {
@@ -89,6 +90,7 @@ public class JavaParserUtil {
     public static CompilationUnit parseCompilationUnit(File file) throws FileNotFoundException {
         ParserConfiguration configuration = new ParserConfiguration();
         configuration.setLanguageLevel(DEFAULT_LANGUAGE_LEVEL);
+        configuration.setPreprocessUnicodeEscapes(true);
         JavaParser javaParser = new JavaParser(configuration);
         ParseResult<CompilationUnit> parseResult = javaParser.parse(file);
         if (parseResult.isSuccessful() && parseResult.getResult().isPresent()) {
@@ -145,6 +147,7 @@ public class JavaParserUtil {
         configuration.setLexicalPreservationEnabled(false);
         configuration.setAttributeComments(false);
         configuration.setDetectOriginalLineSeparator(false);
+        configuration.setPreprocessUnicodeEscapes(true);
         JavaParser javaParser = new JavaParser(configuration);
         ParseResult<StubUnit> parseResult = javaParser.parseStubUnit(inputStream);
         if (parseResult.isSuccessful() && parseResult.getResult().isPresent()) {
@@ -191,6 +194,7 @@ public class JavaParserUtil {
         configuration.setLexicalPreservationEnabled(false);
         configuration.setAttributeComments(false);
         configuration.setDetectOriginalLineSeparator(false);
+        configuration.setPreprocessUnicodeEscapes(true);
         JavaParser javaParser = new JavaParser(configuration);
         ParseResult<Expression> parseResult = javaParser.parseExpression(expression);
         if (parseResult.isSuccessful() && parseResult.getResult().isPresent()) {

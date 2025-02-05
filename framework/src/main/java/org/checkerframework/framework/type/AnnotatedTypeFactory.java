@@ -1835,7 +1835,7 @@ public class AnnotatedTypeFactory implements AnnotationProvider {
      * Creates an AnnotatedTypeMirror for an ExpressionTree. The AnnotatedTypeMirror contains
      * explicit annotations written on the expression and for some expressions, annotations from
      * sub-expressions that could have been explicitly written, defaulted, refined, or otherwise
-     * computed. (Expression whose type include annotations from sub-expressions are:
+     * computed. (Expressions whose type include annotations from sub-expressions are:
      * ArrayAccessTree, ConditionalExpressionTree, IdentifierTree, MemberSelectTree, and
      * MethodInvocationTree.)
      *
@@ -2923,6 +2923,15 @@ public class AnnotatedTypeFactory implements AnnotationProvider {
         // reference tree.
         AnnotatedTypeMirror constructorReturnType =
                 fromTypeTree(memberReferenceTree.getQualifierExpression());
+        if (TreeUtils.needsTypeArgInference(memberReferenceTree)) {
+            // If the method reference is missing type arguments, e.g. LinkedHashMap::new, then the
+            // constructorReturnType will be raw.  So, use the return type from the constructor
+            // instead.
+            AnnotatedTypeMirror re = constructorType.getReturnType().deepCopy(false);
+            re.clearAnnotations();
+            re.addAnnotations(constructorReturnType.getAnnotations());
+            constructorReturnType = re;
+        }
 
         if (constructorReturnType.getKind() == TypeKind.DECLARED) {
             // Keep only explicit annotations and those from @Poly

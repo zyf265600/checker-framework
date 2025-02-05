@@ -98,10 +98,10 @@ public abstract class CFAbstractStore<V extends CFAbstractValue<V>, S extends CF
     protected final Map<ArrayAccess, V> arrayValues;
 
     /**
-     * Information collected about method calls, using the internal representation {@link
-     * MethodCall}.
+     * Information collected about the expressions to which method calls evaluate, using the
+     * internal representation {@link MethodCall}.
      */
-    protected final Map<MethodCall, V> methodValues;
+    protected final Map<MethodCall, V> methodCallExpressions;
 
     /**
      * Information collected about <i>classname</i>.class values, using the internal representation
@@ -147,7 +147,7 @@ public abstract class CFAbstractStore<V extends CFAbstractValue<V>, S extends CF
         localVariableValues = new HashMap<>();
         thisValue = null;
         fieldValues = new HashMap<>();
-        methodValues = new HashMap<>();
+        methodCallExpressions = new HashMap<>();
         arrayValues = new HashMap<>();
         classValues = new HashMap<>();
         this.sequentialSemantics = sequentialSemantics;
@@ -167,7 +167,7 @@ public abstract class CFAbstractStore<V extends CFAbstractValue<V>, S extends CF
         localVariableValues = new HashMap<>(other.localVariableValues);
         thisValue = other.thisValue;
         fieldValues = new HashMap<>(other.fieldValues);
-        methodValues = new HashMap<>(other.methodValues);
+        methodCallExpressions = new HashMap<>(other.methodCallExpressions);
         arrayValues = new HashMap<>(other.arrayValues);
         classValues = new HashMap<>(other.classValues);
         sequentialSemantics = other.sequentialSemantics;
@@ -242,9 +242,7 @@ public abstract class CFAbstractStore<V extends CFAbstractValue<V>, S extends CF
             // TODO: Also remove if any element/argument to the annotation is not
             // isUnmodifiableByOtherCode.  Example: @KeyFor("valueThatCanBeMutated").
             if (sideEffectsUnrefineAliases) {
-                localVariableValues
-                        .entrySet()
-                        .removeIf(e -> !e.getKey().isUnmodifiableByOtherCode());
+                localVariableValues.entrySet().removeIf(e -> e.getKey().isModifiableByOtherCode());
             }
 
             // update this value
@@ -254,7 +252,7 @@ public abstract class CFAbstractStore<V extends CFAbstractValue<V>, S extends CF
 
             // update field values
             if (sideEffectsUnrefineAliases) {
-                fieldValues.entrySet().removeIf(e -> !e.getKey().isUnmodifiableByOtherCode());
+                fieldValues.entrySet().removeIf(e -> e.getKey().isModifiableByOtherCode());
             } else {
                 // Case 2 (unassignable fields) and case 3 (monotonic fields)
                 updateFieldValuesForMethodCall(atypeFactory);
@@ -264,7 +262,7 @@ public abstract class CFAbstractStore<V extends CFAbstractValue<V>, S extends CF
             arrayValues.clear();
 
             // update method values
-            methodValues.keySet().removeIf(e -> !e.isUnmodifiableByOtherCode());
+            methodCallExpressions.keySet().removeIf(MethodCall::isModifiableByOtherCode);
         }
 
         // store information about method call if possible
@@ -292,7 +290,7 @@ public abstract class CFAbstractStore<V extends CFAbstractValue<V>, S extends CF
             GenericAnnotatedTypeFactory<V, S, ?, ?> atypeFactory,
             V value) {
         // Handle unassignable fields.
-        if (fieldAccess.isUnassignableByOtherCode()) {
+        if (!fieldAccess.isAssignableByOtherCode()) {
             return value;
         }
 
@@ -631,7 +629,7 @@ public abstract class CFAbstractStore<V extends CFAbstractValue<V>, S extends CF
             // Only store information about final fields (where the receiver is
             // also fixed) if concurrent semantics are enabled.
             boolean isMonotonic = isMonotonicUpdate(fieldAcc, value);
-            if (sequentialSemantics || isMonotonic || fieldAcc.isUnassignableByOtherCode()) {
+            if (sequentialSemantics || isMonotonic || !fieldAcc.isAssignableByOtherCode()) {
                 V oldValue = fieldValues.get(fieldAcc);
                 V newValue = merger.apply(oldValue, value);
                 if (newValue != null) {
@@ -642,10 +640,10 @@ public abstract class CFAbstractStore<V extends CFAbstractValue<V>, S extends CF
             MethodCall method = (MethodCall) expr;
             // Don't store any information if concurrent semantics are enabled.
             if (sequentialSemantics) {
-                V oldValue = methodValues.get(method);
+                V oldValue = methodCallExpressions.get(method);
                 V newValue = merger.apply(oldValue, value);
                 if (newValue != null) {
-                    methodValues.put(method, newValue);
+                    methodCallExpressions.put(method, newValue);
                 }
             }
         } else if (expr instanceof ArrayAccess) {
@@ -659,7 +657,7 @@ public abstract class CFAbstractStore<V extends CFAbstractValue<V>, S extends CF
             }
         } else if (expr instanceof ThisReference) {
             ThisReference thisRef = (ThisReference) expr;
-            if (sequentialSemantics || thisRef.isUnassignableByOtherCode()) {
+            if (sequentialSemantics || !thisRef.isAssignableByOtherCode()) {
                 V oldValue = thisValue;
                 V newValue = merger.apply(oldValue, value);
                 if (newValue != null) {
@@ -668,7 +666,7 @@ public abstract class CFAbstractStore<V extends CFAbstractValue<V>, S extends CF
             }
         } else if (expr instanceof ClassName) {
             ClassName className = (ClassName) expr;
-            if (sequentialSemantics || className.isUnassignableByOtherCode()) {
+            if (sequentialSemantics || !className.isAssignableByOtherCode()) {
                 V oldValue = classValues.get(className);
                 V newValue = merger.apply(oldValue, value);
                 if (newValue != null) {
@@ -763,7 +761,7 @@ public abstract class CFAbstractStore<V extends CFAbstractValue<V>, S extends CF
             fieldValues.remove(fieldAcc);
         } else if (expr instanceof MethodCall) {
             MethodCall method = (MethodCall) expr;
-            methodValues.remove(method);
+            methodCallExpressions.remove(method);
         } else if (expr instanceof ArrayAccess) {
             ArrayAccess a = (ArrayAccess) expr;
             arrayValues.remove(a);
@@ -793,7 +791,7 @@ public abstract class CFAbstractStore<V extends CFAbstractValue<V>, S extends CF
             return fieldValues.get(fieldAcc);
         } else if (expr instanceof MethodCall) {
             MethodCall method = (MethodCall) expr;
-            return methodValues.get(method);
+            return methodCallExpressions.get(method);
         } else if (expr instanceof ArrayAccess) {
             ArrayAccess a = (ArrayAccess) expr;
             return arrayValues.get(a);
@@ -855,7 +853,7 @@ public abstract class CFAbstractStore<V extends CFAbstractValue<V>, S extends CF
         if (method == null) {
             return null;
         }
-        return methodValues.get(method);
+        return methodCallExpressions.get(method);
     }
 
     /**
@@ -904,7 +902,7 @@ public abstract class CFAbstractStore<V extends CFAbstractValue<V>, S extends CF
             // also fixed) if concurrent semantics are enabled.
             if (sequentialSemantics
                     || isMonotonicUpdate(fieldAccess, val)
-                    || fieldAccess.isUnassignableByOtherCode()) {
+                    || !fieldAccess.isAssignableByOtherCode()) {
                 fieldValues.put(fieldAccess, val);
             }
         }
@@ -1001,7 +999,7 @@ public abstract class CFAbstractStore<V extends CFAbstractValue<V>, S extends CF
         }
 
         // case 3:
-        methodValues.clear();
+        methodCallExpressions.clear();
     }
 
     /**
@@ -1052,7 +1050,7 @@ public abstract class CFAbstractStore<V extends CFAbstractValue<V>, S extends CF
         }
 
         // case 3:
-        methodValues.clear();
+        methodCallExpressions.clear();
     }
 
     /**
@@ -1089,14 +1087,14 @@ public abstract class CFAbstractStore<V extends CFAbstractValue<V>, S extends CF
             }
         }
 
-        Iterator<Map.Entry<MethodCall, V>> methodValuesIterator =
-                methodValues.entrySet().iterator();
-        while (methodValuesIterator.hasNext()) {
-            Map.Entry<MethodCall, V> entry = methodValuesIterator.next();
+        Iterator<Map.Entry<MethodCall, V>> methodCallValuesIterator =
+                methodCallExpressions.entrySet().iterator();
+        while (methodCallValuesIterator.hasNext()) {
+            Map.Entry<MethodCall, V> entry = methodCallValuesIterator.next();
             MethodCall otherMethodAccess = entry.getKey();
             // case 3:
             if (otherMethodAccess.containsSyntacticEqualJavaExpression(var)) {
-                methodValuesIterator.remove();
+                methodCallValuesIterator.remove();
             }
         }
     }
@@ -1220,16 +1218,16 @@ public abstract class CFAbstractStore<V extends CFAbstractValue<V>, S extends CF
                 }
             }
         }
-        for (Map.Entry<MethodCall, V> e : other.methodValues.entrySet()) {
+        for (Map.Entry<MethodCall, V> e : other.methodCallExpressions.entrySet()) {
             // information about methods that are only part of one store, but not the other are
             // discarded, as one store implicitly contains 'top' for that field.
             MethodCall el = e.getKey();
-            V thisVal = methodValues.get(el);
+            V thisVal = methodCallExpressions.get(el);
             if (thisVal != null) {
                 V otherVal = e.getValue();
                 V mergedVal = upperBoundOfValues(otherVal, thisVal, shouldWiden);
                 if (mergedVal != null) {
-                    newStore.methodValues.put(el, mergedVal);
+                    newStore.methodCallExpressions.put(el, mergedVal);
                 }
             }
         }
@@ -1282,9 +1280,9 @@ public abstract class CFAbstractStore<V extends CFAbstractValue<V>, S extends CF
                 return false;
             }
         }
-        for (Map.Entry<MethodCall, V> e : other.methodValues.entrySet()) {
+        for (Map.Entry<MethodCall, V> e : other.methodCallExpressions.entrySet()) {
             MethodCall key = e.getKey();
-            V value = methodValues.get(key);
+            V value = methodCallExpressions.get(key);
             if (value == null || !value.equals(e.getValue())) {
                 return false;
             }
@@ -1357,8 +1355,8 @@ public abstract class CFAbstractStore<V extends CFAbstractValue<V>, S extends CF
         for (ArrayAccess fa : ToStringComparator.sorted(arrayValues.keySet())) {
             res.add(viz.visualizeStoreArrayVal(fa, arrayValues.get(fa)));
         }
-        for (MethodCall fa : ToStringComparator.sorted(methodValues.keySet())) {
-            res.add(viz.visualizeStoreMethodVals(fa, methodValues.get(fa)));
+        for (MethodCall fa : ToStringComparator.sorted(methodCallExpressions.keySet())) {
+            res.add(viz.visualizeStoreMethodVals(fa, methodCallExpressions.get(fa)));
         }
         for (ClassName fa : ToStringComparator.sorted(classValues.keySet())) {
             res.add(viz.visualizeStoreClassVals(fa, classValues.get(fa)));

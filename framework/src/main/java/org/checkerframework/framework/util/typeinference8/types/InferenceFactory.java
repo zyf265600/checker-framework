@@ -198,7 +198,7 @@ public class InferenceFactory {
                     return new ProperType(res, TreeUtils.typeOf(var), this.context);
                 } else {
                     throw new BugInCF(
-                            "Unexpected assignment context.\nKind: %s\nTree: %s",
+                            "Unexpected assignment context.%nKind: %s%nTree: %s",
                             context.getKind(), context);
                 }
         }
@@ -1015,7 +1015,12 @@ public class InferenceFactory {
             if (ei.isProper()) {
                 properTypes.add((ProperType) ei);
             } else {
-                es.add((UseOfVariable) ei);
+                UseOfVariable varEi = (UseOfVariable) ei;
+                if (varEi.getVariable().getInstantiation() != null) {
+                    properTypes.add(varEi.getVariable().getInstantiation());
+                } else {
+                    es.add((UseOfVariable) ei);
+                }
             }
         }
         if (es.isEmpty()) {

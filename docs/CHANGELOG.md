@@ -1,3 +1,36 @@
+Version 3.44.0 (June 3, 2024)
+-----------------------------
+
+**Implementation details:**
+
+Removed methods:
+ * `AbstractAnalysis.readFromStore()`:  use `Map.get()`
+
+Renamed methods:
+ * `CFAbstractStore.methodValues()` => `methodCallExpressions()`
+ * `AbstractCFGVisualizer.format()` => `escapeString()`
+
+Renamed fields:
+ * `AnalysisResult.stores` => `inputs`
+
+Deprecated methods:
+ * `AbstractAnalysis.getContainingMethod()` => `getEnclosingMethod()`
+ * `AbstractAnalysis.getContainingClass()` => `getEnclosingMethod()`
+ * `ControlFlowGraph.getContainingMethod()` => `getEnclosingMethod()`
+ * `ControlFlowGraph.getContainingClass()` => `getEnclosingClass()`
+ * `JavaExpression.isUnassignableByOtherCode()` => `isAssignableByOtherCode()`
+ * `JavaExpression.isUnmodifiableByOtherCode()` => `isModifiableByOtherCode()`
+
+`BaseTypeVisitor#visitMethod(MethodTree, Void)` is now `final`.
+Subclasses should override `BaseTypeVisitor#processMethodTree(MethodTree)`.
+
+**Closed issues:**
+
+#802, #2676, #2780, #2926, #3378, #3612, #3764, #4007, #4964, #5070, #5176,
+#5237, #5541, #6046, #6382, #6388, #6566, #6568, #6570, #6576, #6577, #6631,
+#6635, #6636, #6644.
+
+
 Version 3.43.0 (May 1, 2024)
 ----------------------------
 

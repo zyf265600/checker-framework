@@ -64,7 +64,6 @@ public class TestConfigurationBuilder {
                         .addOption("-g")
                         .addOption("-Xlint:unchecked")
                         .addOption("-Xlint:deprecation")
-                        .addOption("-XDrawDiagnostics") // use short javac diagnostics
                         .addOption("-ApermitMissingJdk")
                         .addOption("-AnoJreVersionCheck");
 
