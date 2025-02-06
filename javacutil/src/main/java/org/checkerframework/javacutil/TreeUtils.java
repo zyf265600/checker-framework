@@ -2658,8 +2658,7 @@ public final class TreeUtils {
         }
 
         // For some calls the varargsElement element disappears when it should not. This seems to
-        // only
-        // be a problem with MethodHandle#invoke and only with no arguments.  See
+        // only be a problem with MethodHandle#invoke and only with no arguments.  See
         // framework/tests/all-systems/Issue6078.java.
         // So also check for a mismatch between parameter and argument size.
         // Such a mismatch occurs for every enum constructor: no args, two params (String name, int
