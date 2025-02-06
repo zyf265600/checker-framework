@@ -518,12 +518,12 @@ public class BaseTypeVisitor<Factory extends GenericAnnotatedTypeFactory<?, ?, ?
 
         String withAnnotations;
         try (InputStream annotationInputStream = root.getSourceFile().openInputStream()) {
-            // This check only runs on files from the Checker Framework test suite, which should all
-            // use UNIX line separators. Using System.lineSeparator instead of "\n" could cause the
-            // test to fail on Mac or Windows.
             withAnnotations =
                     new InsertAjavaAnnotations(elements)
-                            .insertAnnotations(annotationInputStream, withoutAnnotations, "\n");
+                            .insertAnnotations(
+                                    annotationInputStream,
+                                    withoutAnnotations,
+                                    System.lineSeparator());
         } catch (IOException e) {
             throw new BugInCF("Error while reading Java file: " + root.getSourceFile().toUri(), e);
         }
@@ -533,7 +533,7 @@ public class BaseTypeVisitor<Factory extends GenericAnnotatedTypeFactory<?, ?, ?
             modifiedAst = JavaParserUtil.parseCompilationUnit(withAnnotations);
         } catch (ParseProblemException e) {
             throw new BugInCF(
-                    "Failed to parse code after annotation insertion:\n" + withAnnotations, e);
+                    "Failed to parse code after annotation insertion: " + withAnnotations, e);
         }
 
         AnnotationEqualityVisitor visitor = new AnnotationEqualityVisitor();
@@ -1002,7 +1002,23 @@ public class BaseTypeVisitor<Factory extends GenericAnnotatedTypeFactory<?, ?, ?
      * Also, it issues a "missing.this" error for static method annotated receivers.
      */
     @Override
-    public Void visitMethod(MethodTree tree, Void p) {
+    public final Void visitMethod(MethodTree tree, Void p) {
+        ClassTree enclosingClass = TreePathUtil.enclosingClass(getCurrentPath());
+        if (checker.shouldSkipDefs(enclosingClass, tree)) {
+            return null;
+        }
+        // TODO: should we pass along the `enclosingClass`, to avoid re-computation?
+        processMethodTree(tree);
+        return null;
+    }
+
+    /**
+     * Type-check {@literal methodTree}. Subclasses should override this method instead of {@link
+     * #visitMethod(MethodTree, Void)}.
+     *
+     * @param tree the method to type-check
+     */
+    public void processMethodTree(MethodTree tree) {
         // We copy the result from getAnnotatedType to ensure that circular types (e.g. K extends
         // Comparable<K>) are represented by circular AnnotatedTypeMirrors, which avoids problems
         // with later checks.
@@ -1027,7 +1043,7 @@ public class BaseTypeVisitor<Factory extends GenericAnnotatedTypeFactory<?, ?, ?
         try {
             if (TreeUtils.isAnonymousConstructor(tree)) {
                 // We shouldn't dig deeper
-                return null;
+                return;
             }
 
             if (TreeUtils.isConstructor(tree)) {
@@ -1099,7 +1115,7 @@ public class BaseTypeVisitor<Factory extends GenericAnnotatedTypeFactory<?, ?, ?
 
             warnInvalidPolymorphicQualifier(tree.getTypeParameters());
 
-            return super.visitMethod(tree, p);
+            super.visitMethod(tree, null);
         } finally {
             methodTree = preMT;
         }
@@ -1135,6 +1151,10 @@ public class BaseTypeVisitor<Factory extends GenericAnnotatedTypeFactory<?, ?, ?
         if (!suggestPureMethods && !PurityUtils.hasPurityAnnotation(atypeFactory, tree)) {
             // There is nothing to check.
             return;
+        }
+
+        if (isExplicitlySideEffectFreeAndDeterministic(tree)) {
+            checker.reportWarning(tree, "purity.effectively.pure", tree.getName());
         }
 
         // `body` is lazily assigned.
@@ -1223,6 +1243,21 @@ public class BaseTypeVisitor<Factory extends GenericAnnotatedTypeFactory<?, ?, ?
             bodyAssigned = true;
         }
         // ...
+    }
+
+    /**
+     * Returns true if the given method is explicitly annotated with both @{@link SideEffectFree}
+     * and @{@link Deterministic}.
+     *
+     * @param tree a method
+     * @return true if a method is explicitly annotated with both @{@link SideEffectFree}
+     *     and @{@link Deterministic}
+     */
+    private boolean isExplicitlySideEffectFreeAndDeterministic(MethodTree tree) {
+        List<AnnotationMirror> annotationMirrors =
+                TreeUtils.annotationsFromTypeAnnotationTrees(tree.getModifiers().getAnnotations());
+        return AnnotationUtils.containsSame(annotationMirrors, SIDE_EFFECT_FREE)
+                && AnnotationUtils.containsSame(annotationMirrors, DETERMINISTIC);
     }
 
     /* NO-AFU
@@ -2546,12 +2581,6 @@ public class BaseTypeVisitor<Factory extends GenericAnnotatedTypeFactory<?, ?, ?
         return null;
     }
 
-    /**
-     * If the computation of the type of the ConditionalExpressionTree in
-     * org.checkerframework.framework.type.TypeFromTree.TypeFromExpression.visitConditionalExpression(ConditionalExpressionTree,
-     * AnnotatedTypeFactory) is correct, the following checks are redundant. However, let's add
-     * another failsafe guard and do the checks.
-     */
     @Override
     public Void visitConditionalExpression(ConditionalExpressionTree tree, Void p) {
         if (TreeUtils.isPolyExpression(tree)) {
@@ -2562,6 +2591,10 @@ public class BaseTypeVisitor<Factory extends GenericAnnotatedTypeFactory<?, ?, ?
             return super.visitConditionalExpression(tree, p);
         }
 
+        // If the computation of the type of the ConditionalExpressionTree in
+        // org.checkerframework.framework.type.TypeFromTree.TypeFromExpression.visitConditionalExpression(ConditionalExpressionTree,
+        // AnnotatedTypeFactory) is correct, the following checks are redundant. However, let's add
+        // another failsafe guard and do the checks.
         AnnotatedTypeMirror cond = atypeFactory.getAnnotatedType(tree);
         this.commonAssignmentCheck(cond, tree.getTrueExpression(), "conditional.type.incompatible");
         this.commonAssignmentCheck(

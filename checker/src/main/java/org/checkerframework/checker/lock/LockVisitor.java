@@ -164,7 +164,7 @@ public class LockVisitor extends BaseTypeVisitor<LockAnnotatedTypeFactory> {
      * @param tree the MethodTree of the method definition to visit
      */
     @Override
-    public Void visitMethod(MethodTree tree, Void p) {
+    public void processMethodTree(MethodTree tree) {
         ExecutableElement methodElement = TreeUtils.elementFromDeclaration(tree);
 
         issueErrorIfMoreThanOneLockPreconditionMethodAnnotationPresent(methodElement, tree);
@@ -218,7 +218,7 @@ public class LockVisitor extends BaseTypeVisitor<LockAnnotatedTypeFactory> {
             checker.reportError(tree, "lockingfree.synchronized.method", sea);
         }
 
-        return super.visitMethod(tree, p);
+        super.processMethodTree(tree);
     }
 
     /**
@@ -567,14 +567,14 @@ public class LockVisitor extends BaseTypeVisitor<LockAnnotatedTypeFactory> {
         }
 
         if (enclosingMethodElement != null) {
-            SideEffectAnnotation seaOfContainingMethod =
+            SideEffectAnnotation seaOfEnclosingMethod =
                     atypeFactory.methodSideEffectAnnotation(enclosingMethodElement, false);
 
-            if (seaOfInvokedMethod.isWeakerThan(seaOfContainingMethod)) {
+            if (seaOfInvokedMethod.isWeakerThan(seaOfEnclosingMethod)) {
                 checker.reportError(
                         methodInvocationTree,
                         "method.guarantee.violated",
-                        seaOfContainingMethod.getNameOfSideEffectAnnotation(),
+                        seaOfEnclosingMethod.getNameOfSideEffectAnnotation(),
                         enclosingMethodElement.getSimpleName(),
                         methodElement.getSimpleName(),
                         seaOfInvokedMethod.getNameOfSideEffectAnnotation());
@@ -849,12 +849,12 @@ public class LockVisitor extends BaseTypeVisitor<LockAnnotatedTypeFactory> {
         if (enclosingMethod != null) {
             methodElement = TreeUtils.elementFromDeclaration(enclosingMethod);
 
-            SideEffectAnnotation seaOfContainingMethod =
+            SideEffectAnnotation seaOfEnclosingMethod =
                     atypeFactory.methodSideEffectAnnotation(methodElement, false);
 
-            if (!seaOfContainingMethod.isWeakerThan(SideEffectAnnotation.LOCKINGFREE)) {
+            if (!seaOfEnclosingMethod.isWeakerThan(SideEffectAnnotation.LOCKINGFREE)) {
                 checker.reportError(
-                        tree, "synchronized.block.in.lockingfree.method", seaOfContainingMethod);
+                        tree, "synchronized.block.in.lockingfree.method", seaOfEnclosingMethod);
             }
         }
 

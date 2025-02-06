@@ -499,8 +499,8 @@ public class ValueVisitor extends BaseTypeVisitor<ValueAnnotatedTypeFactory> {
     }
 
     @Override
-    public Void visitMethod(MethodTree tree, Void p) {
-        super.visitMethod(tree, p);
+    public void processMethodTree(MethodTree tree) {
+        super.processMethodTree(tree);
 
         ExecutableElement method = TreeUtils.elementFromDeclaration(tree);
         if (atypeFactory.getDeclAnnotation(method, StaticallyExecutable.class) != null) {
@@ -550,6 +550,5 @@ public class ValueVisitor extends BaseTypeVisitor<ValueAnnotatedTypeFactory> {
                 }
             }
         }
-        return null;
     }
 }

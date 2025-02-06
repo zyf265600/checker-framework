@@ -44,7 +44,7 @@ def majorVersionToInt(majorVersionString) {
 ext {
     // Whether to use EISOP formatting.
     // Can also be achieved by having a project property with the same name.
-    eisopFormatting = true
+    eisopFormatting = true || project.hasProperty('eisopFormatting')
 
     // On a Java 8 JVM, use error-prone javac and source/target 8.
     // On a Java 9+ JVM, use the host javac, default source/target, and required module flags.
@@ -162,7 +162,7 @@ allprojects { currentProj ->
     //   * any new checkers have been added, or
     //   * backward-incompatible changes have been made to APIs or elsewhere.
     // To make a snapshot release: ./gradlew publish
-    version = '3.43.0'
+    version = '3.44.0'
 
     tasks.withType(JavaCompile).configureEach {
         options.fork = true
@@ -323,7 +323,7 @@ allprojects { currentProj ->
                 }
                 targetExclude doNotFormat
 
-                if (eisopFormatting || project.hasProperty('eisopFormatting')) {
+                if (eisopFormatting) {
                     googleJavaFormat(versions.googleJavaFormat).aosp()
                     importOrder('com', 'jdk', 'lib', 'lombok', 'org', 'java', 'javax')
                 } else {
@@ -338,7 +338,7 @@ allprojects { currentProj ->
                     target '**/*.gradle'
                     targetExclude doNotFormat
                     greclipse()  // which formatter Spotless should use to format .gradle files.
-                    if (eisopFormatting || project.hasProperty('eisopFormatting')) {
+                    if (eisopFormatting) {
                         leadingTabsToSpaces(4)
                     } else {
                         leadingTabsToSpaces(2)
@@ -1162,9 +1162,10 @@ subprojects {
                         }
                     } catch (Exception ex) {
                         if (ex.getCause() != null && ex.getCause().getCause()!= null) {
-                            String msg = ex.getCause().getLocalizedMessage() + ':\n'
-                            msg += ex.getCause().getCause().getLocalizedMessage() + '\n'
-                            msg += 'Have you installed jtreg?'
+                            String msg = String.join(System.lineSeparator(),
+                                    ex.getCause().getLocalizedMessage() + ':',
+                                    ex.getCause().getCause().getLocalizedMessage(),
+                                    'Have you installed jtreg?')
                             println msg
                         }
                         throw ex
@@ -1193,23 +1194,33 @@ subprojects {
                 jvmArgs += compilerArgsForRunningCF
             }
 
+            // maxParallelForks controls the parallelism of a single Test
+            // task. --parallel controls parallelism for the entire build.
+
             // Run tests in parallel, except on CI where it seems to lead to flaky failures.
             // The TF_BUILD environment variable is set to 'True' for jobs running on Azure Pipelines.
             if (!System.getenv('TF_BUILD')?.equals('True')) {
                 // Not running under Azure Pipelines CI.
 
-                // This uses Gradle's recommended value for `maxParallelForks`:
-                // https://docs.gradle.org/current/userguide/performance.html#optimize_java_projects
-                maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
+                maxParallelForks = Runtime.runtime.availableProcessors() ?: 1
             } else {
                 // Running under Azure Pipelines CI.
+
+                // Per Manu's comment above, on CI, parallelism seems to lead to flaky failures.
+                maxParallelForks = 1
 
                 // Azure seems to time out when a task doesn't produce periodic output.
                 if (project.name.is('checker')) {
                     testLogging {
-                        events "started", "skipped", "failed"
+                        events "started", "skipped", "failed", "passed"
                         displayGranularity 3
                     }
+                }
+
+                // Fork the test to try to improve performance.
+                // https://docs.gradle.org/current/userguide/performance.html#fork_tests_into_multiple_processes
+                tasks.withType(Test).configureEach {
+                    forkEvery = 25
                 }
             }
 
