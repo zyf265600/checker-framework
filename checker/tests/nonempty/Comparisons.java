@@ -8,7 +8,7 @@ class Comparisons {
     /**** Tests for EQ ****/
     void testEqZeroWithReturn(List<String> strs) {
         if (strs.size() == 0) {
-            // :: error: (method.invocation)
+            // :: error: (method.invocation.invalid)
             strs.iterator().next();
             return;
         }
@@ -17,10 +17,10 @@ class Comparisons {
 
     void testEqZeroFallthrough(List<String> strs) {
         if (strs.size() == 0) {
-            // :: error: (method.invocation)
+            // :: error: (method.invocation.invalid)
             strs.iterator().next();
         }
-        // :: error: (method.invocation)
+        // :: error: (method.invocation.invalid)
         strs.iterator().next();
     }
 
@@ -28,7 +28,7 @@ class Comparisons {
         if (1 == strs.size()) {
             strs.iterator().next();
         } else {
-            // :: error: (method.invocation)
+            // :: error: (method.invocation.invalid)
             strs.iterator().next();
         }
     }
@@ -40,7 +40,7 @@ class Comparisons {
         if (strs1.size() == strs2.size()) {
             @NonEmpty List<String> strs3 = strs2; // OK
         }
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         @NonEmpty List<String> strs4 = strs2;
     }
 
@@ -57,7 +57,7 @@ class Comparisons {
 
     void testEqualIndexOfRefinement(List<Object> objs, Object obj) {
         if (objs.indexOf(obj) == -1) {
-            // :: error: (assignment)
+            // :: error: (assignment.type.incompatible)
             @NonEmpty List<Object> objs2 = objs;
         } else {
             objs.iterator().next();
@@ -73,7 +73,7 @@ class Comparisons {
             strs.iterator().next();
         }
         if (1 != strs.size()) {
-            // :: error: (method.invocation)
+            // :: error: (method.invocation.invalid)
             strs.iterator().next();
         }
     }
@@ -83,7 +83,7 @@ class Comparisons {
             return;
         }
         if (strs1.size() != strs2.size()) {
-            // :: error: (assignment)
+            // :: error: (assignment.type.incompatible)
             @NonEmpty List<String> strs3 = strs2;
         } else {
             @NonEmpty List<String> strs4 = strs1;
@@ -95,13 +95,13 @@ class Comparisons {
         if (objs.indexOf(obj) != -1) {
             @NonEmpty List<Object> objs2 = objs;
         } else {
-            // :: error: (method.invocation)
+            // :: error: (method.invocation.invalid)
             objs.iterator().next();
         }
         if (-1 != objs.indexOf(obj)) {
             @NonEmpty List<Object> objs2 = objs;
         } else {
-            // :: error: (method.invocation)
+            // :: error: (method.invocation.invalid)
             objs.iterator().next();
         }
     }
@@ -111,31 +111,31 @@ class Comparisons {
         if (strs.size() > 10) {
             strs.iterator().next();
         } else if (0 > strs.size()) {
-            // :: error: (method.invocation)
+            // :: error: (method.invocation.invalid)
             strs.iterator().next();
         } else if (100 > strs.size()) {
-            // :: error: (method.invocation)
+            // :: error: (method.invocation.invalid)
             strs.iterator().next();
         }
         if (strs.size() > 0) {
             strs.iterator().next();
         } else {
-            // :: error: (method.invocation)
+            // :: error: (method.invocation.invalid)
             strs.iterator().next();
         }
 
         if (0 > strs.size()) {
-            // :: error: (method.invocation)
+            // :: error: (method.invocation.invalid)
             strs.iterator().next();
         } else {
-            // :: error: (method.invocation)
+            // :: error: (method.invocation.invalid)
             strs.iterator().next();
         }
     }
 
     void t2(List<String> strs) {
         if (strs.size() > -1) {
-            // :: error: (method.invocation)
+            // :: error: (method.invocation.invalid)
             strs.iterator().next();
         }
     }
@@ -144,7 +144,7 @@ class Comparisons {
         if (objs.indexOf(obj) > -1) {
             @NonEmpty List<Object> objs2 = objs;
         } else {
-            // :: error: (method.invocation)
+            // :: error: (method.invocation.invalid)
             objs.iterator().next();
         }
     }
@@ -152,7 +152,7 @@ class Comparisons {
     /**** Tests for GTE ****/
     void t3(List<String> strs) {
         if (strs.size() >= 0) {
-            // :: error: (method.invocation)
+            // :: error: (method.invocation.invalid)
             strs.iterator().next();
         } else if (strs.size() >= 1) {
             strs.iterator().next();
@@ -161,7 +161,7 @@ class Comparisons {
 
     void t4(List<String> strs) {
         if (0 >= strs.size()) {
-            // :: error: (method.invocation)
+            // :: error: (method.invocation.invalid)
             strs.iterator().next();
         }
     }
@@ -170,7 +170,7 @@ class Comparisons {
         if (strs.indexOf(s) >= 0) {
             strs.iterator().next();
         } else {
-            // :: error: (assignment)
+            // :: error: (assignment.type.incompatible)
             @NonEmpty List<String> strs2 = strs;
         }
     }
@@ -178,11 +178,11 @@ class Comparisons {
     /**** Tests for LT ****/
     void t5(List<String> strs) {
         if (strs.size() < 10) {
-            // :: error: (method.invocation)
+            // :: error: (method.invocation.invalid)
             strs.iterator().next();
         }
         if (strs.size() < 1) {
-            // :: error: (method.invocation)
+            // :: error: (method.invocation.invalid)
             strs.iterator().next();
         } else {
             strs.iterator().next(); // OK
@@ -193,13 +193,13 @@ class Comparisons {
         if (0 < strs.size()) {
             strs.iterator().next(); // Equiv. to strs.size() > 0
         } else {
-            // :: error: (method.invocation)
+            // :: error: (method.invocation.invalid)
             strs.iterator().next(); // Equiv. to strs.size() <= 0
         }
 
         if (strs.size() < 10) {
             // Doesn't tell us a useful fact
-            // :: error: (method.invocation)
+            // :: error: (method.invocation.invalid)
             strs.iterator().next();
         } else {
             strs.iterator().next();
@@ -209,11 +209,11 @@ class Comparisons {
     /**** Tests for LTE ****/
     void t7(List<String> strs) {
         if (strs.size() <= 2) {
-            // :: error: (method.invocation)
+            // :: error: (method.invocation.invalid)
             strs.iterator().next();
         }
         if (strs.size() <= 0) {
-            // :: error: (method.invocation)
+            // :: error: (method.invocation.invalid)
             strs.iterator().next();
         } else {
             strs.iterator().next(); // OK, since strs must be non-empty
@@ -224,15 +224,15 @@ class Comparisons {
         if (1 <= strs.size()) {
             strs.iterator().next();
         } else {
-            // :: error: (method.invocation)
+            // :: error: (method.invocation.invalid)
             strs.iterator().next();
         }
 
         if (0 <= strs.size()) {
-            // :: error: (method.invocation)
+            // :: error: (method.invocation.invalid)
             strs.iterator().next();
         } else {
-            // :: error: (method.invocation)
+            // :: error: (method.invocation.invalid)
             strs.iterator().next();
         }
     }

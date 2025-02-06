@@ -30,7 +30,7 @@ class ListOperations {
     void testAddAllWithEmptyList() {
         List<Integer> nums = new ArrayList<>();
         nums.addAll(List.of());
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         @NonEmpty List<Integer> nums2 = nums;
     }
 
@@ -45,7 +45,7 @@ class ListOperations {
         if (nums.contains(11)) {
             @NonEmpty List<Integer> nums2 = nums; // OK
         }
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         @NonEmpty List<Integer> nums2 = nums;
     }
     // TODO: consider other sequences (e.g., calling get(int) after clear())

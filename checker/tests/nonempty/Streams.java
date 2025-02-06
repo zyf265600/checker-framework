@@ -13,7 +13,7 @@ class Streams {
         if (strStream.anyMatch(str -> str.length() > 10)) {
             @NonEmpty Stream<String> neStream = strStream;
         } else {
-            // :: error: (assignment)
+            // :: error: (assignment.type.incompatible)
             @NonEmpty Stream<String> err = strStream;
         }
     }
@@ -22,7 +22,7 @@ class Streams {
         if (strStream.allMatch(str -> str.length() > 10)) {
             @NonEmpty Stream<String> neStream = strStream;
         } else {
-            // :: error: (assignment)
+            // :: error: (assignment.type.incompatible)
             @NonEmpty Stream<String> err = strStream;
         }
     }
@@ -32,13 +32,13 @@ class Streams {
     }
 
     void testMapNonEmptyStream(Stream<String> strs) {
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         @NonEmpty Stream<Integer> lens = strs.map(str -> str.length());
     }
 
     void testNoneMatch(Stream<String> strs) {
         if (strs.noneMatch(str -> str.length() < 10)) {
-            // :: error: (assignment)
+            // :: error: (assignment.type.incompatible)
             @NonEmpty Stream<String> err = strs;
         } else {
             // something matched; meaning that the stream MUST be non-empty

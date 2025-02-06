@@ -14,7 +14,7 @@ class UnmodifiableTest {
 
     void checkNonEmptyThenCopy(List<String> strs) {
         if (strs.isEmpty()) {
-            // :: error: (method.invocation)
+            // :: error: (method.invocation.invalid)
             Collections.unmodifiableList(strs).iterator().next();
         } else {
             Collections.unmodifiableList(strs).iterator().next(); // OK
@@ -22,7 +22,7 @@ class UnmodifiableTest {
     }
 
     void testVarArgsEmpty() {
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         @NonEmpty List<String> items = List.of();
     }
 

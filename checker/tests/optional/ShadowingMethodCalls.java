@@ -34,13 +34,13 @@ public class ShadowingMethodCalls {
 
         void callSuperAndCheckThis() {
             super.setF();
-            // :: error: (method.invocation)
+            // :: error: (method.invocation.invalid)
             this.f.get();
         }
 
         void callThisAndCheckThis() {
             this.setF();
-            // :: error: (method.invocation)
+            // :: error: (method.invocation.invalid)
             this.f.get();
             super.f.get();
         }

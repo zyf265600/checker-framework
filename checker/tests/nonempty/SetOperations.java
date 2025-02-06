@@ -7,7 +7,7 @@ class SetOperations {
 
     void testIsEmpty(Set<Integer> nums) {
         if (nums.isEmpty()) {
-            // :: error: (assignment)
+            // :: error: (assignment.type.incompatible)
             @NonEmpty Set<Integer> nums2 = nums;
         } else {
             @NonEmpty Set<Integer> nums3 = nums; // OK
@@ -18,13 +18,13 @@ class SetOperations {
         if (nums.contains(1)) {
             @NonEmpty Set<Integer> nums2 = nums;
         } else {
-            // :: error: (assignment)
+            // :: error: (assignment.type.incompatible)
             @NonEmpty Set<Integer> nums3 = nums;
         }
     }
 
     void testAdd(Set<Integer> nums) {
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         @NonEmpty Set<Integer> nums2 = nums; // No guarantee that the set is non-empty here
         if (nums.add(1)) {
             @NonEmpty Set<Integer> nums3 = nums;
@@ -33,13 +33,13 @@ class SetOperations {
 
     void testAddAllEmptySet() {
         Set<Integer> nums = new HashSet<>();
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         @NonEmpty Set<Integer> nums2 = nums;
         if (nums.addAll(Set.of())) {
             // Adding an empty set will always return false, this is effectively dead code
             @NonEmpty Set<Integer> nums3 = nums;
         } else {
-            // :: error: (assignment)
+            // :: error: (assignment.type.incompatible)
             @NonEmpty Set<Integer> nums3 = nums;
         }
     }
@@ -50,7 +50,7 @@ class SetOperations {
         @NonEmpty Set<Integer> nums2 = nums;
         nums.remove(1);
 
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         @NonEmpty Set<Integer> nums3 = nums;
     }
 }

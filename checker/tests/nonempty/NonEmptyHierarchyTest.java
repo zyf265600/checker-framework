@@ -8,7 +8,7 @@ class NonEmptyHierarchyTest {
     void testAssignments(@NonEmpty List<String> l1, @UnknownNonEmpty List<String> l2) {
         @NonEmpty List<String> l3 = l1; // OK, both are @NonEmpty
 
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         @NonEmpty List<String> l4 = l2;
 
         List<String> l5 =

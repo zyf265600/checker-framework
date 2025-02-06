@@ -21,11 +21,11 @@ class EnsuresNonEmptyIfTest {
 
     void test(ArrayList<String> l1) {
         // m2 requires a @NonEmpty collection, l1 has type @UnknownNonEmpty
-        // :: error: (argument)
+        // :: error: (argument.type.incompatible)
         m2(l1);
 
         if (!m1(l1)) {
-            // :: error: (argument)
+            // :: error: (argument.type.incompatible)
             m2(l1);
         } else {
             m2(l1); // OK

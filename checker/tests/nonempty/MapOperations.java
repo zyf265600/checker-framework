@@ -29,7 +29,7 @@ class MapOperations {
         if (m.containsKey(key)) {
             @NonEmpty Map<String, Integer> m2 = m; // OK
         } else {
-            // :: error: (assignment)
+            // :: error: (assignment.type.incompatible)
             @NonEmpty Map<String, Integer> m2 = m; // OK
         }
     }
@@ -38,7 +38,7 @@ class MapOperations {
         if (m.containsValue(value)) {
             @NonEmpty Map<String, Integer> m2 = m;
         } else {
-            // :: error: (assignment)
+            // :: error: (assignment.type.incompatible)
             @NonEmpty Map<String, Integer> m2 = m;
         }
     }
