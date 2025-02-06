@@ -1264,7 +1264,7 @@ differences from the real Nullness checker:
 </pre>
 
 <p>
-The <a href="https://checkerframework.org/manual/#signature-checker">Signature
+The <a href="https://eisop.github.io/cf/manual/#signature-checker">Signature
 String Checker</a> issues a warning, because it does not reason about
 arbitrary string manipulations.  The code is correct, but it is in bad
 style.  It is confusing to perform string manipulations to convert between
@@ -1288,9 +1288,9 @@ String Checker would heuristically mention
 the <a href="http://plumelib.org/reflection-util/api/org/plumelib/reflection/Signatures.html#getArrayElementType(java.lang.String)"><code>Signatures.getArrayElementType()</code></a>
 method when it issues an error about string manipulation where some input
 is
-a <a href="https://checkerframework.org/api/org/checkerframework/checker/signature/qual/FqBinaryName.html"><code>FqBinaryName</code></a>
+a <a href="https://eisop.github.io/cf/api/org/checkerframework/checker/signature/qual/FqBinaryName.html"><code>FqBinaryName</code></a>
 and the output is annotated
-as <a href="https://checkerframework.org/api/org/checkerframework/checker/signature/qual/ClassGetName.html"><code>ClassGetName</code></a>.
+as <a href="https://eisop.github.io/cf/api/org/checkerframework/checker/signature/qual/ClassGetName.html"><code>ClassGetName</code></a>.
 It would behave similarly for other library methods.
 </p>
 
@@ -1348,7 +1348,7 @@ some distinct challenges:
 
 <p>
 The Checker Framework uses JavaParser to parse
-<a href="https://checkerframework.org/manual/#java-expressions-as-arguments">a
+<a href="https://eisop.github.io/cf/manual/#java-expressions-as-arguments">a
 Java expressions</a>.  However, JavaParser is buggy and poorly maintained.
 The goal of this project is to replace every use of JavaParser by a use of
 <a href="https://github.com/plume-lib/javac-parse">javac-parse</a>.
@@ -1400,7 +1400,7 @@ maintained.
 <p>
 Direct replacement of the classes is not possible, or we would have done it
 already.  For example, <code>JavaExpression</code> contains some methods that
-javac lacks, such as <code>isUnassignableByOtherCode</code>.  As a
+javac lacks, such as <code>isAssignableByOtherCode</code>.  As a
 first step before doing the tasks listed above, you may want to convert
 these methods from instance methods of <code>JavaExpression</code> into static
 methods in <code>JavaExpressions</code>, making <code>JavaExpression</code> more
