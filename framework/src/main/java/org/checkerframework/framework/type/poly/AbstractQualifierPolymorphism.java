@@ -53,7 +53,7 @@ import javax.lang.model.type.TypeKind;
  *   <li>the PolyCollector creates an instantiation
  *   <li>if the instantiation is non-empty: the Replacer does resolution -- that is, it replaces
  *       each occurrence of {@code @Poly*} by the concrete qualifier it maps to in the instantiation
- *   <li>if the instantiation is empty, the Completer replaces each {@code @Poly*} by the top
+ *   <li>if the instantiation is empty, the Completer replaces each {@code @Poly*} by the bottom
  *       qualifier
  * </ul>
  */
@@ -86,6 +86,9 @@ public abstract class AbstractQualifierPolymorphism implements QualifierPolymorp
     /**
      * Completes a type by removing any unresolved polymorphic qualifiers, replacing them with the
      * bottom qualifiers.
+     *
+     * <p>This is only called when {@code instantiationMapping} is empty. (And that implies that
+     * there are no polymorphic qualifiers on formal parameters??)
      */
     private final SimpleAnnotatedTypeScanner<Void, Void> completer;
 
@@ -189,7 +192,7 @@ public abstract class AbstractQualifierPolymorphism implements QualifierPolymorp
             return;
         }
         List<AnnotatedTypeMirror> parameters =
-                AnnotatedTypes.adaptParameters(atypeFactory, type, tree.getArguments(), null);
+                AnnotatedTypes.adaptParameters(atypeFactory, type, tree.getArguments(), tree);
         List<AnnotatedTypeMirror> arguments =
                 CollectionsPlume.mapList(atypeFactory::getAnnotatedType, tree.getArguments());
 

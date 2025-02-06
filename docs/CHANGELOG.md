@@ -1,3 +1,19 @@
+Version 3.45.0 (July 1, 2024)
+-----------------------------
+
+**Implementation details:**
+
+Added a `Tree` argument to `AnnotatedTypes.adaptParameters()`
+
+Deprecated methods:
+ * `TreeUtils.isVarArgs()` => `isVarargsCall()`
+ * `TreeUtils.isVarArgMethodCall()` => `isVarargsCall()`
+
+**Closed issues:**
+
+#152, #5575, #6630, #6641, #6648, #6676.
+
+
 Version 3.44.0 (June 3, 2024)
 -----------------------------
 
