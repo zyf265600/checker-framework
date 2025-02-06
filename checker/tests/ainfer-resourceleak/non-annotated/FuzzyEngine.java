@@ -32,8 +32,7 @@ public class FuzzyEngine {
             } else if (inputVariable.getTerms().isEmpty()) {
                 // ignore because sometimes inputs can be empty: takagi-sugeno/matlab/slcpp1.fis
                 // message.append(String.format("- Input variable <%s> has no terms\n",
-                // inputVariable
-                // .getName()));
+                // inputVariable.getName()));
             }
         }
 

@@ -408,7 +408,7 @@ public class ExpectedTreesVisitor extends TreeScannerWithDefaults {
         // See https://github.com/typetools/checker-framework/issues/6570
         // for a discussion of our motivation for excluding empty statements.
         // Also, empty statements don't have semantics, so it's okay if there
-        // are arbitraily-many extra empty statements in one of the inputs.
+        // are arbitrarily-many extra empty statements in one of the inputs.
         return null;
     }
 }

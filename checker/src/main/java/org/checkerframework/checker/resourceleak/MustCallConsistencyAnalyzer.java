@@ -965,10 +965,8 @@ class MustCallConsistencyAnalyzer {
         MethodInvocationTree methodInvokeTree = (MethodInvocationTree) callTree;
 
         // For must call inference, we do not want to bail out on tracking the obligations for
-        // 'this()'
-        // or 'super()' calls because this tracking is necessary to correctly infer the
-        // @MustCallAlias
-        // annotation for the constructor and its aliasing parameter.
+        // 'this()' or 'super()' calls because this tracking is necessary to correctly infer the
+        // @MustCallAlias annotation for the constructor and its aliasing parameter.
         if (!isMustCallInference
                 && (TreeUtils.isSuperConstructorCall(methodInvokeTree)
                         || TreeUtils.isThisConstructorCall(methodInvokeTree))) {
