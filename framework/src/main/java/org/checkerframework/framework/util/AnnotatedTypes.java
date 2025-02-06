@@ -29,6 +29,7 @@ import org.checkerframework.javacutil.AnnotationMirrorSet;
 import org.checkerframework.javacutil.AnnotationUtils;
 import org.checkerframework.javacutil.BugInCF;
 import org.checkerframework.javacutil.ElementUtils;
+import org.checkerframework.javacutil.SystemUtil;
 import org.checkerframework.javacutil.TreeUtils;
 import org.checkerframework.javacutil.TypesUtils;
 import org.plumelib.util.CollectionsPlume;
@@ -50,7 +51,6 @@ import java.util.Set;
 
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.Element;
-import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.TypeParameterElement;
@@ -1014,31 +1014,6 @@ public class AnnotatedTypes {
     }
 
     /**
-     * Returns the method parameters for the invoked method, with the same number of arguments
-     * passed in the methodInvocation tree.
-     *
-     * <p>If the invoked method is not a vararg method or it is a vararg method but the invocation
-     * passes an array to the vararg parameter, it would simply return the method parameters.
-     *
-     * <p>Otherwise, it would return the list of parameters as if the vararg is expanded to match
-     * the size of the passed arguments.
-     *
-     * @param atypeFactory the type factory to use for fetching annotated types
-     * @param method the method's type
-     * @param args the arguments to the method invocation
-     * @return the types that the method invocation arguments need to be subtype of
-     * @deprecated Use {@link #adaptParameters(AnnotatedTypeFactory, AnnotatedExecutableType, List,
-     *     Tree)} instead
-     */
-    @Deprecated // 2022-04-21
-    public static List<AnnotatedTypeMirror> expandVarArgsParameters(
-            AnnotatedTypeFactory atypeFactory,
-            AnnotatedExecutableType method,
-            List<? extends ExpressionTree> args) {
-        return adaptParameters(atypeFactory, method, args, null);
-    }
-
-    /**
      * Returns the method parameters for the invoked method (or constructor), with the same number
      * of arguments as passed to the invocation tree.
      *
@@ -1058,28 +1033,20 @@ public class AnnotatedTypes {
             AnnotatedExecutableType method,
             List<? extends ExpressionTree> args,
             Tree invok) {
-
         List<AnnotatedTypeMirror> parameters = method.getParameterTypes();
-
-        // Handle anonymous constructors that extend a class with an enclosing type,
-        // as in `new MyClass(){ ... }`.
-        if (method.getElement().getKind() == ElementKind.CONSTRUCTOR
-                && method.getElement().getEnclosingElement().getSimpleName().contentEquals("")) {
-            DeclaredType t =
-                    TypesUtils.getSuperClassOrInterface(
-                            method.getElement().getEnclosingElement().asType(), atypeFactory.types);
-            if (t.getEnclosingType() != null) {
-                if (!parameters.isEmpty()) {
-                    if (atypeFactory.types.isSameType(
-                            t.getEnclosingType(), parameters.get(0).getUnderlyingType())) {
-                        if (args.isEmpty()
-                                || !atypeFactory.types.isSameType(
-                                        TreeUtils.typeOf(args.get(0)),
-                                        parameters.get(0).getUnderlyingType())) {
-                            parameters = parameters.subList(1, parameters.size());
-                        }
-                    }
-                }
+        // Handle anonymous constructors that extend a class with an enclosing type.
+        // There is a mismatch between the number of parameters and arguments when
+        // the following conditions are met:
+        // 1. Java version >= 11
+        // 2. the method is an anonymous constructor
+        // 3. the constructor is invoked with an explicit enclosing expression
+        // In the case, we should remove the first parameter.
+        if (SystemUtil.jreVersion >= 11
+                && invok instanceof NewClassTree
+                && TreeUtils.isAnonymousConstructorWithExplicitEnclosingExpression(
+                        method.getElement(), (NewClassTree) invok)) {
+            if (parameters.size() != args.size() || args.isEmpty()) {
+                parameters = parameters.subList(1, parameters.size());
             }
         }
 
