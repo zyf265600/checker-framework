@@ -1007,6 +1007,7 @@ public class BaseTypeVisitor<Factory extends GenericAnnotatedTypeFactory<?, ?, ?
         if (checker.shouldSkipDefs(enclosingClass, tree)) {
             return null;
         }
+        // TODO: should we pass along the `enclosingClass`, to avoid re-computation?
         processMethodTree(tree);
         return null;
     }
@@ -1018,7 +1019,6 @@ public class BaseTypeVisitor<Factory extends GenericAnnotatedTypeFactory<?, ?, ?
      * @param tree the method to type-check
      */
     public void processMethodTree(MethodTree tree) {
-
         // We copy the result from getAnnotatedType to ensure that circular types (e.g. K extends
         // Comparable<K>) are represented by circular AnnotatedTypeMirrors, which avoids problems
         // with later checks.
