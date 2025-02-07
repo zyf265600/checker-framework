@@ -37,8 +37,8 @@ if [ -d "$GIT_SCRIPTS" ] ; then
   (cd "$GIT_SCRIPTS" && (git pull -q || true))
 else
   (cd "$CHECKERFRAMEWORK/checker/bin-devel" && \
-      (git clone --filter=blob:none -q https://github.com/eisop-plume-lib/git-scripts.git .git-scripts || \
-       (sleep 60 && git clone --filter=blob:none -q https://github.com/eisop-plume-lib/git-scripts.git .git-scripts)))
+      (git clone --depth=1 -q https://github.com/eisop-plume-lib/git-scripts.git .git-scripts || \
+       (sleep 60 && git clone --depth=1 -q https://github.com/eisop-plume-lib/git-scripts.git .git-scripts)))
 fi
 
 # Clone the annotated JDK into ../jdk .
@@ -60,7 +60,7 @@ fi
 
 
 # Download dependencies, trying a second time if there is a failure.
-(TERM=dumb timeout 300 ./gradlew --write-verification-metadata sha256 help --dry-run || \
-     (sleep 1m && ./gradlew --write-verification-metadata sha256 help --dry-run))
+(TERM=dumb timeout 300 ./gradlew resolveDependencies || \
+     (sleep 1m && ./gradlew resolveDependencies))
 
 echo Exiting checker/bin-devel/clone-related.sh in "$(pwd)"

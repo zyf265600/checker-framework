@@ -1484,7 +1484,7 @@ public class AnnotationFileParser {
                         param.getType(),
                         param.getAnnotations(),
                         param);
-                // The "VarArgsAnnotations" are those just before "...".
+                // The "VarargsAnnotations" are those just before "...".
                 annotate(paramType, param.getVarArgsAnnotations(), param);
             } else {
                 annotate(paramType, param.getType(), param.getAnnotations(), param);
