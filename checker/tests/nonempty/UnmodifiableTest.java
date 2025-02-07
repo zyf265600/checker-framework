@@ -1,3 +1,5 @@
+// @below-java9-jdk-skip-test
+
 import static java.util.Map.entry;
 
 import org.checkerframework.checker.nonempty.qual.NonEmpty;

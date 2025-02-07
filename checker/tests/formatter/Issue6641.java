@@ -1,3 +1,5 @@
+// @below-java9-jdk-skip-test
+
 import java.util.Map;
 
 public class Issue6641 {
