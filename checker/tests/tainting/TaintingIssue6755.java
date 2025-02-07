@@ -1,3 +1,5 @@
+// @below-java9-jdk-skip-test
+
 package typearginfer;
 
 import org.checkerframework.checker.tainting.qual.Untainted;
