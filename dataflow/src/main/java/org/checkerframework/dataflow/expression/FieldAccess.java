@@ -5,6 +5,7 @@ import com.sun.tools.javac.code.Symbol;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.dataflow.analysis.Store;
 import org.checkerframework.dataflow.cfg.node.FieldAccessNode;
+import org.checkerframework.dataflow.cfg.node.Node;
 import org.checkerframework.javacutil.AnnotationProvider;
 import org.checkerframework.javacutil.BugInCF;
 import org.checkerframework.javacutil.ElementUtils;
@@ -143,10 +144,14 @@ public class FieldAccess extends JavaExpression {
 
     @Override
     public String toString() {
-        if (receiver instanceof ClassName) {
-            return receiver.getType() + "." + field;
+        String receiverString =
+                (receiver instanceof ClassName)
+                        ? receiver.getType().toString()
+                        : receiver.toString();
+        if (Node.disambiguateOwner) {
+            return receiverString + "." + field + "{owner=" + ((Symbol) field).owner + "}";
         } else {
-            return receiver + "." + field;
+            return receiverString + "." + field;
         }
     }
 

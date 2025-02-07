@@ -1,4 +1,4 @@
-// A simple test for the @EnsuresCalledMethodsVarArgs annotation.
+// A simple test for the @EnsuresCalledMethodsVarargs annotation.
 
 import org.checkerframework.checker.calledmethods.qual.*;
 
@@ -6,10 +6,10 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.List;
 
-class EnsuresCalledMethodsVarArgsSimple {
+class EnsuresCalledMethodsVarargsSimple {
 
-    // :: error: ensuresvarargs.unverified
-    @EnsuresCalledMethodsVarArgs("close")
+    // :: error: (ensuresvarargs.unverified)
+    @EnsuresCalledMethodsVarargs("close")
     void closeAll(Socket... sockets) {
         for (Socket s : sockets) {
             try {
@@ -19,9 +19,9 @@ class EnsuresCalledMethodsVarArgsSimple {
         }
     }
 
-    // :: error: ensuresvarargs.unverified
-    @EnsuresCalledMethodsVarArgs("close")
-    // :: error: ensuresvarargs.invalid
+    // :: error: (ensuresvarargs.unverified)
+    @EnsuresCalledMethodsVarargs("close")
+    // :: error: (ensuresvarargs.invalid)
     void closeAllNotVA(List<Socket> sockets) {
         for (Socket s : sockets) {
             try {

@@ -1,3 +1,20 @@
+Version 3.46.0 (August 1, 2024)
+-----------------------------
+
+**User-visible changes:**
+
+Renamed `@EnsuresCalledMethodsVarArgs`to `@EnsuresCalledMethodsVarargs`.
+
+**Implementation details:**
+
+Many symbols that contained `VarArgs` were similarly renamed to use `Varargs`,
+e.g. `AnnotatedTypeMirror.isVarargs()`.
+
+**Closed issues:**
+
+#4923, #6420, #6469, #6652, #6664.
+
+
 Version 3.45.0 (July 1, 2024)
 -----------------------------
 

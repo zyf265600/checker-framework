@@ -2,6 +2,7 @@ package org.checkerframework.dataflow.expression;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.dataflow.analysis.Store;
+import org.checkerframework.dataflow.cfg.node.Node;
 import org.checkerframework.javacutil.AnnotationProvider;
 import org.checkerframework.javacutil.TypesUtils;
 
@@ -30,7 +31,11 @@ public class ThisReference extends JavaExpression {
 
     @Override
     public String toString() {
-        return "this";
+        if (Node.disambiguateOwner) {
+            return "this{" + type + "}";
+        } else {
+            return "this";
+        }
     }
 
     @SuppressWarnings("unchecked") // generic cast
