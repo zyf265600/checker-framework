@@ -151,7 +151,7 @@ public class FieldAccess extends JavaExpression {
         if (Node.disambiguateOwner) {
             return receiverString + "." + field + "{owner=" + ((Symbol) field).owner + "}";
         } else {
-            return receiver + "." + field;
+            return receiverString + "." + field;
         }
     }
 
