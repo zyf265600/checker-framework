@@ -226,7 +226,6 @@ public class CalledMethodsTransfer extends AccumulationTransfer {
      * @param elt the method being invoked
      * @param result the current result
      */
-    @SuppressWarnings("deprecation") // EnsuresCalledMethodsVarArgs
     private void handleEnsuresCalledMethodsVarargs(
             MethodInvocationNode node,
             ExecutableElement elt,

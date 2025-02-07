@@ -66,7 +66,6 @@ public class CalledMethodsVisitor extends AccumulationVisitor {
     }
 
     @Override
-    @SuppressWarnings("deprecation") // EnsuresCalledMethodsVarArgs
     public void processMethodTree(MethodTree tree) {
         ExecutableElement elt = TreeUtils.elementFromDeclaration(tree);
         AnnotationMirror ecmv =
