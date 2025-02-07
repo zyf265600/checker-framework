@@ -2569,7 +2569,7 @@ public class AnnotatedTypeFactory implements AnnotationProvider {
             // Adapt parameters, which makes parameters and arguments be the same size for later
             // checking.
             List<AnnotatedTypeMirror> parameters =
-                    AnnotatedTypes.adaptParameters(this, method, tree.getArguments(), null);
+                    AnnotatedTypes.adaptParameters(this, method, tree.getArguments(), tree);
             method.setParameterTypes(parameters);
         }
         return result;

@@ -48,6 +48,7 @@ import org.checkerframework.dataflow.expression.FormalParameter;
 import org.checkerframework.dataflow.expression.JavaExpression;
 import org.checkerframework.dataflow.expression.LocalVariable;
 import org.checkerframework.dataflow.expression.MethodCall;
+import org.checkerframework.dataflow.expression.SuperReference;
 import org.checkerframework.dataflow.expression.ThisReference;
 import org.checkerframework.dataflow.expression.UnaryOperation;
 import org.checkerframework.dataflow.expression.ValueLiteral;
@@ -379,6 +380,10 @@ public class JavaExpressionParseUtil {
 
         @Override
         public JavaExpression visit(SuperExpr n, Void aVoid) {
+            if (thisReference == null) {
+                throw new ParseRuntimeException(
+                        constructJavaExpressionParseError("super", "\"super\" isn't allowed here"));
+            }
             // super literal
             TypeMirror superclass = TypesUtils.getSuperclass(enclosingType, types);
             if (superclass == null) {
@@ -386,7 +391,7 @@ public class JavaExpressionParseUtil {
                         constructJavaExpressionParseError(
                                 "super", enclosingType + " has no superclass"));
             }
-            return new ThisReference(superclass);
+            return new SuperReference(superclass);
         }
 
         // expr is an expression in parentheses.
@@ -659,6 +664,15 @@ public class JavaExpressionParseUtil {
                 if (fieldElem == null) {
                     // field not found.
                     return null;
+                }
+                if (receiverExpr instanceof SuperReference
+                        && thisReference.getType().getKind() == TypeKind.DECLARED) {
+                    Element thisFieldElem =
+                            resolver.findField(
+                                    identifier, thisReference.getType(), pathToCompilationUnit);
+                    if (thisFieldElem == null) {
+                        receiverExpr = thisReference;
+                    }
                 }
             }
 

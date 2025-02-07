@@ -177,7 +177,7 @@ public class InvocationType {
         List<AnnotatedTypeMirror> params =
                 new ArrayList<>(annotatedExecutableType.getParameterTypes());
 
-        if (TreeUtils.isVarArgMethodCall(invocation)) {
+        if (TreeUtils.isVarargsCall(invocation)) {
             AnnotatedArrayType vararg = (AnnotatedArrayType) params.remove(params.size() - 1);
             for (int i = params.size(); i < size; i++) {
                 params.add(vararg.getComponentType());
@@ -186,7 +186,7 @@ public class InvocationType {
 
         List<TypeMirror> paramsJava = new ArrayList<>(methodType.getParameterTypes());
 
-        if (TreeUtils.isVarArgMethodCall(invocation)) {
+        if (TreeUtils.isVarargsCall(invocation)) {
             ArrayType vararg = (ArrayType) paramsJava.remove(paramsJava.size() - 1);
             for (int i = paramsJava.size(); i < size; i++) {
                 paramsJava.add(vararg.getComponentType());

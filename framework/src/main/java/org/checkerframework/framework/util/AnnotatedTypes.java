@@ -1024,7 +1024,7 @@ public class AnnotatedTypes {
      * @param atypeFactory the type factory to use for fetching annotated types
      * @param method the method or constructor's type
      * @param args the arguments to the method or constructor invocation
-     * @param tree the NewClassTree if method is a constructor
+     * @param invok the method or constructor invocation
      * @return a list of the types that the invocation arguments need to be subtype of; has the same
      *     length as {@code args}
      */
@@ -1032,7 +1032,7 @@ public class AnnotatedTypes {
             AnnotatedTypeFactory atypeFactory,
             AnnotatedExecutableType method,
             List<? extends ExpressionTree> args,
-            @Nullable NewClassTree tree) {
+            Tree invok) {
         List<AnnotatedTypeMirror> parameters = method.getParameterTypes();
         // Handle anonymous constructors that extend a class with an enclosing type.
         // There is a mismatch between the number of parameters and arguments when
@@ -1042,22 +1042,30 @@ public class AnnotatedTypes {
         // 3. the constructor is invoked with an explicit enclosing expression
         // In the case, we should remove the first parameter.
         if (SystemUtil.jreVersion >= 11
-                && tree != null
+                && invok instanceof NewClassTree
                 && TreeUtils.isAnonymousConstructorWithExplicitEnclosingExpression(
-                        method.getElement(), tree)) {
+                        method.getElement(), (NewClassTree) invok)) {
             if (parameters.size() != args.size() || args.isEmpty()) {
-                List<AnnotatedTypeMirror> p = new ArrayList<>(parameters.size());
-                p.addAll(parameters.subList(1, parameters.size()));
-                parameters = p;
+                parameters = parameters.subList(1, parameters.size());
             }
         }
 
         // Handle vararg methods.
-        if (!method.getElement().isVarArgs()) {
+        if (!TreeUtils.isVarargsCall(invok)) {
             return parameters;
         }
+        if (parameters.isEmpty()) {
+            throw new BugInCF("isVarargsCall but parameters is empty: %s", invok);
+        }
 
-        AnnotatedArrayType varargs = (AnnotatedArrayType) parameters.get(parameters.size() - 1);
+        AnnotatedTypeMirror lastParam = parameters.get(parameters.size() - 1);
+        if (!(lastParam instanceof AnnotatedArrayType)) {
+            throw new BugInCF(
+                    String.format(
+                            "for varargs call %s, last parameter %s is not an array",
+                            invok, lastParam));
+        }
+        AnnotatedArrayType varargs = (AnnotatedArrayType) lastParam;
 
         if (parameters.size() == args.size()) {
             // Check if one sent an element or an array
