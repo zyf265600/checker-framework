@@ -22,15 +22,19 @@ task copySources(type: Copy) {
     filePermissions {
         user {
             read = true
-            write = true
-            execute = true
+            write = false
+            execute = false
         }
         group {
             read = true
-            write = true
-            execute = true
+            write = false
+            execute = false
         }
-        other.read = true
+        other {
+            read = true
+            write = false
+            execute = false
+        }
     }
 }
 
