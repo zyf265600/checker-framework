@@ -521,10 +521,6 @@ allprojects { currentProj ->
                     // TODO: Ignore this-escape for now, we may want to review and suppress each one later.
                     lint +=',-this-escape'
                 }
-                if (useJdkCompiler >= 23) {
-                    // TODO: Ignore dangling-doc-comments for now, we may want to fix them later.
-                    lint +=',-dangling-doc-comments'
-                }
             }
 
             options.compilerArgs += [
