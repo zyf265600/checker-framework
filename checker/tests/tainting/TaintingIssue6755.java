@@ -32,7 +32,7 @@ public class TaintingIssue6755 {
         var values =
                 Stream.of(1, 2)
                         .map(
-                                // :: error: (argument)
+                                // :: error: (argument.type.incompatible)
                                 val -> merge(val, testsByValue));
     }
 }
