@@ -683,8 +683,8 @@ public class InvocationTypeInference {
                 // The subset is not empty at this point if an additional argument constraint was
                 // found.
                 // In this case, a new subset needs to be picked so that dependencies of the
-                // constraints
-                // from reducing the additional argument constraint can be taken into account.
+                // constraints from reducing the additional argument constraint can be taken into
+                // account.
                 c.addAll(subset);
             }
             b3.incorporateToFixedPoint(newBounds);
