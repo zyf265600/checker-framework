@@ -328,9 +328,9 @@ public abstract class JavaExpression {
         return String.format("%s(%s): %s", getClass().getSimpleName(), type, toString());
     }
 
-    ///
-    /// Static methods
-    ///
+    //
+    // Static methods
+    //
 
     /**
      * Returns the Java expression for a {@link FieldAccessNode}. The result may contain {@link
@@ -718,9 +718,9 @@ public abstract class JavaExpression {
         return parameters;
     }
 
-    ///
-    /// Obtaining the receiver
-    ///
+    //
+    // Obtaining the receiver
+    //
 
     /**
      * Returns the receiver of the given invocation.

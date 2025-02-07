@@ -1247,7 +1247,7 @@ public class BaseTypeVisitor<Factory extends GenericAnnotatedTypeFactory<?, ?, ?
 
     /**
      * Returns true if the given method is explicitly annotated with both @{@link SideEffectFree}
-     * and @{@link Deterministic}.
+     * and @{@link Deterministic}. Those annotations can be replaced by @{@link Pure}.
      *
      * @param tree a method
      * @return true if a method is explicitly annotated with both @{@link SideEffectFree}
@@ -2120,6 +2120,14 @@ public class BaseTypeVisitor<Factory extends GenericAnnotatedTypeFactory<?, ?, ?
                         .inferTypeArgs(atypeFactory, tree, methodType);
         if (args != null && !args.inferenceFailed()) {
             return true;
+        }
+        if (args.inferenceCrashed()) {
+            checker.reportError(
+                    tree,
+                    "type.argument.inference.crashed",
+                    ElementUtils.getSimpleDescription(methodType.getElement()),
+                    args == null ? "" : args.getErrorMsg());
+            return false;
         }
         checker.reportError(
                 tree,

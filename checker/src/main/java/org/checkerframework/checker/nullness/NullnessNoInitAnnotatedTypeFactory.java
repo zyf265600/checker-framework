@@ -646,7 +646,11 @@ public class NullnessNoInitAnnotatedTypeFactory
         return new ListTreeAnnotator(annotators);
     }
 
-    /** Adds nullness-specific propagation rules */
+    /**
+     * Nullness doesn't call propagation on binary and unary because the result is
+     * always @Initialized (the default qualifier).
+     */
+    // Would this be valid to move into CommitmentTreeAnnotator?
     protected class NullnessPropagationTreeAnnotator extends PropagationTreeAnnotator {
 
         /**

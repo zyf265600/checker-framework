@@ -156,7 +156,7 @@ public class Resolver {
         } catch (Exception e) {
             Error err =
                     new AssertionError(
-                            "Compiler 'Resolve' class doesn't contain required 'find' method");
+                            "Compiler 'Resolve' class doesn't contain required 'find*' method");
             err.initCause(e);
             throw err;
         }
