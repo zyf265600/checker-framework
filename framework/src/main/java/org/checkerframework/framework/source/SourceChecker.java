@@ -669,7 +669,7 @@ public abstract class SourceChecker extends AbstractTypeProcessor implements Opt
     private boolean showPrefixInWarningMessages;
 
     /** True if the -AwarnUnneededSuppressions command-line argument was passed. */
-    boolean warnUnneededSuppressions;
+    private boolean warnUnneededSuppressions;
 
     /**
      * The full list of subcheckers that need to be run prior to this one, in the order they need to
@@ -790,7 +790,7 @@ public abstract class SourceChecker extends AbstractTypeProcessor implements Opt
      * @param newRoot the new compilation unit root
      */
     @SuppressWarnings("interning:assignment.type.incompatible") // used in == tests
-    public void setRoot(CompilationUnitTree newRoot) {
+    protected void setRoot(CompilationUnitTree newRoot) {
         this.currentRoot = newRoot;
         visitor.setRoot(currentRoot);
         if (parentChecker == null) {
@@ -1178,7 +1178,7 @@ public abstract class SourceChecker extends AbstractTypeProcessor implements Opt
      * The number of errors at the last exit of the type processor (that is, upon completion of
      * processing the previous compilation unit). At entry to the type processor, if the current
      * error count is higher, then javac must have issued an error. If javac issued an error, then
-     * don't process the file, as it contains * some Java errors.
+     * don't process the file, as it contains some Java errors.
      */
     private int errsOnLastExit = 0;
 
@@ -1311,8 +1311,7 @@ public abstract class SourceChecker extends AbstractTypeProcessor implements Opt
         // checker threw an exception.
 
         // Update errsOnLastExit for all checkers, so that no matter which one is run next, its test
-        // of
-        // whether a Java error occurred is correct.
+        // of whether a Java error occurred is correct.
 
         Context context = ((JavacProcessingEnvironment) processingEnv).getContext();
         Log log = Log.instance(context);
@@ -2153,7 +2152,7 @@ public abstract class SourceChecker extends AbstractTypeProcessor implements Opt
      */
     public Set<String> getSupportedLintOptions() {
         if (supportedLints == null) {
-            supportedLints = createSupportedLintOptions();
+            supportedLints = Collections.unmodifiableSet(createSupportedLintOptions());
         }
         return supportedLints;
     }
@@ -2268,6 +2267,7 @@ public abstract class SourceChecker extends AbstractTypeProcessor implements Opt
             for (SourceChecker subchecker : getSubcheckers()) {
                 activeOptions.putAll(subchecker.createActiveOptions(processingEnv.getOptions()));
             }
+            activeOptions = Collections.unmodifiableMap(activeOptions);
         }
         return activeOptions;
     }
@@ -2708,10 +2708,8 @@ public abstract class SourceChecker extends AbstractTypeProcessor implements Opt
             return true;
         }
 
-        // TreePath path = getTreePathCacher().getPath(currentRoot, tree);
         assert this.currentRoot != null : "this.currentRoot == null";
-        // trees.getPath might be slow, but this is only used in error reporting
-        TreePath path = trees.getPath(this.currentRoot, tree);
+        TreePath path = getTreePathCacher().getPath(currentRoot, tree);
 
         return shouldSuppressWarnings(path, errKey);
     }
