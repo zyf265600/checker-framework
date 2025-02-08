@@ -277,8 +277,7 @@ class TypeFromExpressionVisitor extends TypeFromTreeVisitor {
                     f, thisType, AnnotatedTypeMirror.createType(superTypeMirror, f, false));
         } else {
             // tree must be a field access, so get the type of the (receiver) expression, and then
-            // call
-            // asMemberOf.
+            // call asMemberOf.
             AnnotatedTypeMirror typeOfReceiver;
             if (f instanceof GenericAnnotatedTypeFactory) {
                 // If calling GenericAnnotatedTypeFactory#getAnnotatedTypeLhs(Tree lhsTree) to
