@@ -1,3 +1,5 @@
+// @below-java9-jdk-skip-test
+
 @SuppressWarnings("all") // Just check for crashes.
 public class Issue6825 {
     static class ClassA<T extends Number> {}
