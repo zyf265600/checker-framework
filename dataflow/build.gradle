@@ -234,7 +234,7 @@ final dataflowShadedPom(MavenPublication publication, String shadedPkgName) {
             // This should just happen automatically, but I can't figure out how to make it happen with
             // a custom Shadow task.
             asNode().appendNode('dependencies').appendNode('dependency')
-                    .appendNode('groupId', 'org.checkerframework').parent()
+                    .appendNode('groupId', 'io.github.eisop').parent()
                     .appendNode('artifactId', 'checker-qual').parent()
                     .appendNode('version', version).parent()
                     .appendNode('scope','runtime')
