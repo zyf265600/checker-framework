@@ -81,7 +81,7 @@ public abstract class TreeAnnotator extends SimpleTreeVisitor<Void, AnnotatedTyp
      * nested binary trees. (For example, a + b + c + d + e + f + g + h.)
      *
      * <p>One approach is to perform work in this method only if {@code
-     * type.hasPrimaryAnnotationInHierarchy(...)} returns false.
+     * type.hasAnnotationInHierarchy(...)} returns false.
      *
      * <p>If a checker's performance is still too slow:
      *
