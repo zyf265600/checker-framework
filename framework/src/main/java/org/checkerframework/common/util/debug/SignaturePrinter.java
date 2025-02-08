@@ -74,9 +74,13 @@ import javax.lang.model.util.AbstractElementVisitor8;
 @SupportedOptions("checker")
 public class SignaturePrinter extends AbstractTypeProcessor {
 
+    /** The checker associated with this printer. */
     private SourceChecker checker;
 
-    ///////// Initialization /////////////
+    /** Creates a SignaturePrinter. */
+    public SignaturePrinter() {}
+
+    // ///////// Initialization /////////////
     /**
      * Initialization.
      *
@@ -130,7 +134,7 @@ public class SignaturePrinter extends AbstractTypeProcessor {
         // printer.visit(element);
     }
 
-    ////////// Printer //////////
+    // ////////// Printer //////////
     /** Element printer. */
     static class ElementPrinter extends AbstractElementVisitor8<Void, Void> {
         /** String used for indentation. */

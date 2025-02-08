@@ -1143,9 +1143,9 @@ public class JavaExpressionParseUtil {
         return -1;
     }
 
-    ///////////////////////////////////////////////////////////////////////////
-    /// Contexts
-    ///
+    // ///////////////////////////////////////////////////////////////////////////
+    // Contexts
+    //
 
     /**
      * Returns the type of the innermost enclosing class. Returns Type.noType if the type is a
@@ -1177,9 +1177,9 @@ public class JavaExpressionParseUtil {
         }
     }
 
-    ///////////////////////////////////////////////////////////////////////////
-    /// Exceptions
-    ///
+    // ///////////////////////////////////////////////////////////////////////////
+    // Exceptions
+    //
 
     /**
      * An exception that indicates a parse error. Call {@link #getDiagMessage} to obtain a {@link

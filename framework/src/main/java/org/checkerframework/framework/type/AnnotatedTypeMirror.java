@@ -117,7 +117,7 @@ public abstract class AnnotatedTypeMirror implements DeepCopyable<AnnotatedTypeM
         this.atypeFactory = atypeFactory;
     }
 
-    /// This class doesn't customize the clone() method; use deepCopy() instead.
+    // // This class doesn't customize the clone() method; use deepCopy() instead.
     // @Override
     // public AnnotatedTypeMirror clone() { ... }
 

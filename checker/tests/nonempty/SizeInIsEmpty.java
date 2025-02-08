@@ -40,7 +40,7 @@ public class SizeInIsEmpty<E extends Object> extends AbstractSet<E> {
         return size() == 0;
     }
 
-    //// iterators
+    // iterators
 
     @Override
     public @PolyNonEmpty Iterator<E> iterator(@PolyNonEmpty SizeInIsEmpty<E> this) {
