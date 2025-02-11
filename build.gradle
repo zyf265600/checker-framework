@@ -160,7 +160,7 @@ allprojects { currentProj ->
     //   * any new checkers have been added, or
     //   * backward-incompatible changes have been made to APIs or elsewhere.
     // To make a snapshot release, version should end in "-SNAPSHOT", then: ./gradlew publish
-    version = '3.47.0'
+    version = '3.48.0'
 
     tasks.withType(JavaCompile).configureEach {
         options.fork = true
@@ -538,8 +538,9 @@ allprojects { currentProj ->
                 ]
             }
 
-            // Error Prone depends on checker-qual.jar, so don't run it on that project to avoid a circular dependency.
-            if ((compilationTask.name.equals('compileJava') || compilationTask.name.equals('compileTestJava')) && !project.name.startsWith('checker-qual')) {
+            if ((compilationTask.name.equals('compileJava') || compilationTask.name.equals('compileTestJava'))
+                    // Error Prone depends on checker-qual.jar, so don't run it on that project to avoid a circular dependency.
+                    && !project.name.startsWith('checker-qual')) {
                 // Error Prone must be available in the annotation processor path
                 options.annotationProcessorPath = errorproneProcessorCustom.get()
                 // Enable Error Prone
