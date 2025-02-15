@@ -217,7 +217,6 @@ public class SignatureAnnotatedTypeFactory extends BaseAnnotatedTypeFactory {
 
         @Override
         public Void visitBinary(BinaryTree tree, AnnotatedTypeMirror type) {
-
             if (TreeUtils.isStringConcatenation(tree)) {
                 AnnotatedTypeMirror lType = getAnnotatedType(tree.getLeftOperand());
                 AnnotatedTypeMirror rType = getAnnotatedType(tree.getRightOperand());

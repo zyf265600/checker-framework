@@ -280,7 +280,7 @@ public class BaseTypeVisitor<Factory extends GenericAnnotatedTypeFactory<?, ?, ?
     /** True if "-AcheckCastElementType" was passed on the command line. */
     private final boolean checkCastElementType;
 
-    /** True if "-AwarnRedundantAnnotations" was passed on the command line */
+    /** True if "-AwarnRedundantAnnotations" was passed on the command line. */
     protected final boolean warnRedundantAnnotations;
 
     /** True if "-AignoreTargetLocations" was passed on the command line. */
