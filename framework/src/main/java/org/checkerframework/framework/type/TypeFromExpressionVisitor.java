@@ -280,7 +280,22 @@ class TypeFromExpressionVisitor extends TypeFromTreeVisitor {
         } else {
             // tree must be a field access or an enum constant, so get the type of the (receiver)
             // expression, and then call asMemberOf.
-            AnnotatedTypeMirror typeOfReceiver = f.getAnnotatedType(tree.getExpression());
+            AnnotatedTypeMirror typeOfReceiver;
+            if (f instanceof GenericAnnotatedTypeFactory) {
+                // If calling GenericAnnotatedTypeFactory#getAnnotatedTypeLhs(Tree lhsTree) to
+                // get the type of this MemberSelectTree, flow refinement is disabled. However,
+                // we want the receiver to have the refined type because type
+                // systems can use receiver-dependent qualifiers for viewpoint adaptation.
+                // Thus, we re-enable the flow refinement for a while just for the receiver
+                // expression.
+                // See framework/tests/viewpointtest/TestGetAnnotatedLhs.java for a concrete
+                // example.
+                typeOfReceiver =
+                        ((GenericAnnotatedTypeFactory<?, ?, ?, ?>) f)
+                                .getAnnotatedTypeWithReceiverRefinement(tree.getExpression());
+            } else {
+                typeOfReceiver = f.getAnnotatedType(tree.getExpression());
+            }
             typeOfReceiver = f.applyCaptureConversion(typeOfReceiver);
             AnnotatedTypeMirror typeOfFieldAccess =
                     AnnotatedTypes.asMemberOf(f.types, f, typeOfReceiver, elt);
