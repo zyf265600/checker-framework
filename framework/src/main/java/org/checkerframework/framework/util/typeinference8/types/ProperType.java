@@ -245,7 +245,7 @@ public class ProperType extends AbstractType {
 
     @Override
     public TypeMirror getJavaType() {
-        return properType;
+        return type.getUnderlyingType();
     }
 
     @Override

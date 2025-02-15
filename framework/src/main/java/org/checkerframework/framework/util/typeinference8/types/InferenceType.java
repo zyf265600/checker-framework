@@ -245,7 +245,7 @@ public class InferenceType extends AbstractType {
 
     @Override
     public TypeMirror getJavaType() {
-        return typeMirror;
+        return type.getUnderlyingType();
     }
 
     @Override

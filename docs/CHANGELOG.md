@@ -1,3 +1,17 @@
+Version 3.48.1 (October 11, 2024)
+--------------------------------
+
+**User-visible changes:**
+
+The Returns Receiver sub-checker is now disabled by default when running the Resource Leak Checker,
+as usually it is not needed and it adds overhead. To enable it, use the new
+`-AenableReturnsReceiverForRlc` command-line argument.
+
+**Closed issues:**
+
+#6434, #6810, #6839, #6842, #6856.
+
+
 Version 3.48.0 (October 2, 2024)
 --------------------------------
 
@@ -6,8 +20,8 @@ Version 3.48.0 (October 2, 2024)
 The new SqlQuotesChecker prevents errors in quoting in SQL queries.  It prevents
 injection attacks that exploit quoting errors.
 
-Aggregate Checkers now interleave error messages so that all errors about a line of code
-appear together.
+Aggregate Checkers now interleave error messages so that all errors about a line of code appear
+together.
 (EISOP note: some signatures changed from `BaseTypeChecker` to `SourceChecker`,
 which might require adaptation in checkers.)
 
