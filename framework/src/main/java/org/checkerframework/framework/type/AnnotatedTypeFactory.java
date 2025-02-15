@@ -2989,12 +2989,16 @@ public class AnnotatedTypeFactory implements AnnotationProvider {
             // 3. compute and store the vararg type.
             // 4. copy the parameters to the anonymous constructor, `con`.
             // 5. copy annotations on the return type to `con`.
-            AnnotatedExecutableType superCon =
-                    getAnnotatedType(TreeUtils.getSuperConstructor(tree));
+            ExecutableElement superCtor = TreeUtils.getSuperConstructor(tree);
+            AnnotatedExecutableType superCon = getAnnotatedType(superCtor);
             constructorFromUsePreSubstitution(tree, superCon, inferTypeArgs);
-            // no viewpoint adaptation needed for super invocation
             superCon =
                     AnnotatedTypes.asMemberOf(types, this, type, superCon.getElement(), superCon);
+            if (viewpointAdapter != null) {
+                // Viewpoint adapt the super constructor, because the return type could depend on
+                // the viewpoint and there is an LUB computation later.
+                viewpointAdapter.viewpointAdaptConstructor(type, superCtor, superCon);
+            }
             con.computeVarargType(superCon);
             if (superCon.getParameterTypes().size() == con.getParameterTypes().size()) {
                 con.setParameterTypes(superCon.getParameterTypes());
@@ -3778,23 +3782,25 @@ public class AnnotatedTypeFactory implements AnnotationProvider {
      * <p>The point of {@code annotationToUse} is that it may include elements/fields.
      *
      * @param alias the fully-qualified name of the alias annotation
-     * @param annotation the fully-qualified name of the canonical annotation
+     * @param annotationClassName the fully-qualified name of the canonical annotation
      * @param annotationToUse the annotation mirror to use
      */
     protected void addAliasedDeclAnnotation(
             @FullyQualifiedName String alias,
-            @FullyQualifiedName String annotation,
+            @FullyQualifiedName String annotationClassName,
             AnnotationMirror annotationToUse) {
-        IPair<AnnotationMirror, Set<Class<? extends Annotation>>> pair =
-                declAliases.get(annotationClass);
-        if (pair != null) {
-            if (!AnnotationUtils.areSame(annotationToUse, pair.first)) {
-                throw new BugInCF(
-                        "annotationToUse should be the same: %s %s", pair.first, annotationToUse);
-            }
-        } else {
-            pair = IPair.of(annotationToUse, new HashSet<>());
-            declAliases.put(annotationClass, pair);
+        Map<@FullyQualifiedName String, AnnotationMirror> mapping =
+                declAliases.get(annotationClassName);
+        if (mapping == null) {
+            mapping = new HashMap<>(1);
+            declAliases.put(annotationClassName, mapping);
+        }
+        AnnotationMirror prev = mapping.put(alias, annotationToUse);
+        // There already was a mapping. Raise an error.
+        if (prev != null && !AnnotationUtils.areSame(prev, annotationToUse)) {
+            throw new TypeSystemError(
+                    "Multiple aliases for %s: %s cannot map to %s and %s.",
+                    annotationClassName, alias, prev, annotationToUse);
         }
     }
 
