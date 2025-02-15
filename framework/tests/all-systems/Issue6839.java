@@ -1,3 +1,5 @@
+// @below-java9-jdk-skip-test
+
 public class Issue6839<Y> {
     Issue6839(Y x) {}
 
