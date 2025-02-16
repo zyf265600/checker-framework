@@ -34,7 +34,7 @@ public class SizeInIsEmpty<E extends Object> extends AbstractSet<E> {
 
     @EnsuresNonEmptyIf(result = false, expression = "this")
     public boolean isEmpty2() {
-        // :: error: contracts.conditional.postcondition
+        // :: error: contracts.conditional.postcondition.not.satisfied
         return size() == 0 ? true : false;
     }
 
@@ -43,7 +43,7 @@ public class SizeInIsEmpty<E extends Object> extends AbstractSet<E> {
     @EnsuresNonEmptyIf(result = false, expression = "this.set")
     public boolean isEmpty2B() {
         // TODO: this is a false positive
-        // :: error: contracts.conditional.postcondition
+        // :: error: contracts.conditional.postcondition.not.satisfied
         return set.size() == 0 ? true : false;
     }
 
