@@ -148,8 +148,7 @@ public class ProperType extends AbstractType {
 
         // The TypeMirror for a captured type variables may have inference variables that have not
         // been substituted with their instantiation, so use the AnnotatedTypeMirror to get the
-        // erased
-        // type.
+        // erased type.
         TypeMirror subErasedJavaType = this.getErased().getJavaType();
         TypeMirror superErasedJavaType = superType.getErased().getJavaType();
 
