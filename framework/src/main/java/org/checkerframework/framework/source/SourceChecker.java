@@ -440,7 +440,7 @@ import javax.tools.Diagnostic;
     // Sets AnnotatedTypeFactory shouldCache to false
     "atfDoNotCache",
 
-    // Language Server Protocol(LSP) Support
+    // Language Server Protocol (LSP) Support
 
     // Output detailed type information for nodes in AST
     // org.checkerframework.framework.type.AnnotatedTypeFactory
