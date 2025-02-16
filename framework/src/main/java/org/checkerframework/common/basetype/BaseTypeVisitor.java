@@ -1008,7 +1008,7 @@ public class BaseTypeVisitor<Factory extends GenericAnnotatedTypeFactory<?, ?, ?
             return null;
         }
         // TODO: should we pass along the `enclosingClass`, to avoid re-computation?
-        processMethodTree("<unknown from visitMethod>", tree);
+        processMethodTree(enclosingClass.getSimpleName().toString(), tree);
         return null;
     }
 
