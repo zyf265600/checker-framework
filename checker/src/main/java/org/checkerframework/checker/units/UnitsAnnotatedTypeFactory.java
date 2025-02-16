@@ -451,6 +451,7 @@ public class UnitsAnnotatedTypeFactory extends BaseAnnotatedTypeFactory {
             super(atypeFactory);
         }
 
+        @SuppressWarnings("DuplicateBranches")
         @Override
         public Void visitBinary(BinaryTree tree, AnnotatedTypeMirror type) {
             AnnotatedTypeMirror lht = getAnnotatedType(tree.getLeftOperand());

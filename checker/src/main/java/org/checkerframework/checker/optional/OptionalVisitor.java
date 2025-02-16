@@ -403,6 +403,7 @@ public class OptionalVisitor
      *
      * @param tree a method invocation that can perhaps be simplified
      */
+    @SuppressWarnings("RedundantControlFlow")
     public void handleCreationElimination(MethodInvocationTree tree) {
         if (!isOptionalElimination(tree)) {
             return;
