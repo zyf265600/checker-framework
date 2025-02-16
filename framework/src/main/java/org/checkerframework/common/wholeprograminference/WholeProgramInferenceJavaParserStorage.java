@@ -1158,9 +1158,8 @@ public class WholeProgramInferenceJavaParserStorage
                                         }
 
                                         // visit(CharLiteralExpr) and visit(StringLiteralExpr) work
-                                        // around bugs in
-                                        // JavaParser, with respect to handling lonely surrogate
-                                        // characters.
+                                        // around bugs in JavaParser, with respect to handling
+                                        // lonely surrogate characters.
 
                                         @Override
                                         public void visit(final CharLiteralExpr n, final Void arg) {
