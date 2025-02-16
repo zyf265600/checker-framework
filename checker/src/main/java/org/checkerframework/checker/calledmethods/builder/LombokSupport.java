@@ -59,14 +59,11 @@ public class LombokSupport implements BuilderFrameworkSupport {
                             "androidx.annotation.RecentlyNonNull",
                             "com.android.annotations.NonNull",
                             "com.google.firebase.database.annotations.NotNull", // Even though it's
-                            // in a
-                            // database package, it does mean semantically: "Check if
-                            // never null at the language level", and not 'db column cannot be
-                            // null'.
+                            // in a database package, it does mean semantically: "Check if never
+                            // null at the language level", and not 'db column cannot be null'.
                             "com.mongodb.lang.NonNull", // Even though mongo is a DB engine,
                             // this semantically refers to language, not DB table designs (mongo is
-                            // a
-                            // document DB engine, so this isn't surprising perhaps).
+                            // a document DB engine, so this isn't surprising perhaps).
                             "com.sun.istack.NotNull",
                             "com.unboundid.util.NotNull",
                             "edu.umd.cs.findbugs.annotations.NonNull",
