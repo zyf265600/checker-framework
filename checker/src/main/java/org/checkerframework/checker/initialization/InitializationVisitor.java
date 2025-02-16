@@ -93,11 +93,11 @@ public class InitializationVisitor extends BaseTypeVisitor<InitializationAnnotat
     }
 
     @Override
-    public void setRoot(CompilationUnitTree root) {
+    public void setRoot(CompilationUnitTree newRoot) {
         // Clean up the cache of initialized fields once per compilation unit.
         // Alternatively, but harder to determine, this could be done once per top-level class.
         initializedFields.clear();
-        super.setRoot(root);
+        super.setRoot(newRoot);
     }
 
     @Override
@@ -212,7 +212,7 @@ public class InitializationVisitor extends BaseTypeVisitor<InitializationAnnotat
     }
 
     @Override
-    public void processMethodTree(MethodTree tree) {
+    public void processMethodTree(String className, MethodTree tree) {
         if (TreeUtils.isConstructor(tree)) {
             Collection<? extends AnnotationMirror> returnTypeAnnotations =
                     AnnotationUtils.getExplicitAnnotationsOnConstructorResult(tree);
@@ -233,7 +233,7 @@ public class InitializationVisitor extends BaseTypeVisitor<InitializationAnnotat
             List<? extends AnnotationMirror> receiverAnnotations = getAllReceiverAnnotations(tree);
             checkFieldsInitialized(tree, isStatic, store, receiverAnnotations);
         }
-        super.processMethodTree(tree);
+        super.processMethodTree(className, tree);
     }
 
     /**
