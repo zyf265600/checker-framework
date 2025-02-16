@@ -93,7 +93,6 @@ public class ConstantPropagationStore implements Store<ConstantPropagationStore>
         return leastUpperBound(previous);
     }
 
-    @SuppressWarnings("RedundantControlFlow")
     @Override
     public boolean equals(@Nullable Object o) {
         if (o == null) {
