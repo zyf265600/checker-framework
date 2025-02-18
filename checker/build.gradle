@@ -421,13 +421,9 @@ task allResourceLeakTests(type: Test, group: 'Verification') {
 }
 
 // These are tests that should only be run with JDK 11+.
+// TODO: jtreg only runs on JDK 11+, so merge these into the other jtreg tests and avoid the duplication.
 task jtregJdk11Tests(type: Exec, group: 'Verification') {
-    description 'Run the jtreg tests made for JDK 11+.'
-
-    if (isJava8) {
-        println 'This test is only run with JDK 11+.'
-        return;
-    }
+    description = 'Run the jtreg tests made for JDK 11+.'
 
     dependsOn(':downloadJtreg')
     dependsOn('compileJava')
@@ -437,7 +433,7 @@ task jtregJdk11Tests(type: Exec, group: 'Verification') {
     String jtregOutput = "${buildDir}/jtregJdk11"
     String name = 'all'
 
-    executable 'jtreg'
+    executable "${jtregHome}/bin/jtreg"
     args = [
         "-dir:${projectDir}/jtregJdk11",
         "-workDir:${jtregOutput}/${name}/work",
@@ -476,7 +472,7 @@ task delombok {
     dependsOn project(':checker-qual').tasks.jar
 
     doLast {
-        if(!skipDelombok) {
+        if (!skipDelombok) {
             def collection = files(configurations.testCompileClasspath)
             ant.taskdef(name: 'delombok', classname: 'lombok.delombok.ant.Tasks$Delombok',
             classpath: collection.asPath)

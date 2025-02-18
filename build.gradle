@@ -326,7 +326,7 @@ allprojects { currentProj ->
                 // removes semicolons at the end of lines
                 removeSemicolons()
                 greclipse()
-                indentWithSpaces(2)
+                leadingTabsToSpaces(2)
                 trimTrailingWhitespace()
             }
 
@@ -746,8 +746,6 @@ task allJavadoc(type: Javadoc, group: 'Documentation') {
     destinationDir = file("${rootDir}/docs/api")
     source javadocDirs
 
-    def injected = project.objects.newInstance(InjectedExecOps)
-
     doFirst {
         source(
                 project(':framework-test').sourceSets."${isJava8 ? 'tagletJdk8' : 'taglet'}".allJava
@@ -1036,22 +1034,15 @@ subprojects {
         }
 
 
-        // Add jtregTests to framework and checker modules
-        if (project.name.is('framework') || project.name.is('checker')) {
+        // Add jtregTests to framework and checker modules.
+        // Jtreg only works on Java 11+.
+        if (currentRuntimeJavaVersion >= 11 && (project.name.is('framework') || project.name.is('checker'))) {
             tasks.create(name: 'jtregTests', type: Exec, group: 'Verification') {
                 description = 'Run the jtreg tests. Requires jtreg to be installed.'
-
-                if (currentRuntimeJavaVersion < 11) {
-                    // jtreg only works on JDK 11+
-                    return
-                }
-
                 dependsOn(':downloadJtreg')
                 dependsOn('compileJava')
                 dependsOn('compileTestJava')
                 dependsOn('shadowJar')
-
-                def injected = project.objects.newInstance(InjectedExecOps)
 
                 def isFramework = project.name.is('framework')
                 def isChecker = project.name.is('checker')
@@ -1060,7 +1051,7 @@ subprojects {
                 String name = 'all'
                 String tests = '.'
 
-                executable 'jtreg'
+                executable "${jtregHome}/bin/jtreg"
                 args = [
                     "-dir:${projectDir}/jtreg",
                     "-workDir:${jtregOutput}/${name}/work",
@@ -1192,7 +1183,7 @@ subprojects {
         // Create a nonJunitTests task per project
         tasks.create(name: 'nonJunitTests', group: 'Verification') {
             description = 'Run all Checker Framework tests except for the JUnit tests and inference tests.'
-            if (project.name.is('framework') || project.name.is('checker')) {
+            if (currentRuntimeJavaVersion >= 11 && (project.name.is('framework') || project.name.is('checker'))) {
                 dependsOn('jtregTests')
             }
             if (project.name.is('framework')) {

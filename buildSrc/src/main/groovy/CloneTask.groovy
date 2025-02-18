@@ -52,6 +52,7 @@ abstract class CloneTask extends DefaultTask {
       }
     }
   }
+
   /**
    * Quietly clones the given git repository, {@code url}, to {@directory} at a depth of 1.
    * @param url git repository to clone
