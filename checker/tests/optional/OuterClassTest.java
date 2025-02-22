@@ -1,3 +1,5 @@
+// @below-java9-jdk-skip-test
+
 import org.checkerframework.checker.nonempty.qual.*;
 import org.checkerframework.checker.optional.qual.*;
 
