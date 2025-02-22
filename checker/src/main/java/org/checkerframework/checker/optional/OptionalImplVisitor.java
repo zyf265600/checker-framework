@@ -550,10 +550,8 @@ public class OptionalImplVisitor
         MethodTree caller = TreePathUtil.enclosingMethod(this.getCurrentPath());
         if (caller != null) {
             // Using the names of methods (as opposed to their fully-qualified name or signature) is
-            // a
-            // safe (but imprecise) over-approximation of all the methods that must be verified with
-            // the
-            // Non-Empty Checker. Overloads of methods will be included.
+            // a safe (but imprecise) over-approximation of all the methods that must be verified
+            // with the Non-Empty Checker. Overloads of methods will be included.
             String callee = tree.getMethodSelect().toString();
             boolean isCalleeInMethodsToVerifyWithNonEmptyChecker =
                     namesOfMethodsToVerifyWithNonEmptyChecker.stream()

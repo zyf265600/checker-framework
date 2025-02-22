@@ -47,11 +47,9 @@ public class NonEmptyChecker extends BaseTypeChecker {
     public boolean shouldSkipDefs(MethodTree tree) {
         if (!(this.parentChecker instanceof OptionalChecker)) {
             // The parent checker being null, or not being an instance of the top-level Optional
-            // Checker
-            // indicates that this Non-Empty Checker is being run independently.
+            // Checker indicates that this Non-Empty Checker is being run independently.
             // Check all definitions in this case, not just the ones relevant to the Optional
-            // Checker's
-            // guarantee.
+            // Checker's guarantee.
             return super.shouldSkipDefs(tree);
         }
         return !getMethodsToVerify().contains(tree.getName().toString());

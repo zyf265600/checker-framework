@@ -54,7 +54,7 @@ public class OptionalImplTransfer extends CFTransfer {
     private final OptionalImplAnnotatedTypeFactory optionalTypeFactory;
 
     /** True if "-AassumePure" or "-AassumeDeterministic" was passed. */
-    boolean assumeDeterministic;
+    private final boolean assumeDeterministic;
 
     /** The @{@link Present} annotation. */
     private final AnnotationMirror PRESENT;
@@ -228,8 +228,7 @@ public class OptionalImplTransfer extends CFTransfer {
         ExpressionTree receiverTree = TreeUtils.getReceiverTree(methodInvok.getTree());
         if (receiverTree instanceof MethodInvocationTree) {
             // TODO(https://github.com/typetools/checker-framework/issues/6848): this logic needs
-            // further
-            // refinement to eliminate a source of false positives in the Optional Checker.
+            // further refinement to eliminate a source of false positives in the Optional Checker.
             // Also see the discussion in:
             // https://github.com/typetools/checker-framework/pull/6685#discussion_r1788632663 for
             // additional context.
