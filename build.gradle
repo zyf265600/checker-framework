@@ -1013,10 +1013,14 @@ subprojects {
         createCheckTypeTask(project.name, 'Signature',
                 'org.checkerframework.checker.signature.SignatureChecker')
 
+        def isDataflow = project.name.is('dataflow')
+        def isFramework = project.name.is('framework')
+        def isChecker = project.name.is('checker')
+
         // The checkNullness task runs on all code, but it only *checks* the following code:
         //  * All files outside the 'framework' and 'checker' subprojects.
         //  * In the 'framework' and 'checker' subprojects, files with `@AnnotatedFor("nullness")`.
-        if (project.name.is('framework') || project.name.is('checker')) {
+        if (isFramework || isChecker) {
             createCheckTypeTask(project.name, 'Nullness',
                     'org.checkerframework.checker.nullness.NullnessChecker',
                     [
@@ -1037,16 +1041,13 @@ subprojects {
 
         // Add jtregTests to framework and checker modules.
         // Jtreg only works on Java 11+.
-        if (currentRuntimeJavaVersion >= 11 && (project.name.is('framework') || project.name.is('checker'))) {
+        if (currentRuntimeJavaVersion >= 11 && (isFramework || isChecker)) {
             tasks.create(name: 'jtregTests', type: Exec, group: 'Verification') {
                 description = 'Run the jtreg tests. Requires jtreg to be installed.'
                 dependsOn(':downloadJtreg')
                 dependsOn('compileJava')
                 dependsOn('compileTestJava')
                 dependsOn('shadowJar')
-
-                def isFramework = project.name.is('framework')
-                def isChecker = project.name.is('checker')
 
                 String jtregOutput = "${buildDir}/jtreg"
                 String name = 'all'
@@ -1082,12 +1083,12 @@ subprojects {
                     '-vmoptions:--add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED',
                     '-vmoptions:--add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED',
                 ]
-                if (project.name.is('framework')) {
+                if (isFramework) {
                     // Do not check for the annotated JDK
                     args += [
                         '-javacoptions:-ApermitMissingJdk'
                     ]
-                } else if (project.name.is('checker')) {
+                } else if (isChecker) {
                     args += [
                         "-javacoptions:-classpath ${sourceSets.testannotations.output.asPath}",
                     ]
@@ -1145,7 +1146,7 @@ subprojects {
                 }
             }
 
-            if (project.name.is('checker')) {
+            if (isChecker) {
                 dependsOn('assembleForJavac')
             }
 
@@ -1184,21 +1185,21 @@ subprojects {
         // Create a nonJunitTests task per project
         tasks.create(name: 'nonJunitTests', group: 'Verification') {
             description = 'Run all Checker Framework tests except for the JUnit tests and inference tests.'
-            if (currentRuntimeJavaVersion >= 11 && (project.name.is('framework') || project.name.is('checker'))) {
+            if (currentRuntimeJavaVersion >= 11 && (isFramework || isChecker)) {
                 dependsOn('jtregTests')
             }
-            if (project.name.is('framework')) {
+            if (isFramework) {
                 dependsOn('loaderTests')
             }
 
-            if (project.name.is('checker')) {
+            if (isChecker) {
                 if (!isJava8) {
                     dependsOn('jtregJdk11Tests')
                 }
                 dependsOn('nullnessExtraTests', 'commandLineTests', 'tutorialTests')
             }
 
-            if (project.name.is('dataflow')) {
+            if (isDataflow) {
                 dependsOn('allDataflowTests')
             }
         }
@@ -1206,21 +1207,21 @@ subprojects {
         // Create an inferenceTests task per project
         tasks.create(name: 'inferenceTests', group: 'Verification') {
             description = 'Run inference tests.'
-            if (project.name.is('checker')) {
+            if (isChecker) {
                 // NO-AFU: Needs to depend on future AFU version of CF
                 // dependsOn('inferenceTests-part1', 'inferenceTests-part1')
             }
         }
         tasks.create(name: 'inferenceTests-part1', group: 'Verification') {
             description = 'Run inference tests (part 1).'
-            if (project.name.is('checker')) {
+            if (isChecker) {
                 // NO-AFU: Needs to depend on future AFU version of CF
                 // dependsOn('ainferTest', 'wpiManyTest')
             }
         }
         tasks.create(name: 'inferenceTests-part2', group: 'Verification') {
             description = 'Run inference tests (part 2).'
-            if (project.name.is('checker')) {
+            if (isChecker) {
                 // NO-AFU: Needs to depend on future AFU version of CF
                 // dependsOn('wpiPlumeLibTest')
             }
@@ -1240,7 +1241,7 @@ subprojects {
         tasks.create(name: 'typecheck-part2', group: 'Verification') {
             description = 'Run the Checker Framework on itself (part 2)'
             dependsOn('checkResourceLeak', 'checkSignature')
-            if (project.name.is('framework') || project.name.is('checker')) {
+            if (isFramework || isChecker) {
                 dependsOn('checkCompilerMessages')
             }
             dependsOn('checkNullness')
