@@ -718,6 +718,7 @@ project(':framework').afterEvaluate {
 }
 
 task addFavicon(type: Exec) {
+    dependsOn 'getHtmlTools'
     dependsOn 'allJavadoc'
     workingDir "${rootDir}/docs/api"
     executable "${htmlToolsHome}/html-add-favicon"
@@ -742,7 +743,7 @@ task addFavicon(type: Exec) {
 //   in the subproject or `./gradlew :checker:javadoc` at the top level.
 task allJavadoc(type: Javadoc, group: 'Documentation') {
     description = 'Generates API documentation that includes all the modules.'
-    dependsOn(':checker:shadowJar', 'getPlumeScripts', 'getHtmlTools')
+    dependsOn(':checker:shadowJar', 'getPlumeScripts')
     destinationDir = file("${rootDir}/docs/api")
     source javadocDirs
 
