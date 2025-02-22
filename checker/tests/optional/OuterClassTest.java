@@ -21,7 +21,7 @@ class OuterClassTest {
                 emptyStrs.stream()
                         .map(String::length)
                         .max(Integer::compare)
-                        // :: error: (method.invocation)
+                        // :: error: (method.invocation.invalid)
                         .get();
             }
 

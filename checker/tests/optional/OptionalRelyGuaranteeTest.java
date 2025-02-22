@@ -11,7 +11,7 @@ class OptionalRelyGuaranteeTest {
         if (!wrapper.getStrs().isEmpty()) {
             b("test", wrapper);
         }
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         @NonEmpty List<String> ne = wrapper.getStrs();
     }
 
