@@ -227,11 +227,10 @@ public class OptionalImplTransfer extends CFTransfer {
     private boolean isReceiverParameterNonEmpty(MethodInvocationNode methodInvok) {
         ExpressionTree receiverTree = methodInvok.getTree();
         // TODO(https://github.com/typetools/checker-framework/issues/6848): this logic needs
-        // further
-        // refinement to eliminate a source of false positives in the Optional Checker.
+        // further refinement to eliminate a source of false positives in the Optional Checker.
         // Also see the discussion in:
-        // https://github.com/typetools/checker-framework/pull/6685#discussion_r1788632663 for
-        // additional context.
+        // https://github.com/typetools/checker-framework/pull/6685#discussion_r1788632663
+        // for additional context.
         while (receiverTree instanceof MethodInvocationTree) {
             ExpressionTree newReceiverTree = TreeUtils.getReceiverTree(receiverTree);
             if (newReceiverTree == null) {
