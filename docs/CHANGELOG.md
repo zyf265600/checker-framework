@@ -1,5 +1,5 @@
-Version 3.49.0-eisop1 (February ??, 2025)
------------------------------------------
+Version 3.49.1-eisop1 (March 17, 2025)
+--------------------------------------
 
 **User-visible changes:**
 
@@ -15,6 +15,14 @@ bounds are used.
 **Closed issues:**
 
 eisop#1003, eisop#1033, eisop#1058.
+
+
+Version 3.49.1 (March 3, 2025)
+------------------------------
+
+**Closed issues:**
+
+#6970, #6974.
 
 
 Version 3.49.0 (February 3, 2025)
@@ -35,6 +43,7 @@ The JavaStubifier implementation now appears in package
 `org.checkerframework.framework.stubifier.JavaStubifier`.
 
 **Closed issues:**
+
 #6935, #6936, #6939.
 
 
