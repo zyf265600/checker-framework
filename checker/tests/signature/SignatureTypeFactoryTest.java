@@ -129,7 +129,7 @@ public class SignatureTypeFactoryTest {
         sn = s2;
         bn = s2;
         fbn = s2;
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         i = s2;
 
         us = s3;
@@ -143,7 +143,7 @@ public class SignatureTypeFactoryTest {
         sn = s3;
         bn = s3;
         fbn = s3;
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         i = s3;
 
         us = s4;
@@ -169,7 +169,7 @@ public class SignatureTypeFactoryTest {
         bn = s5;
         // :: error: (assignment.type.incompatible)
         fbn = s5;
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         i = s5;
 
         us = s6;
@@ -186,7 +186,7 @@ public class SignatureTypeFactoryTest {
         bn = s6;
         // :: error: (assignment.type.incompatible)
         fbn = s6;
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         i = s6;
 
         us = s7;
@@ -203,7 +203,7 @@ public class SignatureTypeFactoryTest {
         bn = s7;
         // :: error: (assignment.type.incompatible)
         fbn = s7;
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         i = s7;
 
         us = s8;
@@ -221,7 +221,7 @@ public class SignatureTypeFactoryTest {
         bn = s8;
         // :: error: (assignment.type.incompatible)
         fbn = s8;
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         i = s8;
 
         us = s9;
@@ -235,7 +235,7 @@ public class SignatureTypeFactoryTest {
         sn = s9;
         bn = s9;
         fbn = s9;
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         i = s9;
 
         us = s10;
@@ -272,7 +272,7 @@ public class SignatureTypeFactoryTest {
         // :: error: (assignment.type.incompatible)
         bn = s12;
         fbn = s12;
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         i = s12;
 
         us = s13;
@@ -288,7 +288,7 @@ public class SignatureTypeFactoryTest {
         // :: error: (assignment.type.incompatible)
         bn = s13;
         fbn = s13;
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         i = s13;
 
         us = s14;
@@ -305,7 +305,7 @@ public class SignatureTypeFactoryTest {
         bn = s14;
         // :: error: (assignment.type.incompatible)
         fbn = s14;
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         i = s14;
 
         us = s15;
@@ -322,7 +322,7 @@ public class SignatureTypeFactoryTest {
         bn = s15;
         // :: error: (assignment.type.incompatible)
         fbn = s15;
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         i = s15;
 
         us = s16;
@@ -339,7 +339,7 @@ public class SignatureTypeFactoryTest {
         bn = s16;
         // :: error: (assignment.type.incompatible)
         fbn = s16;
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         i = s16;
 
         us = s17;
@@ -356,7 +356,7 @@ public class SignatureTypeFactoryTest {
         bn = s17;
         // :: error: (assignment.type.incompatible)
         fbn = s17;
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         i = s17;
 
         us = s18;
@@ -374,7 +374,7 @@ public class SignatureTypeFactoryTest {
         bn = s18;
         // :: error: (assignment.type.incompatible)
         fbn = s18;
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         i = s18;
 
         us = s19;
@@ -392,7 +392,7 @@ public class SignatureTypeFactoryTest {
         bn = s19;
         // :: error: (assignment.type.incompatible)
         fbn = s19;
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         i = s19;
 
         us = s20;
@@ -406,7 +406,7 @@ public class SignatureTypeFactoryTest {
         // :: error: (assignment.type.incompatible)
         bn = s20;
         fbn = s20;
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         i = s20;
 
         us = s21;
@@ -424,7 +424,7 @@ public class SignatureTypeFactoryTest {
         bn = s21;
         // :: error: (assignment.type.incompatible)
         fbn = s21;
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         i = s21;
 
         us = s22;
@@ -442,7 +442,7 @@ public class SignatureTypeFactoryTest {
         bn = s22;
         // :: error: (assignment.type.incompatible)
         fbn = s22;
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         i = s22;
 
         // Examples from the manual start here
@@ -458,7 +458,7 @@ public class SignatureTypeFactoryTest {
         // :: error: (assignment.type.incompatible)
         bn = t13;
         fbn = t13;
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         i = t13;
 
         us = t14;
@@ -496,7 +496,7 @@ public class SignatureTypeFactoryTest {
         bn = t12;
         // :: error: (assignment.type.incompatible)
         fbn = t12;
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         i = t12;
 
         us = t5;
@@ -524,7 +524,7 @@ public class SignatureTypeFactoryTest {
         bn = t2;
         // :: error: (assignment.type.incompatible)
         fbn = t2;
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         i = t2;
 
         us = t6;
@@ -539,7 +539,7 @@ public class SignatureTypeFactoryTest {
         // :: error: (assignment.type.incompatible)
         bn = t6;
         fbn = t6;
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         i = t6;
 
         us = t7;
@@ -555,7 +555,7 @@ public class SignatureTypeFactoryTest {
         bn = t7;
         // :: error: (assignment.type.incompatible)
         fbn = t7;
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         i = t7;
 
         us = t29;
@@ -572,7 +572,7 @@ public class SignatureTypeFactoryTest {
         bn = t29;
         // :: error: (assignment.type.incompatible)
         fbn = t29;
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         i = t29;
 
         us = t33;
@@ -589,7 +589,7 @@ public class SignatureTypeFactoryTest {
         bn = t33;
         // :: error: (assignment.type.incompatible)
         fbn = t33;
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         i = t33;
 
         us = t15;
@@ -603,7 +603,7 @@ public class SignatureTypeFactoryTest {
         sn = t15;
         bn = t15;
         fbn = t15;
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         i = t15;
 
         us = t16;
@@ -633,7 +633,7 @@ public class SignatureTypeFactoryTest {
         bn = t22;
         // :: error: (assignment.type.incompatible)
         fbn = t22;
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         i = t22;
 
         us = t23;
@@ -651,7 +651,7 @@ public class SignatureTypeFactoryTest {
         bn = t23;
         // :: error: (assignment.type.incompatible)
         fbn = t23;
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         i = t23;
 
         us = t3;
@@ -668,7 +668,7 @@ public class SignatureTypeFactoryTest {
         bn = t3;
         // :: error: (assignment.type.incompatible)
         fbn = t3;
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         i = t3;
 
         us = t8;
@@ -685,7 +685,7 @@ public class SignatureTypeFactoryTest {
         bn = t8;
         // :: error: (assignment.type.incompatible)
         fbn = t8;
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         i = t8;
 
         us = t9;
@@ -702,7 +702,7 @@ public class SignatureTypeFactoryTest {
         bn = t9;
         // :: error: (assignment.type.incompatible)
         fbn = t9;
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         i = t9;
 
         us = t24;
@@ -719,7 +719,7 @@ public class SignatureTypeFactoryTest {
         bn = t24;
         // :: error: (assignment.type.incompatible)
         fbn = t24;
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         i = t24;
 
         us = t25;
@@ -737,7 +737,7 @@ public class SignatureTypeFactoryTest {
         bn = t25;
         // :: error: (assignment.type.incompatible)
         fbn = t25;
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         i = t25;
 
         us = t28;
@@ -754,7 +754,7 @@ public class SignatureTypeFactoryTest {
         bn = t28;
         // :: error: (assignment.type.incompatible)
         fbn = t28;
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         i = t28;
 
         us = t27;
@@ -771,7 +771,7 @@ public class SignatureTypeFactoryTest {
         bn = t27;
         // :: error: (assignment.type.incompatible)
         fbn = t27;
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         i = t27;
 
         us = t26;
@@ -785,7 +785,7 @@ public class SignatureTypeFactoryTest {
         sn = t26;
         bn = t26;
         fbn = t26;
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         i = t26;
 
         us = t32;
@@ -803,7 +803,7 @@ public class SignatureTypeFactoryTest {
         bn = t32;
         // :: error: (assignment.type.incompatible)
         fbn = t32;
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         i = t32;
 
         us = t30;
@@ -833,7 +833,7 @@ public class SignatureTypeFactoryTest {
         bn = t31;
         // :: error: (assignment.type.incompatible)
         fbn = t31;
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         i = t31;
 
         us = t34;
@@ -847,7 +847,7 @@ public class SignatureTypeFactoryTest {
         sn = t34;
         bn = t34;
         fbn = t34;
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         i = t34;
 
         us = t17;
@@ -861,7 +861,7 @@ public class SignatureTypeFactoryTest {
         sn = t17;
         bn = t17;
         fbn = t17;
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         i = t17;
 
         us = t18;
@@ -888,7 +888,7 @@ public class SignatureTypeFactoryTest {
         sn = t19;
         bn = t19;
         fbn = t19;
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         i = t19;
 
         us = t21;
@@ -919,7 +919,7 @@ public class SignatureTypeFactoryTest {
         bn = t20;
         // :: error: (assignment.type.incompatible)
         fbn = t20;
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         i = t20;
 
         us = t10;
@@ -936,7 +936,7 @@ public class SignatureTypeFactoryTest {
         bn = t10;
         // :: error: (assignment.type.incompatible)
         fbn = t10;
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         i = t10;
 
         us = t4;
@@ -953,7 +953,7 @@ public class SignatureTypeFactoryTest {
         bn = t4;
         // :: error: (assignment.type.incompatible)
         fbn = t4;
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         i = t4;
 
         us = t11;
@@ -970,7 +970,7 @@ public class SignatureTypeFactoryTest {
         bn = t11;
         // :: error: (assignment.type.incompatible)
         fbn = t11;
-        // :: error: (assignment)
+        // :: error: (assignment.type.incompatible)
         i = t11;
     }
 }
