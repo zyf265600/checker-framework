@@ -248,7 +248,15 @@ def build_checker_framework_release(
     # update versions
     ant_props = (
         '-Dchecker=%s -Dold.release.ver=%s -Drelease.ver=%s -Dafu.version=%s -Dafu.properties=%s -Dafu.release.date="%s"'
-        % (checker_dir, old_cf_version, version, version, afu_build_properties, afu_release_date)
+        # python `black` styling can't decide where to break the line.
+        % (
+            checker_dir,
+            old_cf_version,
+            version,
+            version,
+            afu_build_properties,
+            afu_release_date,
+        )
     )
     # IMPORTANT: The release.xml in the directory where the Checker Framework is
     # being built is used. Not the release.xml in the directory you ran
