@@ -172,19 +172,19 @@
       "shasums": {
         "jar": "4e3fd613e0166c78b6a66cde3482f31a5ca162e113d55ddf5e4663f1b1c01e5e"
       },
-      "version": "3.42.0-eisop5"
+      "version": "3.49.1-eisop1"
     },
     "io.github.eisop:checker-qual": {
       "shasums": {
         "jar": "b79933a044d2e8b45e66257ce0a51bdd23411bcb6a1aaf0c5eff816ee3f45858"
       },
-      "version": "3.42.0-eisop5"
+      "version": "3.49.1-eisop1"
     },
     "io.github.eisop:checker-util": {
       "shasums": {
         "jar": "cd1f54ae982ebdbaa815d0c5d54ad29a26fbcc8806d39ac336cb3e6b19be0677"
       },
-      "version": "3.42.0-eisop5"
+      "version": "3.49.1-eisop1"
     },
     "javax.annotation:javax.annotation-api": {
       "shasums": {
