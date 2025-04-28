@@ -252,13 +252,11 @@ public class ConstraintSet implements ReductionResult {
         Set<Variable> inputDependencies = new LinkedHashSet<>();
         Set<Variable> outDependencies = new LinkedHashSet<>();
         // If this subset is empty then no closed subset was found and there is a cycle (or cycles)
-        // in
-        // the graph of dependencies between constraints.
+        // in the graph of dependencies between constraints.
 
         // From JLS 18.5.2.2:
         // In this case, the constraints in C that participate in a dependency cycle (or cycles) and
-        // do
-        // not depend on any constraints outside of the cycle (or cycles) are considered.
+        // do not depend on any constraints outside of the cycle (or cycles) are considered.
         // A single constraint is selected from the considered constraints, as follows:
 
         // If any of the considered constraints have the form <Expression -> T>, then the selected
@@ -400,20 +398,16 @@ public class ConstraintSet implements ReductionResult {
             this.addAll(((ReductionResultPair) result).constraintSet);
         } else if (result instanceof TypeConstraint) {
             // Add the new constraints to the beginning of the list so they are reduced first. This
-            // is
-            // because each constraint is supposed to be reduced until no other constraints are
-            // produced
-            // before moving onto another constraint.
+            // is because each constraint is supposed to be reduced until no other constraints are
+            // produced before moving onto another constraint.
             this.push((Constraint) result);
         } else if (result instanceof ConstraintSet) {
             if (result == TRUE_ANNO_FAIL) {
                 this.annotationFailure = true;
             } else {
                 // Add the new constraints to the beginning of the list so they are reduced first.
-                // This is
-                // because each constraint is supposed to be reduced until no other constraints are
-                // produced
-                // before moving onto another constraint.
+                // This is because each constraint is supposed to be reduced until no other
+                // constraints are produced before moving onto another constraint.
                 this.pushAll((ConstraintSet) result);
             }
         } else if (result instanceof BoundSet) {

@@ -229,8 +229,7 @@ public class Resolution {
 
         // Until varsToResolve is empty:
         // Find the variable, alpha, in `varsToResolve` that has the fewest varsToResolve mentioned
-        // in
-        // alpha's bounds.
+        // in alpha's bounds.
         // Resolve alpha using the "noncapture" resolution method. (That is find an instantiation of
         // alpha using the "noncapture" resolution method.)
         // Remove alpha from `varsToResolve`.
@@ -271,8 +270,7 @@ public class Resolution {
                 v.getBounds().applyInstantiationsToBounds();
                 if (v.getBounds().hasInstantiation()) {
                     // If v now has an instantiation, then loop through all the variables again to
-                    // apply it to
-                    // all the bounds of the other variables.
+                    // apply it to all the bounds of the other variables.
                     changed = true;
                 }
             }
