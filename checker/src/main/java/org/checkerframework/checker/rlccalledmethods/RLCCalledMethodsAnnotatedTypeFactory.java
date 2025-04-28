@@ -141,7 +141,7 @@ public class RLCCalledMethodsAnnotatedTypeFactory extends CalledMethodsAnnotated
 
     @Override
     public void postAnalyze(ControlFlowGraph cfg) {
-        rlc.setRoot(root);
+        rlc.setRoot(getRoot());
         MustCallConsistencyAnalyzer mustCallConsistencyAnalyzer =
                 new MustCallConsistencyAnalyzer(rlc);
         mustCallConsistencyAnalyzer.analyze(cfg);

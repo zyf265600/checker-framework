@@ -1,6 +1,7 @@
 package org.checkerframework.checker.resourceleak;
 
 import com.google.common.collect.ImmutableSet;
+import com.sun.source.tree.CompilationUnitTree;
 
 import org.checkerframework.checker.compilermsgs.qual.CompilerMessageKey;
 import org.checkerframework.checker.mustcall.MustCallChecker;
@@ -316,5 +317,11 @@ public class ResourceLeakChecker extends AggregateChecker {
         NavigableSet<String> result = super.getSuppressWarningsPrefixes();
         result.add("builder");
         return result;
+    }
+
+    // public to allow access from RLCCalledMethodsAnnotatedTypeFactory.
+    @Override
+    public void setRoot(CompilationUnitTree newRoot) {
+        super.setRoot(newRoot);
     }
 }
