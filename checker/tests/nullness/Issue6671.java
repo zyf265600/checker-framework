@@ -14,7 +14,7 @@ public interface Issue6671<E extends Exception> {
     }
 
     @SuppressWarnings("unchecked")
-    private static <T extends Throwable> void sneakyThrow(final Throwable x) throws T {
+    public static <T extends Throwable> void sneakyThrow(final Throwable x) throws T {
         throw (T) x;
     }
 }
