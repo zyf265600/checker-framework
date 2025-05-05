@@ -1,3 +1,5 @@
+// @below-java14-jdk-skip-test
+
 package open.falsepos;
 
 import java.util.stream.Collectors;
