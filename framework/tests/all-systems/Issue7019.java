@@ -1,3 +1,5 @@
+// @below-java10-jdk-skip-test
+
 package open.crash;
 
 import java.util.List;
