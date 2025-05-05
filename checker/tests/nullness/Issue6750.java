@@ -1,3 +1,5 @@
+// @below-java17-jdk-skip-test
+
 package open.falsepos;
 
 import org.checkerframework.checker.nullness.qual.KeyFor;
@@ -8,7 +10,6 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-// @below-java17-jdk-skip-test
 public record Issue6750(String type) {
 
     void needKeyFor(@KeyFor("#2") String s, Map<String, String> map) {
