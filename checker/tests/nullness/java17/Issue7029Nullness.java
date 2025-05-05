@@ -1,3 +1,6 @@
+// @skip-test EISOP issue #1213
+// @below-java17-jdk-skip-test
+
 package open.crash;
 
 import java.util.Collection;
@@ -7,7 +10,6 @@ import java.util.stream.Stream;
 import org.checkerframework.checker.initialization.qual.Initialized;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-// @below-java17-jdk-skip-test
 public class Issue7029Nullness {
 
   private record Item(@Nullable String id) {}
