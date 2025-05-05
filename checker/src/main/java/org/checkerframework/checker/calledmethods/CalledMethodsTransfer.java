@@ -115,16 +115,17 @@ public class CalledMethodsTransfer extends AccumulationTransfer {
             MethodInvocationNode node, TransferInput<AccumulationValue, AccumulationStore> input) {
 
         // The call to `super.visitMethodInvocation()` modifies the input store in-place.  So if we
-        // end
-        // up needing to create the exceptional stores, then we'll need this copy taken beforehand.
+        // end up needing to create the exceptional stores, then we'll need this copy taken
+        // beforehand.
         AccumulationStore inputStore = input.getRegularStore().copy();
 
         TransferResult<AccumulationValue, AccumulationStore> superResult =
                 super.visitMethodInvocation(node, input);
 
         // Ensure that the result has a store for each possible exception.  This affects the
-        // behavior of
-        // accumulate(), which will accumulate values into the result's exceptional stores as well.
+        // behavior of accumulate(), which will accumulate values into the result's exceptional
+        // stores
+        // as well.
         Map<TypeMirror, AccumulationStore> exceptionalStores = superResult.getExceptionalStores();
         if (exceptionalStores == null) {
             exceptionalStores = makeExceptionalStores(node, inputStore);
