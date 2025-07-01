@@ -906,20 +906,37 @@ public class InferenceFactory {
         if (properTypes.isEmpty()) {
             return null;
         }
-        TypeMirror tiTypeMirror = null;
-        AnnotatedTypeMirror ti = null;
-        for (ProperType liProperType : properTypes) {
-            AnnotatedTypeMirror li = liProperType.getAnnotatedType();
-            TypeMirror liTypeMirror = liProperType.getJavaType();
-            if (ti == null) {
-                ti = li;
-                tiTypeMirror = liTypeMirror;
+
+        TypeMirror lubTM = null;
+        AnnotatedTypeMirror lubATM = null;
+        boolean ignoreAnnotations = false;
+        for (ProperType properType : properTypes) {
+            AnnotatedTypeMirror atm = properType.getAnnotatedType();
+            TypeMirror tm = properType.getJavaType();
+            if (lubATM == null) {
+                lubATM = atm;
+                lubTM = tm;
+                ignoreAnnotations = properType.ignoreAnnotations;
             } else {
-                tiTypeMirror = lub(context.env, tiTypeMirror, liTypeMirror);
-                ti = AnnotatedTypes.leastUpperBound(typeFactory, ti, li, tiTypeMirror);
+                lubTM = lub(context.env, lubTM, tm);
+                if (properType.ignoreAnnotations == ignoreAnnotations) {
+                    lubATM = AnnotatedTypes.leastUpperBound(typeFactory, lubATM, atm, lubTM);
+                } else if (properType.ignoreAnnotations) {
+                    lubATM =
+                            AnnotatedTypes.asSuper(
+                                    typeFactory,
+                                    lubATM,
+                                    AnnotatedTypeMirror.createType(lubTM, typeFactory, false));
+                } else {
+                    lubATM =
+                            AnnotatedTypes.asSuper(
+                                    typeFactory,
+                                    atm,
+                                    AnnotatedTypeMirror.createType(lubTM, typeFactory, false));
+                }
             }
         }
-        return new ProperType(ti, tiTypeMirror, context);
+        return new ProperType(lubATM, lubTM, context, ignoreAnnotations);
     }
 
     /**
@@ -956,22 +973,29 @@ public class InferenceFactory {
         AnnotatedTypeMirror aAtm = a.getAnnotatedType();
         AnnotatedTypeMirror bAtm = b.getAnnotatedType();
         AnnotatedTypeMirror glbATM = AnnotatedTypes.annotatedGLB(typeFactory, aAtm, bAtm);
+        if (a.ignoreAnnotations != b.ignoreAnnotations) {
+            if (a.ignoreAnnotations) {
+                glbATM.replaceAnnotations(bAtm.getAnnotations());
+            } else {
+                glbATM.replaceAnnotations(aAtm.getAnnotations());
+            }
+        }
         if (context.types.isSameType(aJavaType, (Type) glb)) {
-            return a.create(glbATM, glb);
+            return a.create(glbATM, glb, false);
         }
 
         if (context.types.isSameType(bJavaType, (Type) glb)) {
-            return b.create(glbATM, glb);
+            return b.create(glbATM, glb, false);
         }
 
         if (a.isInferenceType()) {
-            return a.create(glbATM, glb);
+            return a.create(glbATM, glb, false);
         } else if (b.isInferenceType()) {
-            return b.create(glbATM, glb);
+            return b.create(glbATM, glb, false);
         }
 
         assert a.isProper() && b.isProper();
-        return new ProperType(glbATM, glb, context);
+        return new ProperType(glbATM, glb, context, a.ignoreAnnotations && b.ignoreAnnotations);
     }
 
     /**
@@ -1147,7 +1171,7 @@ public class InferenceFactory {
         context.typeFactory.capturedTypeVarSubstitutor.substitute(
                 typeVariable,
                 Collections.singletonMap(typeVariable.getUnderlyingType(), typeVariable));
-        return upperBound.create(typeVariable, freshTypeVariable);
+        return upperBound.create(typeVariable, freshTypeVariable, false);
     }
 
     /**

@@ -326,6 +326,9 @@ import javax.tools.Diagnostic;
 
     // Amount of detail in messages
 
+    // Warn about trees that take a long time to typecheck
+    "slowTypecheckingSeconds",
+
     // Print the version of the Checker Framework
     "version",
 
