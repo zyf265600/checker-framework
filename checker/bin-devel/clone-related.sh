@@ -49,7 +49,7 @@ fi
 # AT=$(dirname "${AFU}")
 
 # ## Build annotation-tools (Annotation File Utilities)
-# "$GIT_SCRIPTS/git-clone-related" ${DEBUG_FLAG} typetools annotation-tools "${AT}"
+# "$GIT_SCRIPTS/git-clone-related" ${DEBUG_FLAG} eisop annotation-tools "${AT}"
 # if [ ! -d ../annotation-tools ]; then
 #   ln -s "${AT}" ../annotation-tools
 # fi
