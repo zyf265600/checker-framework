@@ -92,14 +92,3 @@ the upcoming release.
 Note: when updating to a newer version of the JDK, it is necessary to
 update the Gradle version to one that supports that JDK, in projects
 such as wpi-many-tests-bcel-util.
-
-Cleanup:
-
-After creating docker images, if you are low on disk space,
-consider deleting the docker containers.
-To stop and remove/delete all docker containers:
-  docker stop $(docker ps -a -q)
-  docker rm $(docker ps -a -q)
-or you can just remove some of them.
-To really clean up the whole docker system:
-  docker system prune --all --volumes
