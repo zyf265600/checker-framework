@@ -656,12 +656,14 @@ public class BaseTypeVisitor<Factory extends GenericAnnotatedTypeFactory<?, ?, ?
      *     type-checking of {@code tree} began
      * @param startMillis the time when type-checking of {@code tree} began
      */
-    final void checkSlowTypechecking(
+    private final void checkSlowTypechecking(
             Tree tree, @FindDistinct Tree startSlowTypeCheckingTree, Long startMillis) {
         if (startSlowTypeCheckingTree == slowTypecheckingTree) {
             long timeMillis = System.currentTimeMillis() - startMillis;
             if (timeMillis > slowTypecheckingSeconds * 1000) {
                 // No warning for extremely long source code.
+                // TODO: this serializes the tree, for a large tree, and then outputs nothing. Isn't
+                // this bad for performance?
                 if (tree.toString().length() < 200000) {
                     checker.reportWarning(tree, "slow.typechecking", timeMillis / 1000);
                 }
@@ -1753,7 +1755,6 @@ public class BaseTypeVisitor<Factory extends GenericAnnotatedTypeFactory<?, ?, ?
 
     @Override
     public Void visitVariable(VariableTree tree, Void p) {
-
         // boilerplate
         long startMillis = System.currentTimeMillis();
         Tree startSlowTypeCheckingTree = slowTypecheckingTree;
@@ -2096,7 +2097,6 @@ public class BaseTypeVisitor<Factory extends GenericAnnotatedTypeFactory<?, ?, ?
      */
     @Override
     public Void visitEnhancedForLoop(EnhancedForLoopTree tree, Void p) {
-
         // boilerplate
         long startMillis = System.currentTimeMillis();
         Tree startSlowTypeCheckingTree = slowTypecheckingTree;
@@ -3069,7 +3069,6 @@ public class BaseTypeVisitor<Factory extends GenericAnnotatedTypeFactory<?, ?, ?
      */
     @Override
     public Void visitThrow(ThrowTree tree, Void p) {
-
         // boilerplate
         long startMillis = System.currentTimeMillis();
         Tree startSlowTypeCheckingTree = slowTypecheckingTree;

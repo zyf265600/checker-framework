@@ -327,6 +327,7 @@ import javax.tools.Diagnostic;
     // Amount of detail in messages
 
     // Warn about trees that take a long time to typecheck
+    // org.checkerframework.common.basetype.BaseTypeVisitor.checkSlowTypechecking
     "slowTypecheckingSeconds",
 
     // Print the version of the Checker Framework
