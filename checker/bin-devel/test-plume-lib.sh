@@ -22,12 +22,12 @@ if [[ "${GROUPARG}" == "plume-util" ]]; then PACKAGES=("${GROUPARG}"); fi
 if [[ "${GROUPARG}" == "reflection-util" ]]; then PACKAGES=("${GROUPARG}"); fi
 if [[ "${GROUPARG}" == "require-javadoc" ]]; then PACKAGES=("${GROUPARG}"); fi
 if [[ "${GROUPARG}" == "all" ]] || [[ "${GROUPARG}" == "" ]]; then
-    if java -version 2>&1 | grep version | grep 1.8 ; then
-        # options master branch does not compile under JDK 8
-        PACKAGES=(bcel-util bibtex-clean html-pretty-print icalavailable javadoc-lookup lookup multi-version-control plume-util reflection-util require-javadoc)
-    else
-        PACKAGES=(bcel-util bibtex-clean html-pretty-print icalavailable javadoc-lookup lookup multi-version-control options plume-util reflection-util require-javadoc)
-    fi
+  if java -version 2>&1 | grep version | grep 1.8; then
+    # options master branch does not compile under JDK 8
+    PACKAGES=(bcel-util bibtex-clean html-pretty-print icalavailable javadoc-lookup lookup multi-version-control plume-util reflection-util require-javadoc)
+  else
+    PACKAGES=(bcel-util bibtex-clean html-pretty-print icalavailable javadoc-lookup lookup multi-version-control options plume-util reflection-util require-javadoc)
+  fi
 fi
 if [ -z ${PACKAGES+x} ]; then
   echo "Bad group argument '${GROUPARG}'"
