@@ -33,7 +33,7 @@ while read -r file; do
 
     if [ "$diff_output" ]; then
       echo "Difference found in: $rel_path"
-      diff "$file" "$jdk_file" || true  # Show the full diff
+      diff "$file" "$jdk_file" || true # Show the full diff
 
       difference_found=true
     fi
@@ -59,7 +59,7 @@ fi
 # If any difference, missing, or removed file was found, exit with failure
 if [ "$difference_found" = true ] || [ "$file_missing_in_jdk" = true ] || [ "$file_removed_in_cf" = true ]; then
   echo "Differences found or files missing/removed. Exiting with failure."
-  exit 1  # Exit with failure
+  exit 1 # Exit with failure
 else
   echo "No differences found and no files missing/removed."
 fi
