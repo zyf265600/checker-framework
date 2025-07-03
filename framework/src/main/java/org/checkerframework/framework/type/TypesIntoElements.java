@@ -407,9 +407,9 @@ public final class TypesIntoElements {
         }
 
         /**
-         * Modeled after {@code
+         * Modeled after private method {@code
          * com.sun.tools.javac.code.TypeAnnotations.TypeAnnotationPositions#locateNestedTypes(Type,
-         * TypeAnnotationPosition)}.
+         * TypeAnnotationPosition)} in JDK 8. The signature changed in some later versions.
          *
          * @param type a type
          * @param p the type's position

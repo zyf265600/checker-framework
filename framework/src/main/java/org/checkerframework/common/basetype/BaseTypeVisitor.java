@@ -2131,7 +2131,6 @@ public class BaseTypeVisitor<Factory extends GenericAnnotatedTypeFactory<?, ?, ?
      */
     @Override
     public Void visitMethodInvocation(MethodInvocationTree tree, Void p) {
-
         // boilerplate
         long startMillis = System.currentTimeMillis();
         Tree startSlowTypeCheckingTree = slowTypecheckingTree;
@@ -2728,7 +2727,6 @@ public class BaseTypeVisitor<Factory extends GenericAnnotatedTypeFactory<?, ?, ?
      * @param switchExpressionTree a {@code SwitchExpressionTree}
      */
     public void visitSwitchExpression17(Tree switchExpressionTree) {
-
         // boilerplate
         long startMillis = System.currentTimeMillis();
         Tree startSlowTypeCheckingTree = slowTypecheckingTree;

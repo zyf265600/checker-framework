@@ -490,7 +490,7 @@ public class TreeUtilsAfterJava11 {
         }
 
         /**
-         * The {@code JCVariableDecl.declaredUsingVar} method for Java 16 and higher; null
+         * The {@code JCVariableDecl.declaredUsingVar} method for Java 17 and higher; null
          * otherwise.
          */
         private static @Nullable Method DECLARED_USING_VAR = null;
