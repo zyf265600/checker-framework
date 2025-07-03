@@ -307,7 +307,7 @@ public class BaseTypeVisitor<Factory extends GenericAnnotatedTypeFactory<?, ?, ?
      */
     protected final Map<@CanonicalName String, List<TypeUseLocation>> qualAllowedLocations;
 
-    /*
+    /**
      * The number of seconds that typechecking must take for a single tree, to issue a "slow
      * typechecking" warning; default 30.
      */
