@@ -1,24 +1,4 @@
-Version 3.49.5 (June 30, 2025)
------------------------------
-
-**User-visible changes:**
-
-The Checker Framework runs under JDK 25 -- that is, it runs on a version 25 JVM.
-
-**Closed issues:**
-
-#7093.
-
-
-Version 3.49.4 (June 2, 2025)
------------------------------
-
-**Closed issues:**
-
-#6740, #7013, #7038, #7070, #7082.
-
-
-Version 3.49.3-eisop2 (June ??, 2025)
+Version 3.49.5-eisop1 (July ??, 2025)
 -------------------------------------
 
 **User-visible changes:**
@@ -52,6 +32,27 @@ They are enabled by default and can be disabled using `-Alint=-instanceof.unsafe
 **Closed issues:**
 
 eisop#1247, eisop#1263, typetools#7096.
+
+
+Version 3.49.5 (June 30, 2025)
+-----------------------------
+
+**User-visible changes:**
+
+The Checker Framework runs under JDK 25 -- that is, it runs on a version 25 JVM.
+(EISOP note: this already worked in Version 3.49.3-eisop1.)
+
+**Closed issues:**
+
+#7093.
+
+
+Version 3.49.4 (June 2, 2025)
+-----------------------------
+
+**Closed issues:**
+
+#6740, #7013, #7038, #7070, #7082.
 
 
 Version 3.49.3-eisop1 (May 6, 2025)
