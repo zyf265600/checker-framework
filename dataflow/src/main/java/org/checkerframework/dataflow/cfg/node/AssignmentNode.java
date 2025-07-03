@@ -136,7 +136,7 @@ public class AssignmentNode extends Node {
         return desugaredFromEnhancedArrayForLoop;
     }
 
-    /** set the assignment node as desugared from an enhanced-for-loop over an array */
+    /** Set the assignment node as desugared from an enhanced-for-loop over an array. */
     public void setDesugaredFromEnhancedArrayForLoop() {
         desugaredFromEnhancedArrayForLoop = true;
     }
