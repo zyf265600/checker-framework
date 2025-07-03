@@ -175,7 +175,7 @@ public class AnnotationStatistics extends SourceChecker {
                 TreePath path = getCurrentPath();
                 Tree prev = null;
                 for (Tree t : path) {
-                    if (prev != null && prev instanceof BlockTree && t instanceof MethodTree) {
+                    if (prev instanceof BlockTree && t instanceof MethodTree) {
                         isBodyAnnotation = true;
                         break;
                     }

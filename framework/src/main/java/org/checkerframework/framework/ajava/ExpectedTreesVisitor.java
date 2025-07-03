@@ -102,7 +102,7 @@ public class ExpectedTreesVisitor extends TreeScannerWithDefaults {
 
                 VariableTree variable = (VariableTree) member;
                 ExpressionTree initializer = variable.getInitializer();
-                if (initializer == null || !(initializer instanceof NewClassTree)) {
+                if (!(initializer instanceof NewClassTree)) {
                     continue;
                 }
 

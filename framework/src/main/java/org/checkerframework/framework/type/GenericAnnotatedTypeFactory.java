@@ -2266,7 +2266,7 @@ public abstract class GenericAnnotatedTypeFactory<
         }
 
         Tree declTree = declarationFromElement(elt);
-        if (declTree == null || !(declTree instanceof VariableTree)) {
+        if (!(declTree instanceof VariableTree)) {
             return;
         }
 
@@ -2406,7 +2406,7 @@ public abstract class GenericAnnotatedTypeFactory<
             @Nullable T getTypeFactoryOfSubcheckerOrNull(
                     Class<? extends SourceChecker> subCheckerClass) {
         SourceChecker subSourceChecker = checker.getSubchecker(subCheckerClass);
-        if (subSourceChecker == null || !(subSourceChecker instanceof BaseTypeChecker)) {
+        if (!(subSourceChecker instanceof BaseTypeChecker)) {
             return null;
         }
 

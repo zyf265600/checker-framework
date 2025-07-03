@@ -399,14 +399,15 @@ public class OptionalImplVisitor
             handleAssignmentInConditional(tree, thenStmt, elseStmt);
         }
 
-        if (!(elseStmt == null
-                || (elseStmt instanceof BlockTree
-                        && ((BlockTree) elseStmt).getStatements().isEmpty()))) {
+        if (elseStmt != null
+                && !(elseStmt instanceof BlockTree
+                        && ((BlockTree) elseStmt).getStatements().isEmpty())) {
             // else block is missing or is an empty block: "{}"
+            // TODO: the logic here seems wrong.
             return;
         }
 
-        if (thenStmt != null && thenStmt instanceof VariableTree) {
+        if (thenStmt instanceof VariableTree) {
             ExpressionTree initializer = ((VariableTree) thenStmt).getInitializer();
             if (initializer instanceof MethodInvocationTree) {
                 checkConditionalStatementIsPresentGetCall(
@@ -992,7 +993,7 @@ public class OptionalImplVisitor
             // hasGetAsArgumentTree is an invocation of Stream#map(...).
             Tree mapReceiverTree = TreeUtils.getReceiverTree(hasGetAsArgumentTree);
             // Will check whether mapParent is the call `Stream.filter(Optional::isPresent)`.
-            if (mapReceiverTree != null && mapReceiverTree instanceof MethodInvocationTree) {
+            if (mapReceiverTree instanceof MethodInvocationTree) {
                 MethodInvocationTree fluentToMapTree = (MethodInvocationTree) mapReceiverTree;
                 ExecutableElement fluentToMapElement = TreeUtils.elementFromUse(fluentToMapTree);
                 if (!fluentToMapElement.equals(streamFilter)) {
