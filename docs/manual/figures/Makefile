@@ -4,8 +4,8 @@
 
 PDFFILES = $(patsubst %.svg,%.pdf,$(wildcard *.svg))
 
-# RSVG_CONVERT_VERSION := $(shell rsvg-convert --version 2>/dev/null)
-# INKSCAPE_VERSION := $(shell inkscape --version 2>/dev/null)
+RSVG_CONVERT_VERSION := $(shell rsvg-convert --version 2>/dev/null)
+INKSCAPE_VERSION := $(shell inkscape --version 2>/dev/null)
 
 all: ${PDFFILES} clean-obsolete-files svg-copy
 
