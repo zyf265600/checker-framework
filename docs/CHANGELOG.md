@@ -1,3 +1,15 @@
+Version 3.49.5 (June 30, 2025)
+-----------------------------
+
+**User-visible changes:**
+
+The Checker Framework runs under JDK 25 -- that is, it runs on a version 25 JVM.
+
+**Closed issues:**
+
+#7093.
+
+
 Version 3.49.4 (June 2, 2025)
 -----------------------------
 
@@ -173,11 +185,11 @@ Version 3.48.0 (October 2, 2024)
 
 **User-visible changes:**
 
-The new SqlQuotesChecker prevents errors in quoting in SQL queries.  It prevents
-injection attacks that exploit quoting errors.
+The new SQL Quotes Checker prevents errors in quoting in SQL queries.  It
+prevents injection attacks that exploit quoting errors.
 
-Aggregate Checkers now interleave error messages so that all errors about a line of code
-appear together.
+Aggregate Checkers now interleave error messages so that all errors about a line
+of code appear together.
 (EISOP note: some signatures changed from `BaseTypeChecker` to `SourceChecker`,
 which might require adaptation in checkers.)
 

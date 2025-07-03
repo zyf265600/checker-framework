@@ -87,6 +87,7 @@ ext {
         //  * Repeatedly run `./gradlew clean compileJava` and fix all errors
         //  * Uncomment "-Werror"
         errorprone      : '2.39.0',
+        // NOTE: Google Java Format requires JDK 17 or higher as of version 1.25.0.
         googleJavaFormat : '1.25.2',
         hashmapUtil     : '0.0.1',
         junit           : '4.13.2',
@@ -172,7 +173,7 @@ allprojects { currentProj ->
     //   * any new checkers have been added, or
     //   * backward-incompatible changes have been made to APIs or elsewhere.
     // To make a snapshot release, version should end in "-SNAPSHOT", then: ./gradlew publish
-    version = '3.49.4'
+    version = '3.49.5'
 
     apply plugin: 'java'
     apply plugin: 'eclipse'
@@ -484,6 +485,52 @@ allprojects { currentProj ->
         tasks.withType(JavaCompile) { compilationTask ->
             dependsOn(':installGitHooks')
 
+            // Ways to specifiy the JDK used by different tasks/Gradle:
+            //
+            // 1. Run Gradle using JDK 21:
+            // mkdir ~/.gradle && echo "org.gradle.java.home=/usr/lib/jvm/java-21-openjdk-amd64" >> ~/.gradle/gradle.properties
+            //
+            // 2. Use JDK 24 for all Java tasks: (24 could be replaced with any version.)
+            // export ORG_GRADLE_PROJECT_jdkTestVersion=24
+            // or
+            // ./gradlew sometask -PjdkTestVersion=24
+            //
+            // 3. Compile the Checker Framework using JDK 21: (Overrides the version specified in `jdkTestVersion` for compiling only.)
+            // export ORG_GRADLE_PROJECT_useJdk21Compiler=true
+            // or
+            //./gradlew sometask -PuseJdk21Compiler=true
+
+            int jdkTestVersion = Integer.valueOf(JavaVersion.current().getMajorVersion())
+            if(project.getProperties().containsKey('jdkTestVersion')) {
+                jdkTestVersion = Integer.valueOf(project.getProperties().get('jdkTestVersion'))
+                java {
+                    toolchain {
+                        languageVersion = JavaLanguageVersion.of(jdkTestVersion)
+                    }
+                }
+
+                javaCompiler = javaToolchains.compilerFor {
+                    languageVersion = JavaLanguageVersion.of(jdkTestVersion)
+                }
+
+                tasks.withType(JavaExec).configureEach {
+                    javaLauncher = javaToolchains.launcherFor {
+                        languageVersion = JavaLanguageVersion.of(jdkTestVersion)
+                    }
+                }
+            }
+
+            // With 'useJdk21Compiler' property, use JDK 21 because the release uses it.
+            // If you update this line, also update JAVA_HOME in docs/developer/release/release_vars.py.
+            boolean jdk21Compiler = project.getProperties().getOrDefault('useJdk21Compiler', false)
+            if (jdk21Compiler) {
+                // This uses the Java 21 compiler to compile all code.
+                //  https://docs.gradle.org/current/userguide/toolchains.html
+                javaCompiler = javaToolchains.compilerFor {
+                    languageVersion = JavaLanguageVersion.of(21)
+                }
+            }
+
             // Sorting is commented out because it disables incremental compilation.
             // Uncomment when needed.
             // // Put source files in deterministic order, for debugging.
@@ -543,17 +590,10 @@ allprojects { currentProj ->
             // -fallthrough: Don't check fallthroughs.  Instead, use Error Prone.  Its
             //   warnings are suppressible with a "// fall through" comment.
             // -classfile: classgraph jar file and https://bugs.openjdk.org/browse/JDK-8190452
-            String lint = '-Xlint:-options,-fallthrough,-classfile'
-
-            if (useJdkVersionInt >= 21) {
-                // TODO: Ignore this-escape warnings for now; perhaps review and suppress each one later.
-                lint +=',-this-escape'
-            }
-
             options.compilerArgs += [
                 '-g',
                 '-Werror',
-                lint,
+                '-Xlint:-options,-fallthrough,-classfile',
                 '-Xlint',
             ]
 
@@ -595,8 +635,6 @@ allprojects { currentProj ->
                     '-Xep:ExtendsObject:OFF',
                     // For Visitors it is convenient to just pass a Void parameter.
                     '-Xep:VoidUsed:OFF',
-                    // TODO: hold off on large refactoring.
-                    '-Xep:PreferInstanceofOverGetKind:OFF',
                     // -Werror halts the build if Error Prone issues a warning, which ensures that
                     // the errors get fixed.  On the downside, Error Prone (or maybe the compiler?)
                     // stops as soon as it issues one warning, rather than outputting them all.
@@ -795,7 +833,7 @@ configurations {
 }
 
 dependencies {
-    requireJavadoc 'org.plumelib:require-javadoc:1.0.9'
+    requireJavadoc 'org.plumelib:require-javadoc:2.0.0'
 }
 
 task requireJavadoc(type: JavaExec, group: 'Documentation') {
@@ -804,6 +842,16 @@ task requireJavadoc(type: JavaExec, group: 'Documentation') {
     classpath = configurations.requireJavadoc
     // Convert each srcDir to its absolute path and flatten the list
     args requireJavadocDirs.collect { it.srcDirs*.absolutePath }.flatten()
+    jvmArgs += [
+        '--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED',
+        '--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED',
+        '--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED',
+        '--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED',
+        '--add-opens=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED',
+        '--add-opens=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED',
+        '--add-opens=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED',
+        '--add-opens=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED',
+    ]
 }
 
 
@@ -1374,5 +1422,13 @@ final sharedPublicationConfiguration(publication) {
             connection = 'scm:git:https://github.com/eisop/checker-framework.git'
             developerConnection = 'scm:git:ssh://git@github.com/eisop/checker-framework.git'
         }
+    }
+}
+tasks.register('printJavaVersion') {
+    description = "Prints the Java version used to run Gradle."
+    doLast {
+        println "Java version used to run Gradle: ${System.getProperty('java.version')}"
+        def currentJvm = org.gradle.internal.jvm.Jvm.current()
+        println currentJvm
     }
 }
