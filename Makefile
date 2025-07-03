@@ -1,3 +1,6 @@
+# NOTE: this Makefile is only for style checks.
+# To build the EISOP Checker Framework, use Gradle.
+
 all default: style-check
 	$(MAKE) -C .azure
 	$(MAKE) -C checker/bin-devel
