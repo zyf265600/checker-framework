@@ -79,6 +79,13 @@ public class NullnessNoInitAnnotatedTypeFactory
                 NullnessNoInitTransfer,
                 NullnessNoInitAnalysis> {
 
+    /**
+     * Runtime toggle: skip the {@code hasEffectiveAnnotation(NONNULL)} fast-path. Controlled via
+     * JVM system property {@code -Dcf.skipNonnullFastPath=true}.
+     */
+    private static final boolean SKIP_NONNULL_FASTPATH =
+            Boolean.getBoolean("cf.skipNonnullFastPath");
+
     /** The @{@link NonNull} annotation. */
     protected final AnnotationMirror NONNULL = AnnotationBuilder.fromClass(elements, NonNull.class);
 
@@ -734,7 +741,7 @@ public class NullnessNoInitAnnotatedTypeFactory
         // explicit nullable annotations are left intact for the visitor to inspect.
         @Override
         public Void visitNewClass(NewClassTree tree, AnnotatedTypeMirror type) {
-            if (type.hasEffectiveAnnotation(NONNULL)) {
+            if (!SKIP_NONNULL_FASTPATH && type.hasEffectiveAnnotation(NONNULL)) {
                 return null;
             }
             type.addMissingAnnotation(NONNULL);
