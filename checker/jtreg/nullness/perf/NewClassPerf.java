@@ -2,7 +2,7 @@
  * @test
  * @summary Measure impact of skipping hasEffectiveAnnotation(NONNULL) fast-path on many `new` sites.
  *
- * @run NewClassPerf
+ * @run main/timeout=600 NewClassPerf
  */
 
 import java.io.BufferedWriter;

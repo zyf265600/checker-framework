@@ -753,9 +753,7 @@ public class NullnessNoInitAnnotatedTypeFactory
         @Override
         public Void visitNewArray(NewArrayTree tree, AnnotatedTypeMirror type) {
             super.visitNewArray(tree, type);
-            if (!type.hasEffectiveAnnotation(NONNULL)) {
-                type.addMissingAnnotation(NONNULL);
-            }
+            type.addMissingAnnotation(NONNULL);
             return null;
         }
 
