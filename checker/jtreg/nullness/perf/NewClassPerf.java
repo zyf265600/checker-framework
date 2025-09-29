@@ -16,7 +16,9 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Formatter;
 import java.util.List;
+import java.util.Locale;
 
 public class NewClassPerf {
 
@@ -72,22 +74,23 @@ public class NewClassPerf {
 
     private static void writeManyNewSource(Path file, int groups) throws IOException {
         StringBuilder sb = new StringBuilder(1024 * 1024);
-        sb.append("import java.util.*;\n");
-        sb.append("public class ManyNew {\n");
-        // Avoid initialization checker errors; use @Nullable type variable upper bound.
-        sb.append("  static class Box<T extends Object> { T t; Box(){ this.t = (T) (Object) new Object(); } }\n");
-        sb.append("  void f() {\n");
-        for (int i = 0; i < groups; i++) {
-            sb.append("    Object o").append(i).append(" = new Object();\n");
-            sb.append("    ArrayList<String> l").append(i).append(" = new ArrayList<>();\n");
-            sb.append("    Box<String> b").append(i).append(" = new Box<>();\n");
-            sb.append("    int[] ai").append(i).append(" = new int[10];\n");
-            sb.append("    String[] as").append(i).append(" = new String[10];\n");
-            sb.append("    Runnable r").append(i)
-              .append(" = new Runnable(){ public void run(){} };\n");
+        try (Formatter fmt = new Formatter(sb, Locale.ROOT)) {
+            fmt.format("import java.util.*;%n");
+            fmt.format("public class ManyNew {%n");
+            // Avoid initialization checker errors; use @Nullable type variable upper bound.
+            fmt.format("  static class Box<T extends Object> { T t; Box(){ this.t = (T) (Object) new Object(); } }%n");
+            fmt.format("  void f() {%n");
+            for (int i = 0; i < groups; i++) {
+                fmt.format("    Object o%d = new Object();%n", i);
+                fmt.format("    ArrayList<String> l%d = new ArrayList<>();%n", i);
+                fmt.format("    Box<String> b%d = new Box<>();%n", i);
+                fmt.format("    int[] ai%d = new int[10];%n", i);
+                fmt.format("    String[] as%d = new String[10];%n", i);
+                fmt.format("    Runnable r%d = new Runnable(){ public void run(){} };%n", i);
+            }
+            fmt.format("  }%n");
+            fmt.format("}%n");
         }
-        sb.append("  }\n");
-        sb.append("}\n");
         try (BufferedWriter w = Files.newBufferedWriter(file, StandardCharsets.UTF_8)) {
             w.write(sb.toString());
         }
